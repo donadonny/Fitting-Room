@@ -8,5 +8,5 @@
   *  Use switches to add these rest apis according to user preferences
   
 #### Possible future updates
-* possibly add swipe-functions
-* P
+* Add swipe-functions
+* Add favorites to database
