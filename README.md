@@ -1,5 +1,5 @@
  # UnBorify
-## A collection of entertaining media to brighten up your day! Edit
+## A collection of entertaining media to brighten up your day!
 ### To do list
 * Connect a REST API for media
 * Allow forward (and possibly backwards) navigation
