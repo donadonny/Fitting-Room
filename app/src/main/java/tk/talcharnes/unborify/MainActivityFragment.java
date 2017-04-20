@@ -39,7 +39,7 @@ public class MainActivityFragment extends Fragment {
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "testing", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
 
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(urlChooser.getUrl())
@@ -59,8 +59,8 @@ public class MainActivityFragment extends Fragment {
                         ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
                         Joke joke = new Joke();
                         joke.setJoke(chuckNorrisAPIModel.getValue());
-                        Toast.makeText(getContext(), joke.getJoke(), Toast.LENGTH_SHORT).show();
-
+                        TextView jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
+                        jokeTextView.setText(joke.getJoke());
                     }
 
                     @Override
