@@ -10,9 +10,8 @@ public class UrlChooser {
      //TODO: the options menu. These will be chosen by random in the getUrl method.
     String movieQuotesApi = "https://andruxnet-random-famous-quotes.p.mashape.com/";
    String chuckNorrisApi = "https://api.chucknorris.io/jokes/random/";
-//    String apiURL = "https://api.whatdoestrumpthink.com/";
-//    String restOfURL = "api/v1/quotes/personalized?q=yourname";
-//    String trumpdString;
+
+
     String[] urlArray = new String[]{"https://api.chucknorris.io/", "jokes/random"};
     public String getUrl() {
         url = urlArray[0];
