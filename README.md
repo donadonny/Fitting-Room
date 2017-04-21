@@ -2,6 +2,10 @@
 ## A collection of entertaining media to brighten up your day!
 ### To do list
 * Connect more REST APIs for media
+  * Memes
+  * Photos
+  * Jokes
+  * Videos
 * Allow forward (and possibly backwards) navigation
 * Connect share functionality
 * Add more API functions in menu 
@@ -14,4 +18,6 @@
 
 ##### Done List
 * Added REST API
+  * Chuck Norris Jokes API
+     * https://api.chucknorris.io/jokes/random
 * Created layout for testing basic functionality
