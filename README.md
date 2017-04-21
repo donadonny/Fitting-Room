@@ -11,6 +11,7 @@
 * Add more API functions in menu 
   *  Use switches to add these rest apis according to user preferences
 * Add ads (Admob / Firebase Ads)
+* Localize
   
 #### Possible future updates
 * Add swipe-functions to swipe forward and back instead of physical buttons
