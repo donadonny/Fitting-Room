@@ -1,6 +1,8 @@
 package tk.talcharnes.unborify;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +24,8 @@ import tk.talcharnes.unborify.apitools.models.ChuckNorrisAPIModel;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-
+    TextView jokeTextView;
+    FloatingActionButton fab;
 
     public MainActivityFragment() {
     }
@@ -31,15 +34,16 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
+        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        ImageButton forwardButton = (ImageButton) rootView.findViewById(R.id.forwardButton);
 
 
         getJoke(rootView);
-        ImageButton forwardButton = (ImageButton) rootView.findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getJoke(rootView);
-
             }
         });
 
@@ -67,10 +71,23 @@ public class MainActivityFragment extends Fragment {
                     Log.i("retrofit failed", "failure");
                 }
                 ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
-                Joke joke = new Joke();
+                final Joke joke = new Joke();
                 joke.setJoke(chuckNorrisAPIModel.getValue());
-                TextView jokeTextView = (TextView) rootView1.findViewById(R.id.jokeTextView);
                 jokeTextView.setText(joke.getJoke());
+
+                fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, joke.getJoke());
+                        shareIntent.setType("text/plain");
+                        startActivity(shareIntent);
+                    }
+                });
+
+
             }
 
             @Override
