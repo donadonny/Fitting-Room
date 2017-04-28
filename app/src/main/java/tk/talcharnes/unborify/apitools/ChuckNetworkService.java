@@ -12,7 +12,7 @@ import tk.talcharnes.unborify.apitools.models.ChuckNorrisAPIModel;
      * Created by Tal on 1/26/2017.
      */
 
-    public interface NetworkService {
+    public interface ChuckNetworkService {
 
         @GET("jokes/random")
         Call<ChuckNorrisAPIModel> getChucked();
