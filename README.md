@@ -13,8 +13,12 @@
   *  Use switches to add these rest apis according to user preferences
 * Add ads (Admob / Firebase Ads)
 * Localize
-* Set retrofit to requery or leave an error message if query fails.
 * Refactor code
+* Implement instrumentation tests using Espresso
+* fix bugs
+  * On rotation retrofit re-queries Api
+  * Set retrofit to requery or leave an error message if query fails.
+
 #### Possible future updates
 * Add swipe-functions to swipe forward and back instead of physical buttons
 * Add favorites to database
