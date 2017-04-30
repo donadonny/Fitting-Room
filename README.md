@@ -1,7 +1,8 @@
  # UnBorify
 ## A collection of entertaining media to brighten up your day!
 ### To do list
-* If retrofit request comes back empty, requery.
+* Create and add new app launcher icon
+* Choose Material Design color scheme
 * Connect more REST APIs for media
   * Memes
   * Photos
