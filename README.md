@@ -12,6 +12,8 @@
   *  Use switches to add these rest apis according to user preferences
 * Add ads (Admob / Firebase Ads)
 * Localize
+* Set retrofit to requery or leave an error message if query fails.
+* Refactor code
 #### Possible future updates
 * Add swipe-functions to swipe forward and back instead of physical buttons
 * Add favorites to database
@@ -19,8 +21,8 @@
 
 ##### Done List
 * Added REST API
-  * Chuck Norris Jokes API
+  * Jokes APIs
      * https://api.chucknorris.io/jokes/random
+     * tambal.azurewebsites.net/joke/random
 * Created layout for testing basic functionality
 * Implement share functionality for text jokes
-
