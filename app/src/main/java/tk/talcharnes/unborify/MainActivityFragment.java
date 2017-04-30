@@ -72,8 +72,10 @@ public class MainActivityFragment extends Fragment {
             chuckNorrisAPIModelCall.enqueue(new retrofit2.Callback<ChuckNorrisAPIModel>() {
                 @Override
                 public void onResponse(Call<ChuckNorrisAPIModel> call, Response<ChuckNorrisAPIModel> response) {
-                    if (response != null) {
+                    if (response == null) {
                         Log.i("retrofit failed", "failure");
+                    } else if (response.toString().isEmpty()) {
+                        Log.i(LOG_TAG, "Response is empty. Response = " + response);
                     }
                     ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
                     final Joke joke = new Joke();
@@ -112,8 +114,10 @@ public class MainActivityFragment extends Fragment {
             randomJokeApiNetworkServiceCall.enqueue(new retrofit2.Callback<RandomJokeApiModel>() {
                 @Override
                 public void onResponse(Call<RandomJokeApiModel> call, Response<RandomJokeApiModel> response) {
-                    if (response != null) {
+                    if (response == null) {
                         Log.i("retrofit failed", "failure");
+                    } else if (response.toString().isEmpty()) {
+                        Log.i(LOG_TAG, "Response is empty. Response = " + response);
                     }
                     RandomJokeApiModel randomJokeApiModel = response.body();
                     final Joke joke = new Joke();
