@@ -14,7 +14,6 @@
 * Add ads (Admob / Firebase Ads)
 * Localize
 * Refactor code
-* Implement instrumentation tests using Espresso
 * fix bugs
   * On rotation retrofit re-queries Api
   * Set retrofit to requery or leave an error message if query fails.
@@ -31,3 +30,4 @@
      * tambal.azurewebsites.net/joke/random
 * Created layout for testing basic functionality
 * Implement share functionality for text jokes
+* Implement instrumentation tests to confirm response from Retrofit using Espresso
