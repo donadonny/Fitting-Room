@@ -1,7 +1,6 @@
  # UnBorify
 ## A collection of entertaining media to brighten up your day!
 ### To do list
-* Create and add new app launcher icon
 * Choose Material Design color scheme
 * Connect more REST APIs for media
   * Memes
@@ -31,3 +30,4 @@
 * Created layout for testing basic functionality
 * Implement share functionality for text jokes
 * Implement instrumentation tests to confirm response from Retrofit using Espresso
+* Create and add new app launcher icon
