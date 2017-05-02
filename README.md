@@ -8,7 +8,6 @@
   * Photos
   * Jokes
   * Videos
-* Allow forward (and possibly backwards) navigation
 * Add more API functions in menu 
   *  Use switches to add these rest apis according to user preferences
 * Add ads (Admob / Firebase Ads)
@@ -17,11 +16,12 @@
 * fix bugs
   * On rotation retrofit re-queries Api
   * Set retrofit to requery or leave an error message if query fails.
-
+  
 #### Possible future updates
 * Add swipe-functions to swipe forward and back instead of physical buttons
 * Add favorites to database
 * Add image/video/meme share functionality
+* Allow backward navigation functionality
 
 ##### Done List
 * Added REST API
