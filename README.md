@@ -2,7 +2,13 @@
 ## A collection of entertaining media to brighten up your day!
 ### To do list
 * Choose Material Design color scheme
-
+* Post on Google Play Store
+  * Set up release version using gradle
+  * Prepare materials for posting on Google Play
+    * Screenshots
+    * Text
+      * Details
+      * Summary
 * Add ads (Admob / Firebase Ads)
 * Localize
 * Refactor code
