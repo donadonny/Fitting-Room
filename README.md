@@ -49,3 +49,6 @@
 ###### Credit to
 * Diolor for SwipeCards Layout
 * Square for Retrofit
+* Everyone responsible for the following APIs that were used:
+  * https://api.chucknorris.io/jokes/random
+  * tambal.azurewebsites.net/joke/random
