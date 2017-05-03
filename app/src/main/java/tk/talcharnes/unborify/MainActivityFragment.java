@@ -8,9 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -28,6 +33,11 @@ import tk.talcharnes.unborify.apitools.models.RandomJokeApiModel;
 public class MainActivityFragment extends Fragment {
     TextView jokeTextView;
     FloatingActionButton fab;
+    ImageButton forwardButton;
+    SwipeFlingAdapterView swipeFlingAdapterView;
+    ArrayList<String> al;
+    ArrayAdapter<String> arrayAdapter;
+    private int i;
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     public MainActivityFragment() {
@@ -39,8 +49,7 @@ public class MainActivityFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
         fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        ImageButton forwardButton = (ImageButton) rootView.findViewById(R.id.forwardButton);
-
+        forwardButton = (ImageButton) rootView.findViewById(R.id.forwardButton);
 
         getJoke(rootView);
         forwardButton.setOnClickListener(new View.OnClickListener() {
@@ -49,11 +58,75 @@ public class MainActivityFragment extends Fragment {
                 getJoke(rootView);
             }
         });
+// The following code is a test
+        swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
+        TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
+        textView.setVisibility(View.VISIBLE);
+        al = new ArrayList<String>();
+        al.add("php");
+        al.add("c");
+        al.add("python");
+        al.add("java");
+
+        //choose your favorite adapter
+        arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
+
+        //set the listener and the adapter
+        swipeFlingAdapterView.setAdapter(arrayAdapter);
+        swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            @Override
+            public void removeFirstObjectInAdapter() {
+                // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                Log.d("LIST", "removed object!");
+                al.remove(0);
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onLeftCardExit(Object dataObject) {
+                //Do something on the left!
+                //You also have access to the original object.
+                //If you want to use it just cast it (String) dataObject
+                Toast.makeText(getActivity(), "Left!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRightCardExit(Object dataObject) {
+                Toast.makeText(getActivity(), "Right!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                // Ask for more data here
+                String jokeString = getJoke(rootView);
+                al.add(jokeString);
+                arrayAdapter.notifyDataSetChanged();
+                Log.d("LIST", "notified");
+            }
+
+            @Override
+            public void onScroll(float v) {
+                View view = swipeFlingAdapterView.getSelectedView();
+                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(v < 0 ? -v : 0);
+                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(v > 0 ? v : 0);
+            }
+        });
+
+        // Optionally add an OnItemClickListener
+        swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+//        Test over
+
+
 
         return rootView;
     }
 
-    private void getJoke(View rootView) {
+    private String getJoke(View rootView) {
         final View rootView1 = rootView;
         final UrlChooser urlChooser = new UrlChooser();
 
@@ -93,7 +166,6 @@ public class MainActivityFragment extends Fragment {
                             startActivity(shareIntent);
                         }
                     });
-
 
                 }
 
@@ -136,7 +208,6 @@ public class MainActivityFragment extends Fragment {
                         }
                     });
 
-
                 }
 
                 @Override
@@ -147,6 +218,7 @@ public class MainActivityFragment extends Fragment {
                 }
             });
         }
+        return jokeTextView.getText().toString();
     }
 
 
