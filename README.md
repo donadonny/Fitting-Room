@@ -2,8 +2,7 @@
 ## A collection of entertaining media to brighten up your day!
 ### To do list
 * Choose Material Design color scheme
-* Add more API functions in menu 
-  *  Use switches to add these rest apis according to user preferences
+
 * Add ads (Admob / Firebase Ads)
 * Localize
 * Refactor code
@@ -22,6 +21,8 @@
 * Add favorites to database
 * Add image/video/meme share functionality
 * Allow backward navigation functionality
+* Add more API functions in menu 
+  *  Use switches to add/remove rest apis according to user preferences
 * Connect more REST APIs for media
   * Memes
     * https://github.com/k3min/infinigag
