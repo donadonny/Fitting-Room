@@ -37,6 +37,7 @@
     * https://github.com/Giphy/GiphyAPI
   * Jokes
     * https://github.com/jamesseanwright/ron-swanson-quotes
+    * Use jokes from own library created here https://github.com/tal32123/JokeTellingApp (library used jokes from elsewhere)
   * Videos
     * Youtube trending
   * Fun facts
