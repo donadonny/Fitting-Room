@@ -10,8 +10,8 @@
       * Summary
 * Add ads (Admob / Firebase Ads)
 * Localize
-* Refactor code
-  * Refactor and simplify REST API Retrieveal
+* Switch test to use swipe layout vs hidden textview layout
+* Refactor and simplify REST API Retrieveal
 #### Known Bugs
 * Several empty cards before arriving to one with information
 * On rotation retrofit re-queries Api
