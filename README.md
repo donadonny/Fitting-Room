@@ -15,6 +15,8 @@
   * Refactor and simplify REST API Retrieveal
 * fix bugs
   * On rotation retrofit re-queries Api
+  * On too many rotations app crashes. Crash for some reason claims fab is responsible.
+  * App loses joke on rotation
   * Set retrofit to requery or leave an error message if query fails.
   * Remove unused views
   * Make text dynamically size to view
