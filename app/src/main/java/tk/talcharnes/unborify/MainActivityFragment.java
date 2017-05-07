@@ -55,12 +55,10 @@ public class MainActivityFragment extends Fragment {
         textView.setVisibility(View.VISIBLE);
         // add entertaining things to arraylist using al.add()
         al = new ArrayList<String>();
-        al.add(getJoke(rootView));
-        al.add(getJoke(rootView));
-
         //choose your favorite adapter
         arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
-
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
         //set the listener and the adapter
         swipeFlingAdapterView.setAdapter(arrayAdapter);
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
@@ -209,6 +207,7 @@ public class MainActivityFragment extends Fragment {
                 }
             });
         }
+        arrayAdapter.notifyDataSetChanged();
         return jokeTextView.getText().toString();
     }
 

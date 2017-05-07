@@ -8,7 +8,7 @@
         android:id="@+id/helloText"
         android:textSize="40sp"
         android:textColor="@android:color/white"
-        android:background="#E339"
+        android:background="@android:color/holo_red_light"
         android:gravity="center"
         tools:text="Swipe Meh"
         android:layout_width="match_parent"
