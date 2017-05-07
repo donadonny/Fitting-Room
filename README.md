@@ -1,7 +1,6 @@
  # UnBorify
 ## A collection of entertaining media to brighten up your day!
 ### Planned Future Updates
-* Choose Material Design color scheme
 * Post on Google Play Store
   * Set up release version using gradle
   * Prepare materials for posting on Google Play
@@ -11,8 +10,8 @@
       * Summary
 * Add ads (Admob / Firebase Ads)
 * Localize
-* Refactor code
-  * Refactor and simplify REST API Retrieveal
+* Switch test to use swipe layout vs hidden textview layout
+* Refactor and simplify REST API Retrieveal
 #### Known Bugs
 * Several empty cards before arriving to one with information
 * On rotation retrofit re-queries Api
@@ -51,6 +50,7 @@
      * https://api.chucknorris.io/jokes/random
      * tambal.azurewebsites.net/joke/random
 * Created layout for testing basic functionality
+* Choose Material Design color scheme
 * Implement share functionality for text jokes
 * Implement instrumentation tests to confirm response from Retrofit using Espresso
 * Create and add new app launcher icon
