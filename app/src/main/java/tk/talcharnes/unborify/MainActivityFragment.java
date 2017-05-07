@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,14 +32,13 @@ import tk.talcharnes.unborify.apitools.models.RandomJokeApiModel;
 public class MainActivityFragment extends Fragment {
     TextView jokeTextView;
     FloatingActionButton fab;
-    ImageButton forwardButton;
     SwipeFlingAdapterView swipeFlingAdapterView;
     ArrayList<String> al;
     ArrayAdapter<String> arrayAdapter;
-    private int i;
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     public MainActivityFragment() {
+
     }
 
     @Override
@@ -49,28 +47,16 @@ public class MainActivityFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
         fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        forwardButton = (ImageButton) rootView.findViewById(R.id.forwardButton);
 
-        getJoke(rootView);
-        forwardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getJoke(rootView);
-            }
-        });
-// The following code is a test
+        // The following code is a test
+
         swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
         TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
         textView.setVisibility(View.VISIBLE);
+        // add entertaining things to arraylist using al.add()
         al = new ArrayList<String>();
         al.add(getJoke(rootView));
         al.add(getJoke(rootView));
-        al.add(getJoke(rootView));
-        al.add(getJoke(rootView));
-        al.add(getJoke(rootView));
-        al.add(getJoke(rootView));
-
-//        add entertaining things to arraylist using al.add()
 
         //choose your favorite adapter
         arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
