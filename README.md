@@ -14,6 +14,7 @@
 * Refactor code
   * Refactor and simplify REST API Retrieveal
 #### Known Bugs
+* Several empty cards before arriving to one with information
 * On rotation retrofit re-queries Api
 * On too many rotations app crashes. Crash for some reason claims fab is responsible.
 * App loses joke on rotation
