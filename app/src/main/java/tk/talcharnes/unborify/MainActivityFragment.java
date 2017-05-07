@@ -63,10 +63,14 @@ public class MainActivityFragment extends Fragment {
         TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
         textView.setVisibility(View.VISIBLE);
         al = new ArrayList<String>();
-        al.add("php");
-        al.add("c");
-        al.add("python");
-        al.add("java");
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
+        al.add(getJoke(rootView));
+
+//        add entertaining things to arraylist using al.add()
 
         //choose your favorite adapter
         arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
@@ -87,19 +91,18 @@ public class MainActivityFragment extends Fragment {
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Toast.makeText(getActivity(), "Left!", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Left card Exit");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Toast.makeText(getActivity(), "Right!", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Right card Exit");
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                String jokeString = getJoke(rootView);
-                al.add(jokeString);
+                al.add(getJoke(rootView));
                 arrayAdapter.notifyDataSetChanged();
                 Log.d("LIST", "notified");
             }
@@ -116,7 +119,7 @@ public class MainActivityFragment extends Fragment {
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Item clicked");
             }
         });
 //        Test over
@@ -153,6 +156,7 @@ public class MainActivityFragment extends Fragment {
                     ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
                     final Joke joke = new Joke();
                     joke.setJoke(chuckNorrisAPIModel.getValue());
+                    Log.d(LOG_TAG, "joke = " + joke.getJoke());
                     jokeTextView.setText(joke.getJoke());
 
                     fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
@@ -194,6 +198,7 @@ public class MainActivityFragment extends Fragment {
                     RandomJokeApiModel randomJokeApiModel = response.body();
                     final Joke joke = new Joke();
                     joke.setJoke(randomJokeApiModel.getJoke());
+                    Log.d(LOG_TAG, "joke = " + joke.getJoke());
                     jokeTextView.setText(joke.getJoke());
 
                     fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
