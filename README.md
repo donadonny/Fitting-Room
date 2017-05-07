@@ -1,6 +1,6 @@
  # UnBorify
 ## A collection of entertaining media to brighten up your day!
-### To do list
+### Planned Future Updates
 * Choose Material Design color scheme
 * Post on Google Play Store
   * Set up release version using gradle
@@ -13,15 +13,14 @@
 * Localize
 * Refactor code
   * Refactor and simplify REST API Retrieveal
-* fix bugs
-  * On rotation retrofit re-queries Api
-  * On too many rotations app crashes. Crash for some reason claims fab is responsible.
-  * App loses joke on rotation
-  * Set retrofit to requery or leave an error message if query fails.
-  * Remove unused views
-  * Make text dynamically size to view
-  * Lower or remove joke text see-through-ness
-  * Have several entertaining things ready in order to decrease load time
+#### Known Bugs
+* On rotation retrofit re-queries Api
+* On too many rotations app crashes. Crash for some reason claims fab is responsible.
+* App loses joke on rotation
+* Set retrofit to requery or leave an error message if query fails.
+* Make text dynamically size to view
+* Lower or remove joke text see-through-ness
+* Have several entertaining things ready in order to decrease load time
  
   
 #### Possible future updates
