@@ -18,7 +18,6 @@
 * On too many rotations app crashes. Crash for some reason claims fab is responsible.
 * App loses joke on rotation
 * Set retrofit to requery or leave an error message if query fails.
-* Make text dynamically size to view
 * Lower or remove joke text see-through-ness
 * Have several entertaining things ready in order to decrease load time
  
@@ -55,6 +54,7 @@
 * Implement instrumentation tests to confirm response from Retrofit using Espresso
 * Create and add new app launcher icon
 * Add swipe gestures
+* Make text dynamically size to view
 
 ###### Credit to
 * Diolor for SwipeCards Layout
