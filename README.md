@@ -1,6 +1,6 @@
  # UnBorify
 ## A collection of entertaining media to brighten up your day!
-### Planned Future Updates
+### Planned Features
 * Post on Google Play Store
   * Set up release version using gradle
   * Prepare materials for posting on Google Play
@@ -10,9 +10,7 @@
       * Summary
 * Add ads (Admob / Firebase Ads)
 * Localize
-* Switch test to use swipe layout vs hidden textview layout
-* Refactor and simplify REST API Retrieveal
-#### Known Bugs
+#### Known Bugs and Things That Need Fixing
 * Several empty cards before arriving to one with information
 * On rotation retrofit re-queries Api
 * On too many rotations app crashes. Crash for some reason claims fab is responsible.
@@ -20,6 +18,9 @@
 * Set retrofit to requery or leave an error message if query fails.
 * Lower or remove joke text see-through-ness
 * Have several entertaining things ready in order to decrease load time
+* Switch test to use swipe layout vs hidden textview layout
+* Refactor and simplify REST API Retrieveal
+
  
   
 #### Possible future updates
