@@ -51,13 +51,14 @@ public class MainActivityFragment extends Fragment {
         // The following code is a test
 
         swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
+        TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
+        textView.setVisibility(View.VISIBLE);
         // add entertaining things to arraylist using al.add()
         al = new ArrayList<String>();
         //choose your favorite adapter
         arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
         al.add(getJoke(rootView));
         al.add(getJoke(rootView));
-        
         //set the listener and the adapter
         swipeFlingAdapterView.setAdapter(arrayAdapter);
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
