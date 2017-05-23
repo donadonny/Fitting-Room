@@ -36,6 +36,8 @@ public class MainActivityFragment extends Fragment {
     ArrayList<String> al;
     ArrayAdapter<String> arrayAdapter;
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private String mJokeString;
+
 
     public MainActivityFragment() {
 
@@ -47,6 +49,10 @@ public class MainActivityFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
         fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+
+
+        TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
+        textView.setVisibility(View.VISIBLE);
 
         // The following code is a test
 
@@ -133,7 +139,8 @@ public class MainActivityFragment extends Fragment {
                 public void onResponse(Call<ChuckNorrisAPIModel> call, Response<ChuckNorrisAPIModel> response) {
                     if (response == null) {
                         Log.i("retrofit failed", "failure");
-                    } else if (response.toString().isEmpty()) {
+                    }
+                    else if (response.toString().isEmpty()) {
                         Log.i(LOG_TAG, "Response is empty. Response = " + response);
                     }
                     ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
@@ -141,6 +148,7 @@ public class MainActivityFragment extends Fragment {
                     joke.setJoke(chuckNorrisAPIModel.getValue());
                     Log.d(LOG_TAG, "joke = " + joke.getJoke());
                     jokeTextView.setText(joke.getJoke());
+                    mJokeString = joke.getJoke();
 
                     fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
                     fab.setOnClickListener(new View.OnClickListener() {
@@ -183,6 +191,7 @@ public class MainActivityFragment extends Fragment {
                     joke.setJoke(randomJokeApiModel.getJoke());
                     Log.d(LOG_TAG, "joke = " + joke.getJoke());
                     jokeTextView.setText(joke.getJoke());
+                    mJokeString = joke.getJoke();
 
                     fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
                     fab.setOnClickListener(new View.OnClickListener() {
