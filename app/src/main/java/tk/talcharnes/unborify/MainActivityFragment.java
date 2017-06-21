@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ public class MainActivityFragment extends Fragment {
     ArrayAdapter<String> arrayAdapter;
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private String mJokeString;
-
+    private AdView mAdView;
+    private AdRequest mAdRequest;
 
     public MainActivityFragment() {
 
@@ -63,9 +66,14 @@ public class MainActivityFragment extends Fragment {
         arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
         al.add(getJoke(rootView));
         al.add(getJoke(rootView));
-        
+
+
+
+
         //set the listener and the adapter
         swipeFlingAdapterView.setAdapter(arrayAdapter);
+
+
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -113,7 +121,10 @@ public class MainActivityFragment extends Fragment {
         });
 //        Test over
 
-
+        ////        Load ad
+        mAdView = (AdView) rootView.findViewById(R.id.adView);
+        mAdRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(mAdRequest);
 
         return rootView;
     }
