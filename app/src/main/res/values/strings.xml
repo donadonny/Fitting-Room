@@ -1,5 +1,14 @@
 <resources>
-    <string name="app_name">UnBorify</string>
+    <!--App name-->
+    <string name="app_name" translatable="false">UnBorify</string>
+
+    <!--String for settings menu-->
     <string name="action_settings">Settings</string>
+
+    <!--String shows when no network or chosen rest API-->
     <string name="no_network_or_rest_api_chosen_string">Error! Please check that you are connected to network and at least one entertainment source is chosen!</string>
+
+    <!--Test banner ad unit id-->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 </resources>
