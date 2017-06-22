@@ -10,7 +10,7 @@
       * Summary
 * Localize
 #### Known Bugs and Things That Need Fixing
-* Doesn't share current joke, instead shares joke that is further down the line in the array
+* Share button doesn't share current joke, instead shares joke that is further down the line in the array
 * Several empty cards before arriving to one with information
 * On rotation retrofit re-queries Api
 * On too many rotations app crashes. Crash for some reason claims fab is responsible.
