@@ -156,7 +156,7 @@
                         }
                         ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
                         final Joke joke = new Joke();
-                        joke.setJoke(chuckNorrisAPIModel.getValue());
+                        joke.setJoke(chuckNorrisAPIModel.getValue(), Joke.STRING_JOKE_TYPE);
                         Log.d(LOG_TAG, "joke = " + joke.getJoke());
                         jokeTextView.setText(joke.getJoke());
                         mJokeString = joke.getJoke();
@@ -201,7 +201,7 @@
                         }
                         RandomJokeApiModel randomJokeApiModel = response.body();
                         final Joke joke = new Joke();
-                        joke.setJoke(randomJokeApiModel.getJoke());
+                        joke.setJoke(randomJokeApiModel.getJoke(), Joke.STRING_JOKE_TYPE);
                         Log.d(LOG_TAG, "joke = " + joke.getJoke());
                         jokeTextView.setText(joke.getJoke());
                         mJokeString = joke.getJoke();
