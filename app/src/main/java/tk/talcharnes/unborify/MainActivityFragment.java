@@ -1,19 +1,24 @@
     package tk.talcharnes.unborify;
 
     import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+    import android.support.annotation.NonNull;
+    import android.support.design.widget.FloatingActionButton;
+    import android.support.v4.app.Fragment;
+    import android.util.Log;
+    import android.view.LayoutInflater;
+    import android.view.View;
+    import android.view.ViewGroup;
+    import android.widget.ArrayAdapter;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+    import com.firebase.ui.auth.AuthUI;
+    import com.google.android.gms.ads.AdRequest;
+    import com.google.android.gms.ads.AdView;
+    import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.auth.FirebaseUser;
+    import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
-import java.util.ArrayList;
+    import java.util.ArrayList;
+    import java.util.Arrays;
 
     /**
      * A placeholder fragment containing a simple view.
@@ -28,6 +33,12 @@ import java.util.ArrayList;
         private AdRequest mAdRequest;
         private int i = 0;
 
+//        For Firebase Auth
+        private FirebaseAuth mAuth;
+        private FirebaseAuth.AuthStateListener mAuthListener;
+        public static final int RC_SIGN_IN = 1;
+
+
         public MainActivityFragment() {
 
         }
@@ -38,6 +49,30 @@ import java.util.ArrayList;
             final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
 
+//            For firebase auth
+            mAuth = FirebaseAuth.getInstance();
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed in
+                        Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    } else {
+                        // User is signed out
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                        .build(),
+                                RC_SIGN_IN);
+                        Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
+                    }
+                    // ...
+                }
+            };
 
             // The following code is a test
 
@@ -112,6 +147,16 @@ import java.util.ArrayList;
 
             return rootView;
         }
-
-
+        @Override
+        public void onStart() {
+            super.onStart();
+            mAuth.addAuthStateListener(mAuthListener);
+        }
+        @Override
+        public void onStop() {
+            super.onStop();
+            if (mAuthListener != null) {
+                mAuth.removeAuthStateListener(mAuthListener);
+            }
+        }
     }
