@@ -1,6 +1,8 @@
     package tk.talcharnes.unborify;
 
+    import android.content.Intent;
     import android.os.Bundle;
+    import android.provider.MediaStore;
     import android.support.annotation.NonNull;
     import android.support.design.widget.FloatingActionButton;
     import android.support.v4.app.Fragment;
@@ -32,8 +34,9 @@
         private AdView mAdView;
         private AdRequest mAdRequest;
         private int i = 0;
+        static final int REQUEST_IMAGE_CAPTURE = 1;
 
-//        For Firebase Auth
+        //        For Firebase Auth
         private FirebaseAuth mAuth;
         private FirebaseAuth.AuthStateListener mAuthListener;
         public static final int RC_SIGN_IN = 1;
@@ -47,7 +50,6 @@
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
 
 //            For firebase auth
             mAuth = FirebaseAuth.getInstance();
@@ -70,7 +72,7 @@
                                 RC_SIGN_IN);
                         Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                     }
-                    // ...
+
                 }
             };
 
@@ -83,9 +85,6 @@
             al.add("2");
             //choose your favorite adapter
             arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
-
-
-
 
 
             //set the listener and the adapter
@@ -117,7 +116,7 @@
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    al.add("item number "+ i);
+                    al.add("item number " + i);
                     i++;
                     arrayAdapter.notifyDataSetChanged();
                     Log.d("LIST", "notified");
@@ -138,20 +137,34 @@
                     Log.d(LOG_TAG, "Item clicked");
                 }
             });
-    //        Test over
+            //        Test over
 
             ////        Load ad
             mAdView = (AdView) rootView.findViewById(R.id.adView);
             mAdRequest = new AdRequest.Builder().build();
             mAdView.loadAd(mAdRequest);
 
+            fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+//            fab.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent shareIntent = new Intent();
+//                    shareIntent.setAction(Intent.ACTION_SEND);
+//                    shareIntent.putExtra(Intent.EXTRA_TEXT, "TEST");
+//                    shareIntent.setType("text/plain");
+//                    startActivity(shareIntent);
+//                }
+//            });
+
             return rootView;
         }
+
         @Override
         public void onStart() {
             super.onStart();
             mAuth.addAuthStateListener(mAuthListener);
         }
+
         @Override
         public void onStop() {
             super.onStop();
@@ -159,5 +172,11 @@
                 mAuth.removeAuthStateListener(mAuthListener);
             }
         }
-        
+
+        private void dispatchTakePictureIntent() {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
     }
