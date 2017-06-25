@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tk.talcharnes.unborify">
 
-    <!--For REST API consumtion-->
+    <!--For REST API consumption-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--For taking photo and uploading-->
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <!--For saving photo-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
