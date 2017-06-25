@@ -2,6 +2,8 @@
 
     import android.content.Intent;
     import android.os.Bundle;
+    import android.provider.MediaStore;
+    import android.support.annotation.NonNull;
     import android.support.design.widget.FloatingActionButton;
     import android.support.v4.app.Fragment;
     import android.util.Log;
@@ -9,38 +11,36 @@
     import android.view.View;
     import android.view.ViewGroup;
     import android.widget.ArrayAdapter;
-    import android.widget.TextView;
-    import android.widget.Toast;
 
+    import com.firebase.ui.auth.AuthUI;
     import com.google.android.gms.ads.AdRequest;
     import com.google.android.gms.ads.AdView;
+    import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.auth.FirebaseUser;
     import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
     import java.util.ArrayList;
-
-    import retrofit2.Call;
-    import retrofit2.Response;
-    import retrofit2.Retrofit;
-    import retrofit2.converter.gson.GsonConverterFactory;
-    import tk.talcharnes.unborify.apitools.ChuckNetworkService;
-    import tk.talcharnes.unborify.apitools.RandomJokeApiNetworkService;
-    import tk.talcharnes.unborify.apitools.UrlChooser;
-    import tk.talcharnes.unborify.apitools.models.ChuckNorrisAPIModel;
-    import tk.talcharnes.unborify.apitools.models.RandomJokeApiModel;
+    import java.util.Arrays;
 
     /**
      * A placeholder fragment containing a simple view.
      */
     public class MainActivityFragment extends Fragment {
-        TextView jokeTextView;
         FloatingActionButton fab;
         SwipeFlingAdapterView swipeFlingAdapterView;
         ArrayList<String> al;
         ArrayAdapter<String> arrayAdapter;
         private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-        private String mJokeString;
         private AdView mAdView;
         private AdRequest mAdRequest;
+        private int i = 0;
+        static final int REQUEST_IMAGE_CAPTURE = 1;
+
+        //        For Firebase Auth
+        private FirebaseAuth mAuth;
+        private FirebaseAuth.AuthStateListener mAuthListener;
+        public static final int RC_SIGN_IN = 1;
+
 
         public MainActivityFragment() {
 
@@ -50,24 +50,41 @@
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            jokeTextView = (TextView) rootView.findViewById(R.id.jokeTextView);
-            fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
 
+//            For firebase auth
+            mAuth = FirebaseAuth.getInstance();
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed in
+                        Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    } else {
+                        // User is signed out
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                        .build(),
+                                RC_SIGN_IN);
+                        Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
+                    }
 
-            TextView textView = (TextView) rootView.findViewById(R.id.jokeTextView);
-            textView.setVisibility(View.VISIBLE);
+                }
+            };
 
             // The following code is a test
 
             swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
             // add entertaining things to arraylist using al.add()
             al = new ArrayList<String>();
+            al.add("1");
+            al.add("2");
             //choose your favorite adapter
             arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
-            al.add(getJoke(rootView));
-            al.add(getJoke(rootView));
-
-
 
 
             //set the listener and the adapter
@@ -99,7 +116,8 @@
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    al.add(getJoke(rootView));
+                    al.add("item number " + i);
+                    i++;
                     arrayAdapter.notifyDataSetChanged();
                     Log.d("LIST", "notified");
                 }
@@ -107,8 +125,8 @@
                 @Override
                 public void onScroll(float v) {
                     View view = swipeFlingAdapterView.getSelectedView();
-                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(v < 0 ? -v : 0);
-                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(v > 0 ? v : 0);
+                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
+                    view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
                 }
             });
 
@@ -119,115 +137,46 @@
                     Log.d(LOG_TAG, "Item clicked");
                 }
             });
-    //        Test over
+            //        Test over
 
             ////        Load ad
             mAdView = (AdView) rootView.findViewById(R.id.adView);
             mAdRequest = new AdRequest.Builder().build();
             mAdView.loadAd(mAdRequest);
 
+            fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+//            fab.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent shareIntent = new Intent();
+//                    shareIntent.setAction(Intent.ACTION_SEND);
+//                    shareIntent.putExtra(Intent.EXTRA_TEXT, "TEST");
+//                    shareIntent.setType("text/plain");
+//                    startActivity(shareIntent);
+//                }
+//            });
+
             return rootView;
         }
 
-        private String getJoke(View rootView) {
-            final View rootView1 = rootView;
-            final UrlChooser urlChooser = new UrlChooser();
+        @Override
+        public void onStart() {
+            super.onStart();
+            mAuth.addAuthStateListener(mAuthListener);
+        }
 
-            Toast.makeText(getContext(), "Loading", Toast.LENGTH_SHORT).show();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(urlChooser.getUrl())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            if (urlChooser.getRandomInt() == 0) {
-                ChuckNetworkService chuckNetworkService;
-                chuckNetworkService = retrofit.create(ChuckNetworkService.class);
-
-                Call<ChuckNorrisAPIModel> chuckNorrisAPIModelCall;
-                chuckNorrisAPIModelCall = chuckNetworkService.getChucked();
-                chuckNorrisAPIModelCall.enqueue(new retrofit2.Callback<ChuckNorrisAPIModel>() {
-                    @Override
-                    public void onResponse(Call<ChuckNorrisAPIModel> call, Response<ChuckNorrisAPIModel> response) {
-                        if (response == null) {
-                            Log.i("retrofit failed", "failure");
-                        }
-                        else if (response.toString().isEmpty()) {
-                            Log.i(LOG_TAG, "Response is empty. Response = " + response);
-                        }
-                        ChuckNorrisAPIModel chuckNorrisAPIModel = response.body();
-                        final Joke joke = new Joke();
-                        joke.setJoke(chuckNorrisAPIModel.getValue(), Joke.STRING_JOKE_TYPE);
-                        Log.d(LOG_TAG, "joke = " + joke.getJoke());
-                        jokeTextView.setText(joke.getJoke());
-                        mJokeString = joke.getJoke();
-
-                        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent shareIntent = new Intent();
-                                shareIntent.setAction(Intent.ACTION_SEND);
-
-//                              Insert current joke into the intent (first joke in the array of jokes)
-                                shareIntent.putExtra(Intent.EXTRA_TEXT, al.get(0));
-                                shareIntent.setType("text/plain");
-                                startActivity(shareIntent);
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ChuckNorrisAPIModel> call, Throwable t) {
-                        Log.e("failure", t.getMessage());
-                        TextView emptyView = (TextView) rootView1.findViewById(R.id.empty_view);
-                        emptyView.setVisibility(View.VISIBLE);
-                    }
-                });
+        @Override
+        public void onStop() {
+            super.onStop();
+            if (mAuthListener != null) {
+                mAuth.removeAuthStateListener(mAuthListener);
             }
-            if(urlChooser.getRandomInt() == 1){
-                RandomJokeApiNetworkService randomJokeApiNetworkService;
-                randomJokeApiNetworkService = retrofit.create(RandomJokeApiNetworkService.class);
+        }
 
-                Call<RandomJokeApiModel> randomJokeApiNetworkServiceCall;
-                randomJokeApiNetworkServiceCall = randomJokeApiNetworkService.getRandomJoke();
-                randomJokeApiNetworkServiceCall.enqueue(new retrofit2.Callback<RandomJokeApiModel>() {
-                    @Override
-                    public void onResponse(Call<RandomJokeApiModel> call, Response<RandomJokeApiModel> response) {
-                        if (response == null) {
-                            Log.i("retrofit failed", "failure");
-                        } else if (response.toString().isEmpty()) {
-                            Log.i(LOG_TAG, "Response is empty. Response = " + response);
-                        }
-                        RandomJokeApiModel randomJokeApiModel = response.body();
-                        final Joke joke = new Joke();
-                        joke.setJoke(randomJokeApiModel.getJoke(), Joke.STRING_JOKE_TYPE);
-                        Log.d(LOG_TAG, "joke = " + joke.getJoke());
-                        jokeTextView.setText(joke.getJoke());
-                        mJokeString = joke.getJoke();
-
-                        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent shareIntent = new Intent();
-                                shareIntent.setAction(Intent.ACTION_SEND);
-                                shareIntent.putExtra(Intent.EXTRA_TEXT, joke.getJoke());
-                                shareIntent.setType("text/plain");
-                                startActivity(shareIntent);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(Call<RandomJokeApiModel> call, Throwable t) {
-                        Log.e("failure", t.getMessage());
-                        TextView emptyView = (TextView) rootView1.findViewById(R.id.empty_view);
-                        emptyView.setVisibility(View.VISIBLE);
-                    }
-                });
+        private void dispatchTakePictureIntent() {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
-            arrayAdapter.notifyDataSetChanged();
-            return jokeTextView.getText().toString();
         }
     }
