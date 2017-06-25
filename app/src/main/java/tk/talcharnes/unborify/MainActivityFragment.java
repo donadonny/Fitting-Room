@@ -126,8 +126,8 @@
                 @Override
                 public void onScroll(float v) {
                     View view = swipeFlingAdapterView.getSelectedView();
-                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(v < 0 ? -v : 0);
-                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(v > 0 ? v : 0);
+                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
+                    view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
                 }
             });
 
