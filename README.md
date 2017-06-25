@@ -1,4 +1,24 @@
- # UnBorify
+## An app that assists users with their fashion choices
+
+### To do:
+ * Set up Firebase database
+ * Set up photo functionality
+ * Have photo upload to Firebase storage
+ * Have my account section with photos
+ * Allow user to sign out
+ * Choose new material design color scheme
+ * Set up rating system
+ 
+ 
+### Done
+ * Set up swipe card layout
+ * Set up sign in
+ * Set up Firebase ads
+
+
+
+
+## Note: Project being repurposed: Following information is from the previous version of the app.
 ## A collection of entertaining media to brighten up your day!
 ### Planned Features
 * Post on Google Play Store
