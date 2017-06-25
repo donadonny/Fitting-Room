@@ -10,6 +10,8 @@
  * Set up rating system
  * Come up with new clever name
  * Put app on Google play
+ * Create tests
+ * Improve layout
  
  
 ### Done
@@ -18,6 +20,12 @@
  * Set up Firebase ads
 
 
+### Known bugs/todo/ to fix:
+ * Layout needs to be fixed /improved to look good
+ * Signed in users must be connected to database
+
+### Possible features:
+* If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 
 
 ## Note: Project being repurposed: Following information is from the previous version of the app.
