@@ -159,4 +159,5 @@
                 mAuth.removeAuthStateListener(mAuthListener);
             }
         }
+        
     }
