@@ -8,6 +8,8 @@
  * Allow user to sign out
  * Choose new material design color scheme
  * Set up rating system
+ * Come up with new clever name
+ * Put app on Google play
  
  
 ### Done
