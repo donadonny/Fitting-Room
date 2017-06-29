@@ -5,7 +5,6 @@
  * Set up photo functionality
  * Have photo upload to Firebase storage
  * Have my account section with photos
- * Allow user to sign out
  * Set up rating system
  * Come up with new clever name
  * Put app on Google play
@@ -15,7 +14,7 @@
  
 ### Done
  * Set up swipe card layout
- * Set up sign in
+ * Set up sign in and sign out
  * Choose Material Design Color Scheme
  * Set up Firebase ads
 
