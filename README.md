@@ -2,6 +2,10 @@
 
 ### To do:
  * Set up Firebase database
+   * Db structure will be:
+   [user|photo url list]
+   [photo url|likes|dislikes]
+ * Allow reporting of photos
  * Set up photo functionality
  * Have photo upload to Firebase storage
  * Have my account section with photos
@@ -25,6 +29,16 @@
 
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
+* Allow following other users
+   * This will add a field to the user part of the database which will be followed users. Possibilities for this are:
+     * The app will push photos from the followed users to the front of the list of photos to rate.
+     * Dedicated section to followed users (like with youtube subscriptions)
+   * Add number of followers to user part of database
+   * Add search user
+   * Add profile photos
+   
+
+
 
 
 
