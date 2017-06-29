@@ -1,5 +1,7 @@
 ## An app that assists users with their fashion choices
 
+This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
+
 ### To do:
  * Set up Firebase database
    * Db structure will be:
@@ -36,6 +38,7 @@
    * Add number of followers to user part of database
    * Add search user
    * Add profile photos
+ * Add option to skip or indifferent view of style
    
 
 
