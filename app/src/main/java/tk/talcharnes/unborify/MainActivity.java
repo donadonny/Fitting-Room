@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
@@ -36,7 +39,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sign_out) {
+            Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            return true;
+        }
+        if (id == R.id.action_my_photos) {
+            Toast.makeText(this, "opening photos", Toast.LENGTH_SHORT).show();
             return true;
         }
 
