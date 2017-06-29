@@ -16,6 +16,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Improve layout
+ * Create Terms of Service
  
  
 ### Done
@@ -39,7 +40,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Add search user
    * Add profile photos
  * Add option to skip or indifferent view of style
-   
+ * Add occasion to the photo so that users know what occasion they are judging the photo for (date, every day/no occasion, beach, etc)
 
 
 
