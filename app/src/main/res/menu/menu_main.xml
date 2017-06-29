@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="tk.talcharnes.unborify.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_my_photos"
+        android:orderInCategory="99"
+        android:title="@string/my_photos"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_sign_out"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/sign_out"
+        app:showAsAction="never"/>
 </menu>

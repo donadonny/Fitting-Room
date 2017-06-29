@@ -57,8 +57,11 @@
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
+
                     if (user != null) {
                         // User is signed in
+                        String userID = user.getUid();
+
                         Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     } else {
                         // User is signed out
