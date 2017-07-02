@@ -41,7 +41,12 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.swipe_layout, parent, false);
         }
         ImageView imageView = (ImageView) convertView.findViewById(R.id.userPhoto);
-        Glide.with(getContext()).load(urlString).into(imageView);
+        if(urlString != null && !urlString.isEmpty()) {
+            Glide.with(getContext())
+                    .load(urlString)
+                    .into(imageView);
+        }
+
         // Lookup view for data population
         TextView occastion_subtitle = (TextView) convertView.findViewById(R.id.occasion_subtitle);
         // Populate the data into the template view using the data object

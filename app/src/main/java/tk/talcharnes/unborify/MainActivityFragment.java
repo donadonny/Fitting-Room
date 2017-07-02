@@ -140,7 +140,7 @@ import java.util.Arrays;
             photo3.setLikes(1);
             photo3.setDislikes(2);
             photo3.setUser("FFFFFFF");
-            photo3.setUrl("https://s-media-cache-ak0.pinimg.com/736x/00/ec/ff/00ecff1aed4858fb5eae5b2573d347e9.jpg" +);
+            photo3.setUrl("https://s-media-cache-ak0.pinimg.com/736x/00/ec/ff/00ecff1aed4858fb5eae5b2573d347e9.jpg");
             photoListTest.add(photo3);
 
 
