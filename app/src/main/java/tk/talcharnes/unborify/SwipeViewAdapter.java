@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -28,8 +31,8 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         final Photo photo = getItem(position);
-        int amount_likes = photo.getLikes();
-        int amount_dislikes = photo.getDislikes();
+        long amount_likes = photo.getLikes();
+        long amount_dislikes = photo.getDislikes();
         String occastion_subtitle_string = photo.getOccasion_subtitle();
         String urlString = photo.getUrl();
 
@@ -42,8 +45,10 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
         }
         ImageView imageView = (ImageView) convertView.findViewById(R.id.userPhoto);
         if(urlString != null && !urlString.isEmpty()) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(urlString);
             Glide.with(getContext())
-                    .load(urlString)
+                    .using(new FirebaseImageLoader())
+                    .load(storageRef)
                     .into(imageView);
         }
 

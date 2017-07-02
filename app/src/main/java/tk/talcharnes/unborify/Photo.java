@@ -5,12 +5,19 @@ package tk.talcharnes.unborify;
  */
 
 public class Photo {
-    private int likes;
-    private int dislikes;
+    private long likes;
+    private long dislikes;
     private String url;
-    private int reports;
+    private long reports;
     private String user;
     private String occasion_subtitle;
+    public final static String OCCASION_SUBTITLE_KEY = "occasion_subtitle";
+    public final static String USER_KEY = "user";
+    public final static String REPORTS_KEY = "reports";
+    public static final String URL_KEY = "url";
+    public static final String DISLIKES_KEY = "dislikes";
+    public static final String LIKES_KEY = "likes";
+
 
 
     public String getUser() {
@@ -29,27 +36,27 @@ public class Photo {
         this.url = url;
     }
 
-    public int getLikes() {
+    public long getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    public void setLikes(long likes) {
         this.likes = likes;
     }
 
-    public int getDislikes() {
+    public long getDislikes() {
         return dislikes;
     }
 
-    public void setDislikes(int dislikes) {
+    public void setDislikes(long dislikes) {
         this.dislikes = dislikes;
     }
 
-    public int getReports() {
+    public long getReports() {
         return reports;
     }
 
-    public void setReports(int reports) {
+    public void setReports(long reports) {
         this.reports = reports;
     }
 

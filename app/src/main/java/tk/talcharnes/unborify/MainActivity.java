@@ -34,7 +34,6 @@ import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private StorageReference mStorageRef;
-    String photoName;
     int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private String mCurrentPhotoPath;
     Uri photoURI;
@@ -166,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
                         Photo photo = new Photo();
-                        photo.setUrl(downloadUrl.toString());
+                        photo.setUrl(imageFileNameNoJPG);
                         photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         photo.setLikes(0);
                         photo.setDislikes(9);
