@@ -10,6 +10,7 @@ public class Photo {
     private String url;
     private int reports;
     private String user;
+    private String occasion_subtitle;
 
 
     public String getUser() {
@@ -50,5 +51,13 @@ public class Photo {
 
     public void setReports(int reports) {
         this.reports = reports;
+    }
+
+    public String getOccasion_subtitle() {
+        return occasion_subtitle;
+    }
+
+    public void setOccasion_subtitle(String occasion_subtitle) {
+        this.occasion_subtitle = occasion_subtitle;
     }
 }
