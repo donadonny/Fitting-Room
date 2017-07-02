@@ -4,7 +4,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### To do:
  * Allow reporting of photos
- * Set up photo functionality
  * Have my account section with photos
  * Set up rating system
    *  Need to add code to ensure same photo isn't voted on twice by single user
@@ -27,10 +26,13 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Db structure
     * [user|photo urls]
     * [photo urls|likes|dislikes|reports|usernames]
+ * Set up photo functionality
+
 
 
 ### Known bugs/todo/ to fix:
  * Layout needs to be fixed /improved to look good
+ * Pulling info from firebase database bug returns null values
 
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
