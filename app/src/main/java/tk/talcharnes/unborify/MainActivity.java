@@ -170,16 +170,15 @@ public class MainActivity extends AppCompatActivity {
                         photo.setLikes(0);
                         photo.setDislikes(9);
                         photo.setReports(0);
-                        photo.setOccasion_subtitle("T-MONEY IS TESTING THIS APP");
+                        photo.setOccasion_subtitle("TESTING APP");
 
                         DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
                         photoReference.setValue(photo);
-//                        photoReference.push().setValue(photo);
 
                         DatabaseReference userPhotosDatabaseReference = database.getReference("users")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(imageFileNameNoJPG);
-                        userPhotosDatabaseReference.setValue(downloadUrl.toString());
+                        userPhotosDatabaseReference.setValue(imageFileNameNoJPG);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
