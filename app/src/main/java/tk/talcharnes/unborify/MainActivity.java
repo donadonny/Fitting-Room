@@ -1,20 +1,20 @@
 package tk.talcharnes.unborify;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,16 +24,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private StorageReference mStorageRef;
-    File photoFile;
-    private Uri photo=null;
+    String photoName;
     int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private String mCurrentPhotoPath;
+    Uri photoURI;
+    final static String GET_PHOTO_NAME_EXTRA_FROM_INTENT_KEY = "GET_PHOTO_NAME_EXTRA_FROM_INTENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,22 +81,67 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void takePic(View view) {
+    public void takePic(View view) throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Create the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = getFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+
+        }
+        if (photoFile != null) {
+            photoURI = FileProvider.getUriForFile(this,
+                    "com.example.android.fileprovider",
+                    photoFile);
+//            takePictureIntent.putExtra(GET_PHOTO_NAME_EXTRA_FROM_INTENT_KEY, photoFile.getName());
+            photoName = photoFile.getName();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//        }
+//
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+////            File file = getFile();
+//            photoFile = file;
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+    private File getFile() throws IOException {
+        askForPermission();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = FirebaseAuth.getInstance().getCurrentUser().getUid()+ "_AtTime_" + timeStamp;
+
+
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void askForPermission() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
 
                 // Should we show an explanation?
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (shouldShowRequestPermissionRationale(
-                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                         // Explain to the user why we need to read the contacts
                     }
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                 }
 
@@ -99,62 +149,42 @@ public class MainActivity extends AppCompatActivity {
                 // app-defined int constant that should be quite unique
             }
         }
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            File file = getFile();
-//            photoFile = file;
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
+
     }
-//    private File getFile(){
-//        File folder=new File("sdcard/camera_app");
-//
-//        if(!folder.exists()){
-//            folder.mkdir();
-//        }
-//        File image_file=new File(folder,"cam_image.jpg");
-//        return image_file;
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, "Title", null);
+            Toast.makeText(getApplicationContext(), "Uploading photo", Toast.LENGTH_SHORT).show();
+            StorageReference riversRef = mStorageRef.child("images/" + photoName);
 
 
-//            photo = data.getData();
-//
-            StorageReference riversRef = mStorageRef.child("images/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "AtTimeInMillis" + System.currentTimeMillis());
-//            Uri fileUri = Uri.fromFile(new File("sdcard/camera_app/"));
-//
-            ImageView imageview = (ImageView) findViewById(R.id.testSubmit);
-            imageview.setImageBitmap(photo);
+            if(mCurrentPhotoPath != null) {
+                UploadTask uploadTask =
+                        riversRef.putFile(photoURI);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Toast.makeText(getApplicationContext(), "Upload success!", Toast.LENGTH_SHORT).show();
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                                Toast.makeText(getApplicationContext(), "Sending failed", Toast.LENGTH_SHORT).show();
 
-
-            UploadTask uploadTask =
-            riversRef.putFile(Uri.parse(path));
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // Get a URL to the uploaded content
-                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            Toast.makeText(getApplicationContext(),"Sending failed", Toast.LENGTH_SHORT).show();
-
-                            // ...
-                        }
-                    });
+                                // ...
+                            }
+                        });
+            }
+            else{
+                Log.d(LOG_TAG, "mCurrentPhotoPath was null");
+            }
 
         }
     }
