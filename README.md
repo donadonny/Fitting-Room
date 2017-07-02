@@ -3,10 +3,6 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- * Set up Firebase database
-   * Db structure will be:
-   [user|photo url list]
-   [photo url|likes|dislikes]
  * Allow reporting of photos
  * Set up photo functionality
  * Have my account section with photos
@@ -24,6 +20,10 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Choose Material Design Color Scheme
  * Set up Firebase ads
  * Have photo upload to Firebase storage
+ * Set up Firebase database
+   * Db structure
+   [user|photo urls]
+   [photo urls|likes|dislikes|reports|usernames]
 
 
 ### Known bugs/todo/ to fix:
