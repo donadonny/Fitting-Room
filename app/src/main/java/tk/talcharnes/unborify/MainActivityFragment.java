@@ -1,26 +1,24 @@
     package tk.talcharnes.unborify;
 
-    import android.content.Intent;
     import android.os.Bundle;
-    import android.provider.MediaStore;
-    import android.support.annotation.NonNull;
-    import android.support.design.widget.FloatingActionButton;
-    import android.support.v4.app.Fragment;
-    import android.util.Log;
-    import android.view.LayoutInflater;
-    import android.view.View;
-    import android.view.ViewGroup;
-    import android.widget.ArrayAdapter;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-    import com.firebase.ui.auth.AuthUI;
-    import com.google.android.gms.ads.AdRequest;
-    import com.google.android.gms.ads.AdView;
-    import com.google.firebase.auth.FirebaseAuth;
-    import com.google.firebase.auth.FirebaseUser;
-    import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
-    import java.util.ArrayList;
-    import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
     /**
      * A placeholder fragment containing a simple view.
@@ -29,7 +27,7 @@
         FloatingActionButton fab;
         SwipeFlingAdapterView swipeFlingAdapterView;
         ArrayList<String> al;
-        ArrayAdapter<String> arrayAdapter;
+        SwipeViewAdapter swipeViewAdapter;
         private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
         private AdView mAdView;
         private AdRequest mAdRequest;
@@ -83,15 +81,39 @@
 
             swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
             // add entertaining things to arraylist using al.add()
-            al = new ArrayList<String>();
-            al.add("1");
-            al.add("2");
+
             //choose your favorite adapter
-            arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.swipe_layout, R.id.helloText, al);
+            final List<Photo> photoListTest = new ArrayList<Photo>();
+            Photo photo = new Photo();
+            photo.setOccasion_subtitle("TESTING NOW");
+            photo.setUrl("blah");
+            photo.setLikes(1);
+            photo.setDislikes(2);
+            photo.setReports(1);
+            photo.setUser("DSLKDJFLDSJDKSL");
+            photoListTest.add(photo);
+            Photo photo2 = new Photo();
+            photo2.setOccasion_subtitle("TESTING THIS NOW");
+            photo2.setUrl("blah");
+            photo2.setLikes(2);
+            photo2.setDislikes(4);
+            photo2.setReports(3);
+            photo2.setUser("AAAAAAAA");
+            photoListTest.add(photo2);
+            Photo photo3 = new Photo();
+            photo3.setOccasion_subtitle("WHATWHAT?");
+            photo3.setLikes(1);
+            photo3.setDislikes(2);
+            photo3.setUser("FFFFFFF");
+            photo3.setUrl("NO");
+            photoListTest.add(photo3);
+
+
+            swipeViewAdapter = new SwipeViewAdapter(getContext(), photoListTest);
 
 
             //set the listener and the adapter
-            swipeFlingAdapterView.setAdapter(arrayAdapter);
+            swipeFlingAdapterView.setAdapter(swipeViewAdapter);
 
 
             swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
@@ -99,8 +121,8 @@
                 public void removeFirstObjectInAdapter() {
                     // this is the simplest way to delete an object from the Adapter (/AdapterView)
                     Log.d("LIST", "removed object!");
-                    al.remove(0);
-                    arrayAdapter.notifyDataSetChanged();
+                    photoListTest.remove(0);
+                    swipeViewAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -119,9 +141,9 @@
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    al.add("item number " + i);
-                    i++;
-                    arrayAdapter.notifyDataSetChanged();
+//                    al.add("item number " + i);
+//                    i++;
+//                    swipeViewAdapter.notifyDataSetChanged();
                     Log.d("LIST", "notified");
                 }
 
@@ -147,17 +169,7 @@
             mAdRequest = new AdRequest.Builder().build();
             mAdView.loadAd(mAdRequest);
 
-            fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-//            fab.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent shareIntent = new Intent();
-//                    shareIntent.setAction(Intent.ACTION_SEND);
-//                    shareIntent.putExtra(Intent.EXTRA_TEXT, "TEST");
-//                    shareIntent.setType("text/plain");
-//                    startActivity(shareIntent);
-//                }
-//            });
+
 
             return rootView;
         }
@@ -176,10 +188,4 @@
             }
         }
 
-        private void dispatchTakePictureIntent() {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
     }
