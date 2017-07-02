@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                         photo.setUrl(downloadUrl.toString());
                         photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         photo.setLikes(0);
-                        photo.setDislikes(0);
+                        photo.setDislikes(9);
                         photo.setReports(0);
                         photo.setOccasion_subtitle("T-MONEY IS TESTING THIS APP");
 
