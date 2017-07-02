@@ -8,6 +8,9 @@ public class Photo {
     private int likes;
     private int dislikes;
     private String url;
+    private int reports;
+    private String user;
+
 
     public String getUser() {
         return user;
@@ -16,8 +19,6 @@ public class Photo {
     public void setUser(String user) {
         this.user = user;
     }
-
-    private String user;
 
     public String getUrl() {
         return url;
@@ -43,4 +44,11 @@ public class Photo {
         this.dislikes = dislikes;
     }
 
+    public int getReports() {
+        return reports;
+    }
+
+    public void setReports(int reports) {
+        this.reports = reports;
+    }
 }
