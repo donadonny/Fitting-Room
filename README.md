@@ -9,7 +9,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    [photo url|likes|dislikes]
  * Allow reporting of photos
  * Set up photo functionality
- * Have photo upload to Firebase storage
  * Have my account section with photos
  * Set up rating system
  * Come up with new clever name
@@ -24,6 +23,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up sign in and sign out
  * Choose Material Design Color Scheme
  * Set up Firebase ads
+ * Have photo upload to Firebase storage
 
 
 ### Known bugs/todo/ to fix:
