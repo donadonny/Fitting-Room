@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private String mCurrentPhotoPath;
     Uri photoURI;
     FirebaseDatabase database;
-    private String imageFileNameNoJPG;
+    String imageFileNameNoJPG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             photoURI = FileProvider.getUriForFile(this,
                     "com.example.android.fileprovider",
                     photoFile);
-            photoName = photoFile.getName();
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             Toast.makeText(getApplicationContext(), "Uploading photo", Toast.LENGTH_SHORT).show();
-            StorageReference riversRef = mStorageRef.child("images/" + photoName);
+            StorageReference riversRef = mStorageRef.child("images/" + imageFileNameNoJPG);
 
 
             if(mCurrentPhotoPath != null) {
@@ -172,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                         photo.setLikes(0);
                         photo.setDislikes(0);
                         photo.setReports(0);
+                        photo.setOccasion_subtitle("T-MONEY IS TESTING THIS APP");
 
                         DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
                         photoReference.setValue(photo);
