@@ -1,3 +1,7 @@
+<FrameLayout
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:autofit="http://schemas.android.com/apk/res-auto"
@@ -10,8 +14,9 @@
         android:id="@+id/helloText"/>
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/userPhoto"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/userFashionStylePhoto"
         android:src="@drawable/smiley"
         android:scaleType="centerInside"
         />
@@ -54,9 +59,15 @@
         android:layout_alignParentRight="true"/>
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
         android:id="@+id/occasion_subtitle"
+        android:layout_below="@id/userFashionStylePhoto"
+        android:text="TEST"
         android:textSize="16sp"/>
 
 
 </RelativeLayout>
+
+
+</FrameLayout>

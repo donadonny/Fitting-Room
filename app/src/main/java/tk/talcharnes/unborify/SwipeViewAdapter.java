@@ -43,7 +43,7 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.swipe_layout, parent, false);
         }
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.userPhoto);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.userFashionStylePhoto);
         if(urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(urlString);
             Glide.with(getContext())
