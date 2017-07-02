@@ -14,11 +14,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
     /**
      * A placeholder fragment containing a simple view.
@@ -26,11 +30,11 @@ import java.util.List;
     public class MainActivityFragment extends Fragment {
         FloatingActionButton fab;
         SwipeFlingAdapterView swipeFlingAdapterView;
-        ArrayList<String> al;
         SwipeViewAdapter swipeViewAdapter;
         private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
         private AdView mAdView;
         private AdRequest mAdRequest;
+        ArrayList<Photo> photoListTest;
         private int i = 0;
         static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -80,13 +84,44 @@ import java.util.List;
             // The following code is a test
 
             swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
-            // add entertaining things to arraylist using al.add()
+            // add entertaining things to arraylist using photoList.add()
+
+
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+            // Read from the database
+            photoReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    Photo photo = dataSnapshot.getValue(Photo.class);
+
+
+
+                    photoListTest.add(photo);
+                    swipeViewAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(LOG_TAG, "Failed to read value.", error.toException());
+                }
+            });
+
+
+
+
+
+
+
 
             //choose your favorite adapter
-            final List<Photo> photoListTest = new ArrayList<Photo>();
+            photoListTest = new ArrayList<Photo>();
             Photo photo = new Photo();
             photo.setOccasion_subtitle("TESTING NOW");
-            photo.setUrl("blah");
+            photo.setUrl("https://s-media-cache-ak0.pinimg.com/736x/a5/98/1f/a5981fcc09689034ec9dc9201c9787f5--taco-taco-work-memes.jpg");
             photo.setLikes(1);
             photo.setDislikes(2);
             photo.setReports(1);
@@ -94,7 +129,7 @@ import java.util.List;
             photoListTest.add(photo);
             Photo photo2 = new Photo();
             photo2.setOccasion_subtitle("TESTING THIS NOW");
-            photo2.setUrl("blah");
+            photo2.setUrl("https://thetab.com/blogs.dir/91/files/2017/01/maxresdefault-1.jpg");
             photo2.setLikes(2);
             photo2.setDislikes(4);
             photo2.setReports(3);
@@ -105,7 +140,7 @@ import java.util.List;
             photo3.setLikes(1);
             photo3.setDislikes(2);
             photo3.setUser("FFFFFFF");
-            photo3.setUrl("NO");
+            photo3.setUrl("https://s-media-cache-ak0.pinimg.com/736x/00/ec/ff/00ecff1aed4858fb5eae5b2573d347e9.jpg" +);
             photoListTest.add(photo3);
 
 
