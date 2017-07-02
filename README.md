@@ -33,8 +33,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
  * Layout needs to be fixed /improved to look good
- * Pulling info from firebase database bug returns null values
-
+ * Photos load slowly and not always
+ 
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 * Allow following other users
