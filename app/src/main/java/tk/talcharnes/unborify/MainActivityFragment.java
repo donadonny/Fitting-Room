@@ -23,6 +23,8 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
     /**
      * A placeholder fragment containing a simple view.
@@ -95,11 +97,30 @@ import java.util.Arrays;
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    Photo photo = dataSnapshot.getValue(Photo.class);
+//                    Photo photo = new Photo();
+//                    while (dataSnapshot.getChildren().iterator().hasNext()){
+//                        photo = dataSnapshot.getValue(Photo.class);
+//
+//                    }
 
+                    Map<String, Object> objectMap = (HashMap<String, Object>)
+                            dataSnapshot.getValue();
+                    if (objectMap != null) {
+                        for (Object obj : objectMap.values()) {
+                            if (obj instanceof Map) {
+                                Map<String, Object> mapObj = (Map<String, Object>) obj;
+                                Photo photo = new Photo();
+                                photo.setOccasion_subtitle((String) mapObj.get(Photo.OCCASION_SUBTITLE_KEY));
+                                photo.setUrl((String) mapObj.get(Photo.URL_KEY));
+                                photo.setUser((String) mapObj.get(Photo.USER_KEY));
+                                photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
+                                photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
+                                photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
+                                photoListTest.add(photo);
+                            }
+                        }
+                    }
 
-
-                    photoListTest.add(photo);
                     swipeViewAdapter.notifyDataSetChanged();
                 }
 
@@ -119,30 +140,30 @@ import java.util.Arrays;
 
             //choose your favorite adapter
             photoListTest = new ArrayList<Photo>();
-            Photo photo = new Photo();
-            photo.setOccasion_subtitle("TESTING NOW");
-            photo.setUrl("https://s-media-cache-ak0.pinimg.com/736x/a5/98/1f/a5981fcc09689034ec9dc9201c9787f5--taco-taco-work-memes.jpg");
-            photo.setLikes(1);
-            photo.setDislikes(2);
-            photo.setReports(1);
-            photo.setUser("DSLKDJFLDSJDKSL");
-            photoListTest.add(photo);
-            Photo photo2 = new Photo();
-            photo2.setOccasion_subtitle("TESTING THIS NOW");
-            photo2.setUrl("https://thetab.com/blogs.dir/91/files/2017/01/maxresdefault-1.jpg");
-            photo2.setLikes(2);
-            photo2.setDislikes(4);
-            photo2.setReports(3);
-            photo2.setUser("AAAAAAAA");
-            photoListTest.add(photo2);
-            Photo photo3 = new Photo();
-            photo3.setOccasion_subtitle("WHATWHAT?");
-            photo3.setLikes(1);
-            photo3.setDislikes(2);
-            photo3.setUser("FFFFFFF");
-            photo3.setUrl("https://s-media-cache-ak0.pinimg.com/736x/00/ec/ff/00ecff1aed4858fb5eae5b2573d347e9.jpg");
-            photoListTest.add(photo3);
-
+//            Photo photo = new Photo();
+//            photo.setOccasion_subtitle("TESTING NOW");
+//            photo.setUrl("https://s-media-cache-ak0.pinimg.com/736x/a5/98/1f/a5981fcc09689034ec9dc9201c9787f5--taco-taco-work-memes");
+//            photo.setLikes(1);
+//            photo.setDislikes(2);
+//            photo.setReports(1);
+//            photo.setUser("DSLKDJFLDSJDKSL");
+//            photoListTest.add(photo);
+//            Photo photo2 = new Photo();
+//            photo2.setOccasion_subtitle("TESTING THIS NOW");
+//            photo2.setUrl("https://thetab.com/blogs.dir/91/files/2017/01/maxresdefault-1");
+//            photo2.setLikes(2);
+//            photo2.setDislikes(4);
+//            photo2.setReports(3);
+//            photo2.setUser("AAAAAAAA");
+//            photoListTest.add(photo2);
+//            Photo photo3 = new Photo();
+//            photo3.setOccasion_subtitle("WHATWHAT?");
+//            photo3.setLikes(1);
+//            photo3.setDislikes(2);
+//            photo3.setUser("FFFFFFF");
+//            photo3.setUrl("https://s-media-cache-ak0.pinimg.com/736x/00/ec/ff/00ecff1aed4858fb5eae5b2573d347e9");
+//            photoListTest.add(photo3);
+//
 
             swipeViewAdapter = new SwipeViewAdapter(getContext(), photoListTest);
 
