@@ -7,6 +7,9 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up photo functionality
  * Have my account section with photos
  * Set up rating system
+   *  Need to add code to ensure same photo isn't voted on twice by single user
+     * Either have a "last viewed" or "photos viewed" section in db, or have a timestamp which will show until what point user has seen photos. This will be useful if starting from oldest to newest.
+     * Another option is to have from newest to older, but will need to find another way to ensure previously rated photos will not show up.
  * Come up with new clever name
  * Put app on Google play
  * Create tests
@@ -22,13 +25,12 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Have photo upload to Firebase storage
  * Set up Firebase database
    * Db structure
-   [user|photo urls]
-   [photo urls|likes|dislikes|reports|usernames]
+    * [user|photo urls]
+    * [photo urls|likes|dislikes|reports|usernames]
 
 
 ### Known bugs/todo/ to fix:
  * Layout needs to be fixed /improved to look good
- * Signed in users must be connected to database
 
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
