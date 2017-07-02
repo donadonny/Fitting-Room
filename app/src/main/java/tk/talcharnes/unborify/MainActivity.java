@@ -20,14 +20,14 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private String mCurrentPhotoPath;
     Uri photoURI;
-    final static String GET_PHOTO_NAME_EXTRA_FROM_INTENT_KEY = "GET_PHOTO_NAME_EXTRA_FROM_INTENT";
+    FirebaseDatabase database;
+    private String imageFileNameNoJPG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
 
 
     }
@@ -96,28 +98,21 @@ public class MainActivity extends AppCompatActivity {
             photoURI = FileProvider.getUriForFile(this,
                     "com.example.android.fileprovider",
                     photoFile);
-//            takePictureIntent.putExtra(GET_PHOTO_NAME_EXTRA_FROM_INTENT_KEY, photoFile.getName());
             photoName = photoFile.getName();
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//        }
-//
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-////            File file = getFile();
-//            photoFile = file;
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
         }
     }
     private File getFile() throws IOException {
         askForPermission();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = FirebaseAuth.getInstance().getCurrentUser().getUid()+ "_AtTime_" + timeStamp;
+        Long timeStamp = System.currentTimeMillis();
+        imageFileNameNoJPG = FirebaseAuth.getInstance().getCurrentUser().getUid()+ "_AtTimeInMillis_" + timeStamp;
 
 
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
+                imageFileNameNoJPG,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
@@ -170,6 +165,22 @@ public class MainActivity extends AppCompatActivity {
                         // Get a URL to the uploaded content
                         Toast.makeText(getApplicationContext(), "Upload success!", Toast.LENGTH_SHORT).show();
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                        Photo photo = new Photo();
+                        photo.setUrl(downloadUrl.toString());
+                        photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        photo.setLikes(0);
+                        photo.setDislikes(0);
+                        photo.setReports(0);
+
+                        DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
+                        photoReference.setValue(photo);
+//                        photoReference.push().setValue(photo);
+
+                        DatabaseReference userPhotosDatabaseReference = database.getReference("users")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(imageFileNameNoJPG);
+                        userPhotosDatabaseReference.setValue(downloadUrl.toString());
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
