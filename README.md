@@ -34,7 +34,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 ### Known bugs/todo/ to fix:
  * Layout needs to be fixed /improved to look good
  * Photos load slowly and not always
- 
+ * User can vote twice on same photo
+ * Photo pops up after voting on it due to app checking for data changes
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 * Allow following other users
