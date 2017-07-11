@@ -90,7 +90,7 @@ import java.util.Map;
 
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+            final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
             // Read from the database
             photoReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -156,11 +156,18 @@ import java.util.Map;
                     //Do something on the left!
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
+                    Photo photo = photoListTest.get(0);
+                    photo.setDislikes(photo.getDislikes() + 1);
+                    photoReference.child(photo.getUrl()).setValue(photo);
+
                     Log.d(LOG_TAG, "Left card Exit");
                 }
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
+                    Photo photo = photoListTest.get(0);
+                    photo.setLikes(photo.getLikes() + 1);
+                    photoReference.child(photo.getUrl()).setValue(photo);
                     Log.d(LOG_TAG, "Right card Exit");
                 }
 
