@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                         photo.setUrl(imageFileNameNoJPG);
                         photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         photo.setLikes(0);
-                        photo.setDislikes(9);
+                        photo.setDislikes(0);
                         photo.setReports(0);
                         photo.setOccasion_subtitle("TESTING APP");
 

@@ -12,5 +12,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="sign_out">Sign Out</string>
     <string name="my_photos">My Photos</string>
+    <string name="title_activity_photo_upload">PhotoUploadActivity</string>
+    <string name="user_photo">User Photo</string>
 
 </resources>
