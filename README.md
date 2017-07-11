@@ -13,9 +13,10 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Improve layout
- * Handle screen rotations savedinstancestate
+ * Handle screen rotations savedinstancestate on ALL activities
  * Create Terms of Service
- * Create layout for new photo creation
+  * Make a progress bar for user to see photo upload progress
+
  
  
 ### Done
@@ -29,6 +30,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
     * [user|photo urls]
     * [photo urls|likes|dislikes|reports|usernames]
  * Set up photo functionality
+   * Create layout for new photo creation
+
 
 
 
