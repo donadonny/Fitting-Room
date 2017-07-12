@@ -15,7 +15,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Handle screen rotations savedinstancestate on ALL activities
  * Create Terms of Service
  * Localize
- * Make a progress bar for user to see photo upload progress
   
 ### Done
  * Set up swipe card layout
@@ -30,6 +29,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up photo functionality
  * Create layout for new photo creation
  * Allow reporting of photos
+ * Make a progress bar for user to see photo upload progress
 
 
 
