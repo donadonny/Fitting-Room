@@ -15,5 +15,6 @@
     <string name="title_activity_photo_upload">PhotoUploadActivity</string>
     <string name="user_photo">User Photo</string>
     <string name="submit">Submit</string>
+    <string name="title_activity_my_photos">MyPhotos</string>
 
 </resources>

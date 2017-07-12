@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,11 +28,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import static android.app.Activity.RESULT_OK;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
@@ -52,6 +56,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     Button submitButton;
     EditText photo_description_edit_text;
     String photoDescription;
+    TextView uploadPercent;
 
     public PhotoUploadActivityFragment() {
     }
@@ -63,6 +68,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
+        uploadPercent = (TextView) rootView.findViewById(R.id.uploadPercent);
 
 
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
@@ -171,17 +177,33 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
     private void uploadPhoto(){
         submitButton.setVisibility(View.GONE);
+        uploadPercent.setVisibility(View.VISIBLE);
+
         StorageReference riversRef = mStorageRef.child("images/" + imageFileNameNoJPG);
         if(mCurrentPhotoPath != null) {
-            UploadTask uploadTask =
+            final UploadTask uploadTask =
                     riversRef.putFile(photoURI);
+
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    DecimalFormat df = new DecimalFormat("#.#");
+                    df.setRoundingMode(RoundingMode.CEILING);
+                    String progressPercent = df.format(100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+
+                    uploadPercent.setText(progressPercent + "% completed");
+
+                }
+            });
+
+
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
                     Toast.makeText(getContext(), "Upload success!", Toast.LENGTH_SHORT).show();
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
                     Photo photo = new Photo();
                     photo.setUrl(imageFileNameNoJPG);
                     photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -206,6 +228,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                             // Handle unsuccessful uploads
                             Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
                             submitButton.setVisibility(View.VISIBLE);
+                            uploadPercent.setVisibility(View.GONE);
                             // ...
                         }
                     });

@@ -25,6 +25,14 @@
         android:text="@string/submit"
         android:layout_gravity="center_horizontal"
         android:id="@+id/submitButton"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Uploading"
+        android:layout_gravity="center"
+        android:id="@+id/uploadPercent"
+        android:textSize="16sp"
+        android:visibility="gone"/>
 
 
 </LinearLayout>
