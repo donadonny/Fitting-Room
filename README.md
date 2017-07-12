@@ -39,7 +39,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * User can vote twice on same photo
  * Photo pops up after voting on it due to app checking for data changes
  * Don't allow users to vote on own photos
- * Remove background images and data as it looks bad
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
