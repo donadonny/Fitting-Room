@@ -28,7 +28,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
     * [user|photo urls]
     * [photo urls|likes|dislikes|reports|usernames]
  * Set up photo functionality
-   * Create layout for new photo creation
+ * Create layout for new photo creation
+   
 
 
 ### Known bugs/todo/ to fix:
@@ -49,7 +50,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Add search user
    * Add profile photos
  * Add option to skip or indifferent view of style
- * Add occasion to the photo so that users know what occasion they are judging the photo for (date, every day/no occasion, beach, etc)
  * Have local database so that "my photos" section will load faster
 
 
