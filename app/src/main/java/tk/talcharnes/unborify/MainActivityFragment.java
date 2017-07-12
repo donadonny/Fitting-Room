@@ -127,11 +127,6 @@ import java.util.Map;
 
 
 
-
-
-
-
-
             //choose your favorite adapter
             photoListTest = new ArrayList<Photo>();
 
@@ -200,7 +195,6 @@ import java.util.Map;
             mAdView = (AdView) rootView.findViewById(R.id.adView);
             mAdRequest = new AdRequest.Builder().build();
             mAdView.loadAd(mAdRequest);
-
 
 
             return rootView;
