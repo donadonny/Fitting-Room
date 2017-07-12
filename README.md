@@ -3,7 +3,6 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- * Allow reporting of photos
  * Have my account section with photos
  * Set up rating system
    *  Need to add code to ensure same photo isn't voted on twice by single user
@@ -29,7 +28,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
     * [photo urls|likes|dislikes|reports|usernames]
  * Set up photo functionality
  * Create layout for new photo creation
-   
+ * Allow reporting of photos
+
 
 
 ### Known bugs/todo/ to fix:
