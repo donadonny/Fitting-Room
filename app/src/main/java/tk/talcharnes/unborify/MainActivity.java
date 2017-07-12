@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import tk.talcharnes.unborify.my_photos.MyPhotos;
+
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.action_my_photos) {
             Toast.makeText(this, "opening photos", Toast.LENGTH_SHORT).show();
+            Intent myPhotosIntent = new Intent(this, MyPhotos.class);
+            startActivity(myPhotosIntent);
             return true;
         }
 
