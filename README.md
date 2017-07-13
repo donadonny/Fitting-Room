@@ -35,11 +35,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Layout needs to be fixed /improved to look good
  * Photos load slowly and not always
  * User can vote twice on same photo
- * Photo pops up after voting on it due to app checking for data changes
  * Don't allow users to vote on own photos
  * Change icon for taking photo to upload from smiley face
- * Votes for next photo in list for some reason. 
- * Crashes when runs out of photos.
  * Shows all photos in home screen when it should show all photos except user photos in home screen
  * Shows all photos in my photos screen when it should show only user photos in home screen
  
