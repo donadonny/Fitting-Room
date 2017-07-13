@@ -3,7 +3,6 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- * Have my account section with photos
  * Set up rating system
    *  Need to add code to ensure same photo isn't voted on twice by single user
      * Either have a "last viewed" or "photos viewed" section in db, or have a timestamp which will show until what point user has seen photos. This will be useful if starting from oldest to newest.
@@ -15,7 +14,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Handle screen rotations savedinstancestate on ALL activities
  * Create Terms of Service
  * Localize
-  
+ * Create new icon  
 ### Done
  * Set up swipe card layout
  * Set up sign in and sign out
@@ -30,6 +29,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create layout for new photo creation
  * Allow reporting of photos
  * Make a progress bar for user to see photo upload progress
+ * Have my account section with photos
+
 
 
 
@@ -39,6 +40,11 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * User can vote twice on same photo
  * Photo pops up after voting on it due to app checking for data changes
  * Don't allow users to vote on own photos
+ * Change icon for taking photo to upload from smiley face
+ * Votes for next photo in list for some reason. 
+ * Crashes when runs out of photos.
+ * Shows all photos in home screen when it should show all photos except user photos in home screen
+ * Shows all photos in my photos screen when it should show only user photos in home screen
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
