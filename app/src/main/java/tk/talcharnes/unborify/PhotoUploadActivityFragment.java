@@ -120,7 +120,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private File getFile() throws IOException {
         askForPermission();
         Long timeStamp = System.currentTimeMillis();
-        imageFileNameNoJPG = FirebaseAuth.getInstance().getCurrentUser().getUid()+ "_AtTimeInMillis_" + timeStamp;
+        imageFileNameNoJPG = timeStamp + "_byUser_" + FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
