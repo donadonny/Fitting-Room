@@ -36,7 +36,7 @@ import java.util.Map;
         private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
         private AdView mAdView;
         private AdRequest mAdRequest;
-        ArrayList<Photo> photoListTest;
+        ArrayList<Photo> photoList;
         private int i = 0;
         static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -110,7 +110,7 @@ import java.util.Map;
                                 photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
                                 photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
                                 photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
-                                photoListTest.add(photo);
+                                photoList.add(photo);
                             }
                         }
                     }
@@ -128,9 +128,9 @@ import java.util.Map;
 
 
             //choose your favorite adapter
-            photoListTest = new ArrayList<Photo>();
+            photoList = new ArrayList<Photo>();
 
-            swipeViewAdapter = new SwipeViewAdapter(getContext(), photoListTest);
+            swipeViewAdapter = new SwipeViewAdapter(getContext(), photoList);
 
 
             //set the listener and the adapter
@@ -142,7 +142,7 @@ import java.util.Map;
                 public void removeFirstObjectInAdapter() {
                     // this is the simplest way to delete an object from the Adapter (/AdapterView)
                     Log.d("LIST", "removed object!");
-                    photoListTest.remove(0);
+                    photoList.remove(0);
                     swipeViewAdapter.notifyDataSetChanged();
                 }
 
@@ -151,7 +151,7 @@ import java.util.Map;
                     //Do something on the left!
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
-                    Photo photo = photoListTest.get(0);
+                    Photo photo = photoList.get(0);
                     photo.setDislikes(photo.getDislikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
 
@@ -160,7 +160,7 @@ import java.util.Map;
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    Photo photo = photoListTest.get(0);
+                    Photo photo = photoList.get(0);
                     photo.setLikes(photo.getLikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
                     Log.d(LOG_TAG, "Right card Exit");
