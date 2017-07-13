@@ -8,6 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
 import tk.talcharnes.unborify.Photo;
@@ -64,10 +69,18 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         public void onBindViewHolder(ViewHolder holder, int position) {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
-            holder.likesCountView.setText(""+ mDataset.get(position).getLikes());
-            holder.dislikesCountView.setText(""+ mDataset.get(position).getDislikes());
-            holder.mImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.smiley));
-            holder.occastionTextView.setText(mDataset.get(position).getOccasion_subtitle());
+            Photo photo = mDataset.get(position);
+            holder.likesCountView.setText(""+ photo.getLikes());
+            holder.dislikesCountView.setText(""+ photo.getDislikes());
+            holder.occastionTextView.setText(photo.getOccasion_subtitle());
+            String urlString = photo.getUrl();
+            if(urlString != null && !urlString.isEmpty()) {
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(urlString);
+                Glide.with(mContext)
+                        .using(new FirebaseImageLoader())
+                        .load(storageRef)
+                        .into(holder.mImageView);
+            }
         }
 
         // Return the size of your dataset (invoked by the layout manager)
