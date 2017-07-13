@@ -17,7 +17,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Done
  * Set up swipe card layout
- * Set up sign in and sign out
+ * Set up sign in and sign out using Firebase AUTH and Firebase UI
  * Choose Material Design Color Scheme
  * Set up Firebase ads
  * Have photo upload to Firebase storage
