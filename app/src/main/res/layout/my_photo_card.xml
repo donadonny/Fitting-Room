@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content" android:layout_width="wrap_content">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        tools:src="@drawable/smiley"
+        android:id="@+id/card_image_view" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_image_view"
+        android:src="@drawable/ic_thumb_up_white_24dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:id="@+id/likes_cardview_icon"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_image_view"
+        android:layout_toRightOf="@id/likes_cardview_icon"
+        android:id="@+id/likes"
+
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        tools:text="1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_image_view"
+        android:layout_alignParentRight="true"
+        android:id="@+id/dislikes"
+        android:textStyle="bold"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        tools:text="6"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_image_view"
+        android:layout_toLeftOf="@id/dislikes"
+        android:src="@drawable/ic_thumb_down_white_24dp"
+        android:id="@+id/dislikes_cardview_icon"/>
+
+</RelativeLayout>
+</android.support.v7.widget.CardView>
