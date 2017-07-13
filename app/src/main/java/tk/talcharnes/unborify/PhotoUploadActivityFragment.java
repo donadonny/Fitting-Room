@@ -178,6 +178,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private void uploadPhoto(){
         submitButton.setVisibility(View.GONE);
         uploadPercent.setVisibility(View.VISIBLE);
+        photo_description_edit_text.setVisibility(View.GONE);
 
         StorageReference riversRef = mStorageRef.child("images/" + imageFileNameNoJPG);
         if(mCurrentPhotoPath != null) {
@@ -229,7 +230,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                             Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
                             submitButton.setVisibility(View.VISIBLE);
                             uploadPercent.setVisibility(View.GONE);
-                            // ...
+                            photo_description_edit_text.setVisibility(View.VISIBLE);
                         }
                     });
         }
