@@ -29,12 +29,14 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
              ImageView mImageView;
              TextView likesCountView;
              TextView dislikesCountView;
+            TextView occastionTextView;
 
             public ViewHolder(View v) {
                 super(v);
                 mImageView = v.findViewById(R.id.card_image_view);
                 likesCountView = v.findViewById(R.id.likes);
                 dislikesCountView = v.findViewById(R.id.dislikes);
+                occastionTextView = v.findViewById(R.id.occasion_cardview_textview);
             }
         }
 
@@ -63,8 +65,9 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             holder.likesCountView.setText(""+ mDataset.get(position).getLikes());
-            holder.dislikesCountView.setText(""+ mDataset.get(position).getLikes());
+            holder.dislikesCountView.setText(""+ mDataset.get(position).getDislikes());
             holder.mImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.smiley));
+            holder.occastionTextView.setText(mDataset.get(position).getOccasion_subtitle());
         }
 
         // Return the size of your dataset (invoked by the layout manager)
