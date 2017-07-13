@@ -91,8 +91,9 @@ import java.util.Map;
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+
             // Read from the database
-            photoReference.addValueEventListener(new ValueEventListener() {
+            photoReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -151,7 +152,7 @@ import java.util.Map;
                     //Do something on the left!
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
-                    Photo photo = photoList.get(0);
+                    Photo photo = (Photo) dataObject;
                     photo.setDislikes(photo.getDislikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
 
@@ -160,7 +161,7 @@ import java.util.Map;
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    Photo photo = photoList.get(0);
+                    Photo photo = (Photo) dataObject;
                     photo.setLikes(photo.getLikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
                     Log.d(LOG_TAG, "Right card Exit");
