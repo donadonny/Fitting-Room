@@ -32,6 +32,7 @@
         android:textSize="20sp"
         tools:text="1"/>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +52,19 @@
         android:layout_toLeftOf="@id/dislikes"
         android:src="@drawable/ic_thumb_down_white_24dp"
         android:id="@+id/dislikes_cardview_icon"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/occasion_cardview_textview"
+        android:layout_toRightOf="@id/likes"
+        android:textColor="@android:color/white"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        tools:text="Occasion"
+        android:layout_below="@id/card_image_view"
+        android:layout_toLeftOf="@id/dislikes_cardview_icon"/>
 
 </RelativeLayout>
 </android.support.v7.widget.CardView>
