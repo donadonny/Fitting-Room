@@ -12,13 +12,15 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="top"
-        android:src="@drawable/smiley"
+        android:src="@drawable/ic_add_a_photo_black_48dp"
         android:id="@+id/uploadedPhoto"
         android:contentDescription="@string/user_photo"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/photo_description_edit_text"/>
+        android:hint="@string/occasion_for_outfit"
+        android:id="@+id/photo_description_edit_text"
+        android:maxLength="140"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,11 +30,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Uploading"
+        android:text="@string/uploading"
         android:layout_gravity="center"
         android:id="@+id/uploadPercent"
         android:textSize="16sp"
         android:visibility="gone"/>
-
 
 </LinearLayout>
