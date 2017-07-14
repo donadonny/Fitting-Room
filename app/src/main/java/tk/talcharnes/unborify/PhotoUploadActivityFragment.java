@@ -242,12 +242,15 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
     private boolean checkEditTextNotNull(){
          photoDescription =  photo_description_edit_text.getText().toString();
-        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("")){
-            return true;
+        boolean editTextVerifiedForUpload;
+        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescription.length() <= 140){
+            editTextVerifiedForUpload = true;
         }
-        else {
+
+        else{
             photo_description_edit_text.setError("Occasion can not be empty");
-            return false;
+            editTextVerifiedForUpload = false;
         }
+            return  editTextVerifiedForUpload;
     }
 }
