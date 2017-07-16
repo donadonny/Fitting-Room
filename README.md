@@ -4,8 +4,10 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### To do:
  *  Need to add code to ensure same photo isn't voted on twice by single user
+   * If it is, do not allow voting to occur
  * Either have a "last viewed" or "photos viewed" section in db, or have a timestamp which will show until what point user has seen photos. This will be useful if starting from oldest to newest.
  * Another option is to have from newest to older, but will need to find another way to ensure previously rated photos will not show up.
+   * Better yet show everything, just don't allow user's vote on own photo to count. Show 15 photos at a time or whatever is left in the array of total photos (whichever is least). 
  * Come up with new clever name
  * Put app on Google play
  * Create tests
