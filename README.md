@@ -46,6 +46,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
  * Get rid of smiley face temp photo
+ * Handle activity rotation for MyPhoto activity and MainActivity
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
@@ -54,6 +55,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * The app will push photos from the followed users to the front of the list of photos to rate.
      * Dedicated section to followed users (like with youtube subscriptions)
    * Add number of followers to user part of database
+   * Add animations
    * Add search user
    * Add profile photos
  * Add option to skip or indifferent view of style
