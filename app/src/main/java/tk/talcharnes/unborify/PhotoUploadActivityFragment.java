@@ -193,6 +193,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     String progressPercent = df.format(100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
 
                     uploadPercent.setText(progressPercent + "% completed");
+                    Log.d(LOG_TAG, progressPercent + "% completed");
 
                 }
             });
@@ -202,7 +203,9 @@ public class PhotoUploadActivityFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
-                    Toast.makeText(getContext(), "Upload success!", Toast.LENGTH_SHORT).show();
+                    if(getContext() != null) {
+                        Toast.makeText(getContext(), "Upload success!", Toast.LENGTH_SHORT).show();
+                    }
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Photo photo = new Photo();
                     photo.setUrl(imageFileNameNoJPG);
@@ -219,14 +222,18 @@ public class PhotoUploadActivityFragment extends Fragment {
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .child(imageFileNameNoJPG);
                     userPhotosDatabaseReference.setValue(imageFileNameNoJPG);
-                    NavUtils.navigateUpFromSameTask(getActivity());
+                    if(getContext() != null) {
+                        NavUtils.navigateUpFromSameTask(getActivity());
+                    }
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
                             // Handle unsuccessful uploads
-                            Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
+                            if(getContext() != null) {
+                                Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
+                            }
                             submitButton.setVisibility(View.VISIBLE);
                             uploadPercent.setVisibility(View.GONE);
                             photo_description_edit_text.setVisibility(View.VISIBLE);
@@ -236,7 +243,9 @@ public class PhotoUploadActivityFragment extends Fragment {
         }
         else{
             Log.d(LOG_TAG, "mCurrentPhotoPath was null");
-            Toast.makeText(getContext(), R.string.upload_failed_error_string, Toast.LENGTH_SHORT).show();
+            if(getContext() != null) {
+                Toast.makeText(getContext(), R.string.upload_failed_error_string, Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
