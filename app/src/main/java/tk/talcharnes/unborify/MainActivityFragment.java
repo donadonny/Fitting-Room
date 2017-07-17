@@ -111,6 +111,7 @@ import java.util.Map;
                                 photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
                                 photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
                                 photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
+
                                 photoList.add(photo);
                             }
                         }
@@ -153,6 +154,8 @@ import java.util.Map;
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
 //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
+                    // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
+                    // TODO: 7/17/2017 Else, update vote accordingly.
                     Photo photo = (Photo) dataObject;
                     photo.setDislikes(photo.getDislikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
@@ -164,6 +167,8 @@ import java.util.Map;
                 public void onRightCardExit(Object dataObject) {
                     Photo photo = (Photo) dataObject;
                     //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
+                    // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
+                    // TODO: 7/17/2017 Else, update vote accordingly.
                     photo.setLikes(photo.getLikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
                     Log.d(LOG_TAG, "Right card Exit");
