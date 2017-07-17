@@ -44,6 +44,7 @@
             android:name=".PhotoUploadActivity"
             android:label="@string/title_activity_photo_upload"
             android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
