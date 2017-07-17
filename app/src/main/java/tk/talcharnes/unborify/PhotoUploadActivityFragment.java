@@ -72,16 +72,8 @@ public class PhotoUploadActivityFragment extends Fragment {
 
 
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
-        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    takePhoto();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        setImageOnClick();
+
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,10 +167,15 @@ public class PhotoUploadActivityFragment extends Fragment {
             userImageToUploadView.setImageBitmap(bitmap);
         }
     }
+
+
+
     private void uploadPhoto(){
         submitButton.setVisibility(View.GONE);
         uploadPercent.setVisibility(View.VISIBLE);
         photo_description_edit_text.setVisibility(View.GONE);
+        removeImageOnClick();
+
 
         StorageReference riversRef = mStorageRef.child("images/" + imageFileNameNoJPG);
         if(mCurrentPhotoPath != null) {
@@ -231,6 +228,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                             submitButton.setVisibility(View.VISIBLE);
                             uploadPercent.setVisibility(View.GONE);
                             photo_description_edit_text.setVisibility(View.VISIBLE);
+                            setImageOnClick();
                         }
                     });
         }
@@ -252,5 +250,20 @@ public class PhotoUploadActivityFragment extends Fragment {
             editTextVerifiedForUpload = false;
         }
             return  editTextVerifiedForUpload;
+    }
+    private void removeImageOnClick(){
+        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+    private void setImageOnClick(){
+        try {
+            takePhoto();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
