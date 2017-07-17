@@ -48,6 +48,7 @@ public class MyPhotosFragment extends Fragment {
 
         photoList = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        // TODO: 7/17/2017 Get reference to users (NOT PHOTOS), get list of photos, AND THEN find the photos from the photos section of the database to return to user 
         final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
         // Read from the database
         photoReference.addValueEventListener(new ValueEventListener() {
