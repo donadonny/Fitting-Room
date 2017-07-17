@@ -18,5 +18,6 @@
     <string name="title_activity_my_photos">MyPhotos</string>
     <string name="occasion_for_outfit">Occasion for outfit</string>
     <string name="uploading">Uploading</string>
+    <string name="upload_failed_error_string">Uh-Oh! Upload failed, please try again later!</string>
 
 </resources>

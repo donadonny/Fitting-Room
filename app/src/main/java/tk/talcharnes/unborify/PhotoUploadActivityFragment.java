@@ -234,7 +234,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         }
         else{
             Log.d(LOG_TAG, "mCurrentPhotoPath was null");
-            Toast.makeText(getContext(), "Uh-Oh! Upload failed, please try again later!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.upload_failed_error_string, Toast.LENGTH_SHORT).show();
         }
 
     }
