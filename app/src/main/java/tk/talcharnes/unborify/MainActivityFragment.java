@@ -152,6 +152,7 @@ import java.util.Map;
                     //Do something on the left!
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
+//                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                     Photo photo = (Photo) dataObject;
                     photo.setDislikes(photo.getDislikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
@@ -162,6 +163,7 @@ import java.util.Map;
                 @Override
                 public void onRightCardExit(Object dataObject) {
                     Photo photo = (Photo) dataObject;
+                    //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                     photo.setLikes(photo.getLikes() + 1);
                     photoReference.child(photo.getUrl()).setValue(photo);
                     Log.d(LOG_TAG, "Right card Exit");
@@ -169,9 +171,8 @@ import java.util.Map;
 
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                    // Ask for more data here
-                    //also add ads
-//                    then notify dataset changed if necessary
+                    // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less). Then notify dataset changed
+                    // TODO: 7/17/2017 add ads
                     Log.d("LIST", "notified");
                 }
 
