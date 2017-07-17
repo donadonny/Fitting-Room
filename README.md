@@ -45,6 +45,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Shows all photos in home screen when it should show all photos except user photos in home screen
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
+ * Get rid of smiley face temp photo
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
