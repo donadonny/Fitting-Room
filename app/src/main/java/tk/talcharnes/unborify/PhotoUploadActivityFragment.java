@@ -165,6 +165,8 @@ public class PhotoUploadActivityFragment extends Fragment {
                 e.printStackTrace();
             }
             userImageToUploadView.setImageBitmap(bitmap);
+//          Ensure image is set the right way
+            userImageToUploadView.setRotation(90);
         }
     }
 
@@ -260,10 +262,15 @@ public class PhotoUploadActivityFragment extends Fragment {
         });
     }
     private void setImageOnClick(){
-        try {
-            takePhoto();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
