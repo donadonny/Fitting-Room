@@ -3,11 +3,6 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- *  Need to add code to ensure same photo isn't voted on twice by single user
-   * If it is, do not allow voting to occur (Make sure same for reporting)
- * Either have a "last viewed" or "photos viewed" section in db, or have a timestamp which will show until what point user has seen photos. This will be useful if starting from oldest to newest.
- * Another option is to have from newest to older, but will need to find another way to ensure previously rated photos will not show up.
-   * Better yet show everything, just don't allow user's vote (or report) on own photo to count. Show 15 photos at a time or whatever is left in the array of total photos (whichever is least). 
  * Come up with new clever name
  * Put app on Google play
  * Create tests
@@ -38,13 +33,12 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create catchy launcher icon 
 
 ### Known bugs/todo/ to fix:
- * Photos load slowly and not always
  * On click thumbs disappear, numbers do not
  * User can vote twice on same photo
  * Don't allow users to vote on own photos
- * Shows all photos in home screen when it should show all photos except user photos in home screen
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
+ * Improve layout (especially horizontal layout)
  * Get rid of smiley face temp photo
  * Handle activity rotation for MyPhoto activity and MainActivity
  
