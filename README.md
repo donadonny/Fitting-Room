@@ -7,7 +7,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Improve layout
- * Handle screen rotations savedinstancestate on ALL activities
  * Create Terms of Service
  * Localize
  * Make material design
