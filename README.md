@@ -33,7 +33,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create catchy launcher icon 
 
 ### Known bugs/todo/ to fix:
- * On click thumbs disappear, numbers do not
  * User can vote twice on same photo
  * Don't allow users to vote on own photos
  * Shows all photos in my photos screen when it should show only user photos in home screen
