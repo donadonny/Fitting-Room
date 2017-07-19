@@ -184,8 +184,12 @@ import java.util.Map;
                 @Override
                 public void onScroll(float v) {
                     View view = swipeFlingAdapterView.getSelectedView();
-                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
-                    view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
+//                    REMOVE Comments below to add transparency effect on thumbs up/down and rating numbers
+
+//                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
+//                    view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
+//                    view.findViewById(R.id.amount_thumbs_up).setAlpha(v < 0 ? -v : 0);
+//                    view.findViewById(R.id.amount_thumbs_down).setAlpha(v > 0 ? v : 0);
                 }
             });
 
