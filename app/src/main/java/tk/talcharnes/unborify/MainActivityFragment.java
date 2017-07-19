@@ -176,7 +176,10 @@ import java.util.Map;
 
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                    // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less). Then notify dataset changed
+                    // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
+                    // Then notify dataset changed
+                    //Use this for reference on firebase database and how to do the above:
+                    // https://howtofirebase.com/collection-queries-with-firebase-b95a0193745d
                     // TODO: 7/17/2017 add ads
                     Log.d("LIST", "notified");
                 }
