@@ -27,13 +27,13 @@
         android:text="@string/submit"
         android:layout_gravity="center_horizontal"
         android:id="@+id/submitButton"/>
-    <TextView
-        android:layout_width="wrap_content"
+    <ProgressBar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/uploading"
-        android:layout_gravity="center"
-        android:id="@+id/uploadPercent"
-        android:textSize="16sp"
-        android:visibility="gone"/>
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:progressTint="@color/colorAccent"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        android:id="@+id/progressBar"/>
 
 </LinearLayout>

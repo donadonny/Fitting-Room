@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +35,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 import static android.app.Activity.RESULT_OK;
+import static java.lang.Math.toIntExact;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
 /**
@@ -56,7 +56,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     Button submitButton;
     EditText photo_description_edit_text;
     String photoDescription;
-    TextView uploadPercent;
+    ProgressBar progressBar;
 
     public PhotoUploadActivityFragment() {
     }
@@ -68,8 +68,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
-        uploadPercent = (TextView) rootView.findViewById(R.id.uploadPercent);
-
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
         setImageOnClick();
@@ -174,7 +173,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
     private void uploadPhoto(){
         submitButton.setVisibility(View.GONE);
-        uploadPercent.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         photo_description_edit_text.setVisibility(View.GONE);
         removeImageOnClick();
 
@@ -188,12 +187,16 @@ public class PhotoUploadActivityFragment extends Fragment {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    DecimalFormat df = new DecimalFormat("#.#");
-                    df.setRoundingMode(RoundingMode.CEILING);
-                    String progressPercent = df.format(100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
 
-                    uploadPercent.setText(progressPercent + "% completed");
-                    Log.d(LOG_TAG, progressPercent + "% completed");
+                    int prog;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    }
+                    else{
+                        prog = (int)(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+
+                    }
+                    progressBar.setProgress(prog);
 
                 }
             });
@@ -235,7 +238,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                                 Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
                             }
                             submitButton.setVisibility(View.VISIBLE);
-                            uploadPercent.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                             photo_description_edit_text.setVisibility(View.VISIBLE);
                             setImageOnClick();
                         }
