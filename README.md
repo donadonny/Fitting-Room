@@ -26,12 +26,12 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up photo functionality
  * Create layout for new photo creation
  * Allow reporting of photos
- * Make a progress bar for user to see photo upload progress
  * Have my account section with photos
  * Set up rating system for user likes or dislikes
  * Create catchy launcher icon 
 
 ### Known bugs/todo/ to fix:
+ * Change progress text to: a progress bar for user to see photo upload progress
  * User can vote twice on same photo
  * Don't allow users to vote on own photos
  * Shows all photos in my photos screen when it should show only user photos in home screen
