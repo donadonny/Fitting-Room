@@ -39,6 +39,7 @@ import java.util.Map;
         ArrayList<Photo> photoList;
         private int i = 0;
         static final int REQUEST_IMAGE_CAPTURE = 1;
+        private String userId;
 
         //        For Firebase Auth
         private FirebaseAuth mAuth;
@@ -64,9 +65,9 @@ import java.util.Map;
 
                     if (user != null) {
                         // User is signed in
-                        String userID = user.getUid();
+                        userId = user.getUid();
 
-                        Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                        Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + userId);
                     } else {
                         // User is signed out
                         startActivityForResult(
@@ -156,21 +157,87 @@ import java.util.Map;
 //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                     // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
                     // TODO: 7/17/2017 Else, update vote accordingly.
-                    Photo photo = (Photo) dataObject;
-                    photo.setDislikes(photo.getDislikes() + 1);
-                    photoReference.child(photo.getUrl()).setValue(photo);
+                    final Photo photo = (Photo) dataObject;
+                    final String dislikeStringKey = "dislike";
+                    final String likeStringKey = "like";
+                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                if(snapshot.getValue().toString().equals(likeStringKey)){
+                                    photo.setLikes(photo.getLikes() - 1);
+                                    photo.setDislikes(photo.getDislikes() + 1);
+                                    photoReference.child(photo.getUrl()).setValue(photo);
+
+                                    photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
+
+                                    Log.d(LOG_TAG, "snapshot value is like");
+                                }
+                                else {
+                                    Log.d(LOG_TAG, "snapshot value is already dislike");
+                                }
+
+                            }
+                            else {
+                                photo.setDislikes(photo.getDislikes() + 1);
+                                photoReference.child(photo.getUrl()).setValue(photo);
+                                photoReference.child(photo.getUrl()).child("Votes") .child(userId).setValue(dislikeStringKey);
+                                Log.d(LOG_TAG, "snapshot value does not exist");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                                Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+                        }
+
+                    });
+
 
                     Log.d(LOG_TAG, "Left card Exit");
                 }
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    Photo photo = (Photo) dataObject;
                     //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                     // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
                     // TODO: 7/17/2017 Else, update vote accordingly.
-                    photo.setLikes(photo.getLikes() + 1);
-                    photoReference.child(photo.getUrl()).setValue(photo);
+                    final Photo photo = (Photo) dataObject;
+                    final String dislikeStringKey = "dislike";
+                    final String likeStringKey = "like";
+                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                if(snapshot.getValue().toString().equals(likeStringKey)){
+                                    Log.d(LOG_TAG, "snapshot value is already like");
+                                }
+                                else {
+                                    photo.setLikes(photo.getLikes() + 1);
+                                    photo.setDislikes(photo.getDislikes() - 1);
+                                    photoReference.child(photo.getUrl()).setValue(photo);
+                                    photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(likeStringKey);
+
+                                    Log.d(LOG_TAG, "snapshot value is dislike");
+                                }
+
+                            }
+                            else {
+                                photo.setLikes(photo.getLikes() + 1);
+                                photoReference.child(photo.getUrl()).setValue(photo);
+                                photoReference.child(photo.getUrl()).child("Votes") .child(userId).setValue(likeStringKey);
+                                Log.d(LOG_TAG, "snapshot value does not exist");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+                        }
+
+                    });
+
+
                     Log.d(LOG_TAG, "Right card Exit");
                 }
 
@@ -187,6 +254,8 @@ import java.util.Map;
                 @Override
                 public void onScroll(float v) {
                     View view = swipeFlingAdapterView.getSelectedView();
+
+
 //                    REMOVE Comments below to add transparency effect on thumbs up/down and rating numbers
 
 //                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
