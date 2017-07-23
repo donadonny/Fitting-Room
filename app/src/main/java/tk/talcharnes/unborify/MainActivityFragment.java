@@ -155,8 +155,6 @@ import java.util.Map;
                     //You also have access to the original object.
                     //If you want to use it just cast it (String) dataObject
 //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
-                    // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
-                    // TODO: 7/17/2017 Else, update vote accordingly.
                     final Photo photo = (Photo) dataObject;
                     final String dislikeStringKey = "dislike";
                     final String likeStringKey = "like";
@@ -199,9 +197,8 @@ import java.util.Map;
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    //                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
-                    // TODO: 7/17/2017 Check if voted. Structure will be list of users as the key and votes as the value. If not voted, vote.
-                    // TODO: 7/17/2017 Else, update vote accordingly.
+                    // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
+
                     final Photo photo = (Photo) dataObject;
                     final String dislikeStringKey = "dislike";
                     final String likeStringKey = "like";
