@@ -30,10 +30,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testSubmit"
-        android:layout_gravity="bottom"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
