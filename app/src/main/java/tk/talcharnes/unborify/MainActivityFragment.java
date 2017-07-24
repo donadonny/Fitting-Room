@@ -271,12 +271,6 @@ import java.util.Map;
             });
             //        Test over
 
-            ////        Load ad
-            mAdView = (AdView) rootView.findViewById(R.id.adView);
-            mAdRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(mAdRequest);
-
-
             return rootView;
         }
 
