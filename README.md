@@ -6,7 +6,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Come up with new clever name
  * Put app on Google play
  * Create tests
- * Improve layout
  * Create Terms of Service
  * Localize
  * Make material design
@@ -17,7 +16,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up swipe card layout
  * Set up sign in and sign out using Firebase AUTH and Firebase UI
  * Choose Material Design Color Scheme
- * Set up Firebase ads
  * Have photo upload to Firebase storage
  * Set up Firebase database
    * Db structure
@@ -33,6 +31,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
  * Don't allow users to vote on own photos
+ * Fix layout
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
  * Improve layout (especially horizontal layout)
