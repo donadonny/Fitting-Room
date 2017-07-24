@@ -44,7 +44,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * The app will push photos from the followed users to the front of the list of photos to rate.
      * Dedicated section to followed users (like with youtube subscriptions)
    * Add number of followers to user part of database
-   * Add animations
+   * Add animations/transitions
    * Add search user
    * Add profile photos
  * Add option to skip or indifferent view of style
