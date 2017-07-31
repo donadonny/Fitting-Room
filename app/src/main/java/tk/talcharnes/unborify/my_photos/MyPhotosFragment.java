@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ public class MyPhotosFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ArrayList<Photo> photoList;
+    String user;
 
     public MyPhotosFragment() {
     }
@@ -43,15 +45,17 @@ public class MyPhotosFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
+        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         photoList = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         // TODO: 7/17/2017 Get reference to users (NOT PHOTOS), get list of photos, AND THEN find the photos from the photos section of the database to return to user 
         final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+        final DatabaseReference userPhotos = firebaseDatabase.getReference().child("users").child(user);
+
         // Read from the database
-        photoReference.addValueEventListener(new ValueEventListener() {
+        photoReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                  @Override
                                                  public void onDataChange(DataSnapshot dataSnapshot) {
 
