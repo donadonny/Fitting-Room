@@ -3,10 +3,9 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- * Come up with new clever name
+ * Come up with new clever name ex. Fitting Room, Wear or Tear, Use or Lose.
  * Put app on Google play
  * Create tests
- * Improve layout
  * Create Terms of Service
  * Localize
  * Make material design
@@ -17,7 +16,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Set up swipe card layout
  * Set up sign in and sign out using Firebase AUTH and Firebase UI
  * Choose Material Design Color Scheme
- * Set up Firebase ads
  * Have photo upload to Firebase storage
  * Set up Firebase database
    * Db structure
@@ -33,11 +31,11 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
  * Don't allow users to vote on own photos
+ * Fix layout
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
  * Improve layout (especially horizontal layout)
  * Handle activity rotation for MyPhoto activity and MainActivity
- * Initial like sets to -1 dislikes
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
@@ -46,7 +44,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * The app will push photos from the followed users to the front of the list of photos to rate.
      * Dedicated section to followed users (like with youtube subscriptions)
    * Add number of followers to user part of database
-   * Add animations
+   * Add animations/transitions
    * Add search user
    * Add profile photos
  * Add option to skip or indifferent view of style
