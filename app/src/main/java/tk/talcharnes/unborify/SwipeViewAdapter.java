@@ -6,14 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -69,17 +66,17 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
         dislikes.setText(String.valueOf(amount_dislikes));
         dislikes.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
 
-        final Button reportButton = (Button) convertView.findViewById(R.id.reportButton);
-        reportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                photo.setReports(photo.getReports() + 1);
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
-                photoReference.child(photo.getUrl()).setValue(photo);
-                reportButton.setVisibility(View.GONE);
-            }
-        });
+//        final Button reportButton = (Button) convertView.findViewById(R.id.reportButton);
+//        reportButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                photo.setReports(photo.getReports() + 1);
+//                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//                final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+//                photoReference.child(photo.getUrl()).setValue(photo);
+//                reportButton.setVisibility(View.GONE);
+//            }
+//        });
 
         // Return the completed view to render on screen
 
