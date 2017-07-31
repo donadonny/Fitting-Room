@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             app:srcCompat="@drawable/add_photo_fab"
+            app:backgroundTint="@color/transparent"
             android:onClick="takePic"/>
 
     </android.support.design.widget.AppBarLayout>
