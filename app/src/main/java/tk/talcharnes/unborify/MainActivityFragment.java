@@ -158,40 +158,40 @@ import java.util.Map;
                     final Photo photo = (Photo) dataObject;
                     final String dislikeStringKey = "dislike";
                     final String likeStringKey = "like";
-                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                if(snapshot.getValue().toString().equals(likeStringKey)){
-                                    photo.setLikes(photo.getLikes() - 1);
+                    if(!userId.equals(photo.getUser())) {
+
+                        photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    if (snapshot.getValue().toString().equals(likeStringKey)) {
+                                        photo.setLikes(photo.getLikes() - 1);
+                                        photo.setDislikes(photo.getDislikes() + 1);
+                                        photoReference.child(photo.getUrl()).setValue(photo);
+
+                                        photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
+
+                                        Log.d(LOG_TAG, "snapshot value is like");
+                                    } else {
+                                        Log.d(LOG_TAG, "snapshot value is already dislike");
+                                    }
+
+                                } else {
                                     photo.setDislikes(photo.getDislikes() + 1);
                                     photoReference.child(photo.getUrl()).setValue(photo);
-
                                     photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
-
-                                    Log.d(LOG_TAG, "snapshot value is like");
+                                    Log.d(LOG_TAG, "snapshot value does not exist");
                                 }
-                                else {
-                                    Log.d(LOG_TAG, "snapshot value is already dislike");
-                                }
-
                             }
-                            else {
-                                photo.setDislikes(photo.getDislikes() + 1);
-                                photoReference.child(photo.getUrl()).setValue(photo);
-                                photoReference.child(photo.getUrl()).child("Votes") .child(userId).setValue(dislikeStringKey);
-                                Log.d(LOG_TAG, "snapshot value does not exist");
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
                                 Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                        }
+                            }
 
-                    });
+                        });
 
-
+                    }
                     Log.d(LOG_TAG, "Left card Exit");
                 }
 
@@ -202,38 +202,37 @@ import java.util.Map;
                     final Photo photo = (Photo) dataObject;
                     final String dislikeStringKey = "dislike";
                     final String likeStringKey = "like";
-                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                if(snapshot.getValue().toString().equals(likeStringKey)){
-                                    Log.d(LOG_TAG, "snapshot value is already like");
-                                }
-                                else {
+                    if(!userId.equals(photo.getUser())) {
+                        photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    if (snapshot.getValue().toString().equals(likeStringKey)) {
+                                        Log.d(LOG_TAG, "snapshot value is already like");
+                                    } else {
+                                        photo.setLikes(photo.getLikes() + 1);
+                                        photo.setDislikes(photo.getDislikes() - 1);
+                                        photoReference.child(photo.getUrl()).setValue(photo);
+                                        photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(likeStringKey);
+
+                                        Log.d(LOG_TAG, "snapshot value is dislike");
+                                    }
+
+                                } else {
                                     photo.setLikes(photo.getLikes() + 1);
-                                    photo.setDislikes(photo.getDislikes() - 1);
                                     photoReference.child(photo.getUrl()).setValue(photo);
                                     photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(likeStringKey);
-
-                                    Log.d(LOG_TAG, "snapshot value is dislike");
+                                    Log.d(LOG_TAG, "snapshot value does not exist");
                                 }
-
                             }
-                            else {
-                                photo.setLikes(photo.getLikes() + 1);
-                                photoReference.child(photo.getUrl()).setValue(photo);
-                                photoReference.child(photo.getUrl()).child("Votes") .child(userId).setValue(likeStringKey);
-                                Log.d(LOG_TAG, "snapshot value does not exist");
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d(LOG_TAG, "cancelled with error - " + databaseError);
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                        }
-
-                    });
-
+                        });
+                    }
 
                     Log.d(LOG_TAG, "Right card Exit");
                 }
