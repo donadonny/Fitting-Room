@@ -30,7 +30,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Make a progress bar for user to see photo upload progress
 
 ### Known bugs/todo/ to fix:
- * Fix layout
  * Shows all photos in my photos screen when it should show only user photos in home screen
  * Gets EVERY SINGLE PHOTO. Needs to be fixed as this is not yet ready to scale.
  * Improve layout
