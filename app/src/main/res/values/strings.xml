@@ -19,5 +19,9 @@
     <string name="occasion_for_outfit">Occasion for outfit</string>
     <string name="uploading">Uploading</string>
     <string name="upload_failed_error_string">Uh-Oh! Upload failed, please try again later!</string>
+    <string name="signing_out">Signing out</string>
+    <string name="upload_success">Upload success!</string>
+    <string name="sending_failed">Sending failed</string>
+    <string name="occasion_cannot_be_empty_string">Occasion can not be empty</string>
 
 </resources>
