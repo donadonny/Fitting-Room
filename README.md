@@ -7,7 +7,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Create Terms of Service
- * Localize
  * Make material design
     * Make tablet layout
  * Have interstitial ads show up after x - swipes
@@ -27,6 +26,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Have my account section with photos
  * Set up rating system for user likes or dislikes
  * Create catchy launcher icon 
+ * Localize all strings
  * Make a progress bar for user to see photo upload progress
 
 ### Known bugs/todo/ to fix:
