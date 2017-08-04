@@ -207,7 +207,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
                     if(getContext() != null) {
-                        Toast.makeText(getContext(), "Upload success!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.upload_success, Toast.LENGTH_SHORT).show();
                     }
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Photo photo = new Photo();
@@ -235,7 +235,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                         public void onFailure(@NonNull Exception exception) {
                             // Handle unsuccessful uploads
                             if(getContext() != null) {
-                                Toast.makeText(getContext(), "Sending failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), R.string.sending_failed, Toast.LENGTH_SHORT).show();
                             }
                             submitButton.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
@@ -260,7 +260,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         }
 
         else{
-            photo_description_edit_text.setError("Occasion can not be empty");
+            photo_description_edit_text.setError(getString(R.string.occasion_cannot_be_empty_string));
             editTextVerifiedForUpload = false;
         }
             return  editTextVerifiedForUpload;
