@@ -89,12 +89,13 @@ import java.util.Arrays;
             // The following code is a test
 
             swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
-            // add entertaining things to arraylist using photoList.add()
 
 
+            //choose your favorite adapter
+            photoList = new ArrayList<Photo>();
 
             // Read from the database
-            photoReference.limitToFirst(6).addListenerForSingleValueEvent(new ValueEventListener() {
+            photoReference.limitToFirst(8).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     initializePhotoList = true;
@@ -109,8 +110,6 @@ import java.util.Arrays;
             });
 
 
-            //choose your favorite adapter
-            photoList = new ArrayList<Photo>();
 
             swipeViewAdapter = new SwipeViewAdapter(getContext(), photoList);
 
@@ -221,7 +220,7 @@ import java.util.Arrays;
                     // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
                     // Then notify dataset changed
                     // TODO: 7/17/2017 add ads
-                    photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(6).addListenerForSingleValueEvent(new ValueEventListener() {
+                    photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8).addListenerForSingleValueEvent(new ValueEventListener() {
                            @Override
                            public void onDataChange(DataSnapshot dataSnapshot) {
                                initializePhotoList = false;
