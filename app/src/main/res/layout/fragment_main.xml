@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffeee9e2"
-        app:rotation_degrees="15.5" />
+        app:rotation_degrees="15.5"
+        app:min_adapter_stack="6"/>
 
     <LinearLayout
         android:layout_width="match_parent"
