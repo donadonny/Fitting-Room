@@ -9,7 +9,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create Terms of Service
  * Make material design
     * Make tablet layout
- * Have interstitial ads show up after x - swipes
+ * Have interstitial or native ads show up after x - swipes 
 
 ### Done
  * Set up swipe card layout
@@ -31,8 +31,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
  * Shows all photos in my photos screen when it should show only user photos in home screen
- * Gets EVERY SINGLE PHOTO when app is initially loaded. Needs to be fixed as this is not yet ready to scale.
- * Improve layout
+ * Gets repeat photos
+* Improve layout
    * Have horizontal layout make photo be landscape or vertical depending on whichever would show up larger
    * Decide what to do with add photo fab
  * Handle activity rotation for MyPhoto activity and MainActivity
