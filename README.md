@@ -50,7 +50,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Add option to skip or indifferent view of style
  * Have local database so that "my photos" section will load faster
  * Make text dynamically size to view
- * Add bar for rating with percentage instead of numbers writte at sides
 
 
 
