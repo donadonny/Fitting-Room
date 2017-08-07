@@ -147,7 +147,6 @@ import java.util.Arrays;
                                         photo.setLikes(photo.getLikes() - 1);
                                         photo.setDislikes(photo.getDislikes() + 1);
                                         photoReference.child(photo.getUrl()).setValue(photo);
-
                                         photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
 
                                         Log.d(LOG_TAG, "snapshot value is like");
@@ -171,13 +170,15 @@ import java.util.Arrays;
                         });
 
                     }
+                    else {
+                        Log.d(LOG_TAG, "User trying to vote on own photo");
+                    }
                     Log.d(LOG_TAG, "Left card Exit");
                 }
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
                     // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
-
                     final Photo photo = (Photo) dataObject;
                     final String dislikeStringKey = "dislike";
                     final String likeStringKey = "like";
@@ -211,6 +212,9 @@ import java.util.Arrays;
                             }
 
                         });
+                    }
+                    else {
+                        Log.d(LOG_TAG, "User trying to vote on own photo");
                     }
 
                     Log.d(LOG_TAG, "Right card Exit");
