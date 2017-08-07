@@ -144,10 +144,6 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
-//                  // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                 final Photo photo = (Photo) dataObject;
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
@@ -191,7 +187,6 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                // TODO: 7/17/2017 add if/else statement if the photo is from the user it does nothing but go to next photo. Else it votes.
                 final Photo photo = (Photo) dataObject;
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
@@ -235,7 +230,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
-                // Then notify dataset changed
+
                 // TODO: 7/17/2017 add ads
                 photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -307,27 +302,6 @@ public class MainActivityFragment extends Fragment {
             }
 
         }
-//
-//            Map<String, Object> objectMap = (HashMap<String, Object>)
-//                    dataSnapshot.getValue();
-//            if (objectMap != null) {
-//                for (Object obj : objectMap.values()) {
-//                    if (obj instanceof Map) {
-//                        Map<String, Object> mapObj = (Map<String, Object>) obj;
-//                        Photo photo = new Photo();
-//                        photo.setOccasion_subtitle((String) mapObj.get(Photo.OCCASION_SUBTITLE_KEY));
-//                        photo.setUrl((String) mapObj.get(Photo.URL_KEY));
-//                        photo.setUser((String) mapObj.get(Photo.USER_KEY));
-//                        photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
-//                        photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
-//                        photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
-//
-//                        photoList.add(photo);
-//                        oldestPostId = photo.getUrl();
-//                        Log.d(LOG_TAG, "oldestPostId = " + oldestPostId);
-//                    }
-//                }
-//            }
 
         swipeViewAdapter.notifyDataSetChanged();
 
