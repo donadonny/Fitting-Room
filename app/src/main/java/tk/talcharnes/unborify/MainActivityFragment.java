@@ -23,8 +23,6 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
     /**
      * A placeholder fragment containing a simple view.
@@ -40,6 +38,10 @@ import java.util.Map;
         private int i = 0;
         static final int REQUEST_IMAGE_CAPTURE = 1;
         private String userId;
+        private String oldestPostId;
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+        boolean initializePhotoList;
 
         //        For Firebase Auth
         private FirebaseAuth mAuth;
@@ -90,35 +92,13 @@ import java.util.Map;
             // add entertaining things to arraylist using photoList.add()
 
 
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
 
             // Read from the database
-            photoReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            photoReference.limitToFirst(6).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                    Map<String, Object> objectMap = (HashMap<String, Object>)
-                            dataSnapshot.getValue();
-                    if (objectMap != null) {
-                        for (Object obj : objectMap.values()) {
-                            if (obj instanceof Map) {
-                                Map<String, Object> mapObj = (Map<String, Object>) obj;
-                                Photo photo = new Photo();
-                                photo.setOccasion_subtitle((String) mapObj.get(Photo.OCCASION_SUBTITLE_KEY));
-                                photo.setUrl((String) mapObj.get(Photo.URL_KEY));
-                                photo.setUser((String) mapObj.get(Photo.USER_KEY));
-                                photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
-                                photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
-                                photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
-
-                                photoList.add(photo);
-                            }
-                        }
-                    }
-
-                    swipeViewAdapter.notifyDataSetChanged();
+                    initializePhotoList = true;
+                    addPhotosToArrayList(dataSnapshot);
                 }
 
                 @Override
@@ -127,7 +107,6 @@ import java.util.Map;
                     Log.w(LOG_TAG, "Failed to read value.", error.toException());
                 }
             });
-
 
 
             //choose your favorite adapter
@@ -241,10 +220,22 @@ import java.util.Map;
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
                     // Then notify dataset changed
-                    //Use this for reference on firebase database and how to do the above:
-                    // https://howtofirebase.com/collection-queries-with-firebase-b95a0193745d
                     // TODO: 7/17/2017 add ads
-                    Log.d("LIST", "notified");
+                    photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(6).addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(DataSnapshot dataSnapshot) {
+                               initializePhotoList = false;
+                               addPhotosToArrayList(dataSnapshot);
+                           }
+
+                           @Override
+                           public void onCancelled(DatabaseError databaseError) {
+                               Log.w(LOG_TAG, "Failed to read value.", databaseError.toException());
+                           }
+                       });
+
+
+                            Log.d("LIST", "notified");
                 }
 
                 @Override
@@ -285,6 +276,46 @@ import java.util.Map;
             if (mAuthListener != null) {
                 mAuth.removeAuthStateListener(mAuthListener);
             }
+        }
+
+        private void addPhotosToArrayList(DataSnapshot dataSnapshot){
+            // Make int counter to delete first item in array as it is a repeat
+            int i = 0;
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                if(i == 0 && !initializePhotoList){
+                    i++;
+                }
+                else {
+                    oldestPostId = child.getKey();
+                    Photo photo = child.getValue(Photo.class);
+                    photoList.add(photo);
+                    System.out.println("here si the data==>>" + child.getKey());
+                }
+            }
+//
+//            Map<String, Object> objectMap = (HashMap<String, Object>)
+//                    dataSnapshot.getValue();
+//            if (objectMap != null) {
+//                for (Object obj : objectMap.values()) {
+//                    if (obj instanceof Map) {
+//                        Map<String, Object> mapObj = (Map<String, Object>) obj;
+//                        Photo photo = new Photo();
+//                        photo.setOccasion_subtitle((String) mapObj.get(Photo.OCCASION_SUBTITLE_KEY));
+//                        photo.setUrl((String) mapObj.get(Photo.URL_KEY));
+//                        photo.setUser((String) mapObj.get(Photo.USER_KEY));
+//                        photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
+//                        photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
+//                        photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
+//
+//                        photoList.add(photo);
+//                        oldestPostId = photo.getUrl();
+//                        Log.d(LOG_TAG, "oldestPostId = " + oldestPostId);
+//                    }
+//                }
+//            }
+
+            swipeViewAdapter.notifyDataSetChanged();
+
         }
 
     }
