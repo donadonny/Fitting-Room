@@ -11,6 +11,7 @@ public class Photo {
     private long reports;
     private String user;
     private String occasion_subtitle;
+    private int orientation;
     public final static String OCCASION_SUBTITLE_KEY = "occasion_subtitle";
     public final static String USER_KEY = "user";
     public final static String REPORTS_KEY = "reports";
@@ -66,5 +67,13 @@ public class Photo {
 
     public void setOccasion_subtitle(String occasion_subtitle) {
         this.occasion_subtitle = occasion_subtitle;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 }
