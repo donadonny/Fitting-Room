@@ -3,6 +3,7 @@ package tk.talcharnes.unborify;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,6 +39,7 @@ import java.io.IOException;
 import static android.app.Activity.RESULT_OK;
 import static java.lang.Math.toIntExact;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
+import static tk.talcharnes.unborify.PhotoUtilities.getCameraPhotoOrientation;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -49,6 +50,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private String mCurrentPhotoPath;
     Uri photoURI;
+    int photoOrientation;
     String imageFileNameNoJPG;
     FirebaseDatabase database;
     ImageView userImageToUploadView;
@@ -163,6 +165,8 @@ public class PhotoUploadActivityFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+           photoOrientation = PhotoUtilities.getCameraPhotoOrientation(getContext(), photoURI, mCurrentPhotoPath);
+
             userImageToUploadView.setImageBitmap(bitmap);
 //          Ensure image is set the right way
             userImageToUploadView.setRotation(90);
@@ -217,6 +221,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setDislikes(0);
                     photo.setReports(0);
                     photo.setOccasion_subtitle(photoDescription);
+                    photo.setOrientation(photoOrientation);
 
                     DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
                     photoReference.setValue(photo);
@@ -285,4 +290,5 @@ public class PhotoUploadActivityFragment extends Fragment {
             }
         });
     }
+
 }
