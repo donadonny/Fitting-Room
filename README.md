@@ -3,7 +3,6 @@
 This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
- * Come up with new clever name ex. Fitting Room, Wear or Tear, Use or Lose.
  * Put app on Google play
  * Create tests
  * Create Terms of Service
