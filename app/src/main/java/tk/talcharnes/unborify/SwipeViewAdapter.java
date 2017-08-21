@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,28 +44,35 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.swipe_layout, parent, false);
         }
+        int rotation = 0;
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            if( photo.getOrientation() != 0){
+                rotation = 90;
+//                imageView.setRotation(90);
+            }
+        }
+        else if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            if(photo.getOrientation() == 0){
+//                imageView.setRotation(90);
+                rotation = 90;
+            }
+        }
+
         ImageView imageView = (ImageView) convertView.findViewById(R.id.userFashionStylePhoto);
         if(urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(urlString);
             Glide.with(getContext())
                     .using(new FirebaseImageLoader())
-                    .load(storageRef)
+                    .load(storageRef).transform(new MyTransformation(getContext(), rotation))
                     .into(imageView);
         }
+
 
         // Lookup view for data population
         TextView occastion_subtitle = (TextView) convertView.findViewById(R.id.occasion_subtitle);
         // Populate the data into the template view using the data object
         occastion_subtitle.setText(occastion_subtitle_string);
         occastion_subtitle.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
-
-        TextView likes = (TextView) convertView.findViewById(R.id.amount_thumbs_up);
-        likes.setText(String.valueOf(amount_likes));
-        likes.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
-
-        TextView dislikes = (TextView) convertView.findViewById(R.id.amount_thumbs_down);
-        dislikes.setText(String.valueOf(amount_dislikes));
-        dislikes.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
 
 //        final Button reportButton = (Button) convertView.findViewById(R.id.reportButton);
 //        reportButton.setOnClickListener(new View.OnClickListener() {
