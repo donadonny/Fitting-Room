@@ -6,8 +6,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Create Terms of Service
- * Make material design
-    * Make tablet layout
  * Have interstitial or native ads show up after x - swipes 
 
 ### Done
@@ -34,6 +32,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 * Improve layout
    * Make it nice
    * Decide what to do with add photo fab
+   * Make tablet layout
 * Handle activity rotation for MyPhoto activity and MainActivity
  
 ### Possible features:
