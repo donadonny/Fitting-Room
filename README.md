@@ -31,12 +31,10 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
  * Shows all photos in my photos screen when it should show only user photos in home screen
- * Gets repeat photos
+* Gets repeat photos
 * Improve layout
-   * Have horizontal layout make photo be landscape or vertical depending on whichever would show up larger
-   * Decide what to do with add photo fab
- * Handle activity rotation for MyPhoto activity and MainActivity
- * No occasion displayed in horizontal view
+* Decide what to do with add photo fab
+* Handle activity rotation for MyPhoto activity and MainActivity
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
