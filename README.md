@@ -32,7 +32,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Shows all photos in my photos screen when it should show only user photos in home screen
 * Gets repeat photos
 * Improve layout
-* Decide what to do with add photo fab
+   * Make it nice
+   * Decide what to do with add photo fab
 * Handle activity rotation for MyPhoto activity and MainActivity
  
 ### Possible features:
