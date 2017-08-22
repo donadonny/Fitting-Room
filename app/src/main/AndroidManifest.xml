@@ -53,11 +53,11 @@
             android:name=".my_photos.MyPhotos"
             android:label="@string/title_activity_my_photos"
             android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.talcharnes.unborify.MainActivity" />
         </activity>
     </application>
-
 </manifest>
