@@ -32,7 +32,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Make it nice
    * Decide what to do with add photo fab
    * Make tablet layout
-* Handle activity rotation for MainActivity
 * Reinstate report button functionality
    * Adds section to database for reports, photo, and username only (easier viewing)
    * Allows for querying based on amount of reports (so higher amount of reports will show up first
