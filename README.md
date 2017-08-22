@@ -38,7 +38,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Allows for querying based on amount of reports (so higher amount of reports will show up first
    * Clicking report will report the photo and go on to the next photo without voting
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
-  ```java
+```java
  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
                     }
@@ -46,7 +46,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
                         prog = (int)(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
 
                     }
- ```
+```
 
 
 ### Possible features:
