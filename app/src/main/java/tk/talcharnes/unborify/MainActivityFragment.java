@@ -45,6 +45,7 @@ public class MainActivityFragment extends Fragment {
     private String oldestPostId;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+    DatabaseReference userReference = firebaseDatabase.getReference().child("users");
     boolean initializePhotoList;
 
     //        For Firebase Auth
@@ -157,6 +158,7 @@ public class MainActivityFragment extends Fragment {
                                     photo.setLikes(photo.getLikes() - 1);
                                     photo.setDislikes(photo.getDislikes() + 1);
                                     photoReference.child(photo.getUrl()).setValue(photo);
+                                    userReference.child(photo.getUser()).child(photo.getUrl()).setValue(photo);
                                     photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is like");
@@ -167,6 +169,7 @@ public class MainActivityFragment extends Fragment {
                             } else {
                                 photo.setDislikes(photo.getDislikes() + 1);
                                 photoReference.child(photo.getUrl()).setValue(photo);
+                                userReference.child(photo.getUser()).child(photo.getUrl()).setValue(photo);
                                 photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
