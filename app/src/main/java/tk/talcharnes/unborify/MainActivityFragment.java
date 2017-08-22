@@ -80,7 +80,7 @@ public class MainActivityFragment extends Fragment {
                     // User is signed out
                     startActivityForResult(
                             AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
+                                    .createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)
                                     .setIsSmartLockEnabled(false)
                                     .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
