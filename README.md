@@ -33,7 +33,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Make it nice
    * Decide what to do with add photo fab
    * Make tablet layout
-* Handle activity rotation for MyPhoto activity and MainActivity
+* Handle activity rotation for MainActivity
  
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
@@ -48,7 +48,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Add option to skip or indifferent view of style
  * Have local database so that "my photos" section will load faster
  * Make text dynamically size to view
-
 
 
 
