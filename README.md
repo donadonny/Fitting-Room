@@ -7,6 +7,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create tests
  * Create Terms of Service
  * Have interstitial or native ads show up after x - swipes 
+      *probably native ads should be better if they show up as a card that can be swiped rather than an interstitial which will slow down user usage
 
 ### Done
  * Set up swipe card layout
@@ -26,7 +27,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Localize all strings
  * Make a progress bar for user to see photo upload progress
 
-### Known bugs/todo/ to fix:
+### Known bugs/ to fix:
 * Gets repeat photos
 * Text from next photo shows under the current photo if next photo text length is longer than current photo
 * Improve layout
