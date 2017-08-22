@@ -35,7 +35,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Make tablet layout
 * Reinstate report button functionality
    * Adds section to database for reports, photo, and username only (easier viewing)
-   * Allows for querying based on amount of reports (so higher amount of reports will show up first
+   * Allows for querying based on amount of reports (so higher amount of reports will show up first)
+      * Name idea for key is NUMBER-OF-REPORTS_photoURL
    * Clicking report will report the photo and go on to the next photo without voting
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
 ```java
