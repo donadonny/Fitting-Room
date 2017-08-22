@@ -193,8 +193,7 @@ public class PhotoUploadActivityFragment extends Fragment {
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-
+                    
                     int prog;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
