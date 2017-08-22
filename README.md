@@ -37,7 +37,18 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Adds section to database for reports, photo, and username only (easier viewing)
    * Allows for querying based on amount of reports (so higher amount of reports will show up first
    * Clicking report will report the photo and go on to the next photo without voting
- 
+* The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
+  ```java
+ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    }
+                    else{
+                        prog = (int)(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+
+                    }
+ ```
+
+
 ### Possible features:
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 * Allow following other users
@@ -51,8 +62,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Add option to skip or indifferent view of style
  * Have local database so that "my photos" section will load faster
  * Make text dynamically size to view
-
-
 
 
 
