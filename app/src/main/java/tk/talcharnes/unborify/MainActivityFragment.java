@@ -300,7 +300,6 @@ public class MainActivityFragment extends Fragment {
                 photoList.add(photo);
                 System.out.println("here si the data==>>" + child.getKey());
             }
-
         }
 
         swipeViewAdapter.notifyDataSetChanged();
