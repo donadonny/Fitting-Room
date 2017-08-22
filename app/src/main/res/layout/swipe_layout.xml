@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:adjustViewBounds="true"
+        android:layout_marginTop="16dp"
         android:scaleType="fitCenter"
         android:id="@+id/userFashionStylePhoto"
         tools:src="@drawable/smiley"
