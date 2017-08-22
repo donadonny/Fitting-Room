@@ -28,6 +28,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ### Known bugs/todo/ to fix:
 * Gets repeat photos
+* Text from next photo shows under the current photo if next photo text length is longer than current photo
 * Improve layout
    * Make it nice
    * Decide what to do with add photo fab
