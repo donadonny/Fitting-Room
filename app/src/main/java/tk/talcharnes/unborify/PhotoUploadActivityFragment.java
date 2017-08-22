@@ -59,6 +59,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     EditText photo_description_edit_text;
     String photoDescription;
     ProgressBar progressBar;
+    String user;
 
     public PhotoUploadActivityFragment() {
     }
@@ -66,6 +67,8 @@ public class PhotoUploadActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         View rootView = inflater.inflate(R.layout.fragment_photo_upload, container, false);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
@@ -216,7 +219,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Photo photo = new Photo();
                     photo.setUrl(imageFileNameNoJPG);
-                    photo.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    photo.setUser(user);
                     photo.setLikes(0);
                     photo.setDislikes(0);
                     photo.setReports(0);
@@ -224,12 +227,11 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOrientation(photoOrientation);
 
                     DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
-                    photoReference.setValue(photo);
+                    DatabaseReference userReference = database.getReference().child("users").child(user).child(imageFileNameNoJPG);
 
-                    DatabaseReference userPhotosDatabaseReference = database.getReference("users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child(imageFileNameNoJPG);
-                    userPhotosDatabaseReference.setValue(imageFileNameNoJPG);
+                    photoReference.setValue(photo);
+                    userReference.setValue(photo);
+
                     if(getContext() != null) {
                         NavUtils.navigateUpFromSameTask(getActivity());
                     }
