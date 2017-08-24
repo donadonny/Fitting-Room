@@ -7,9 +7,9 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create tests
  * Create Terms of Service
  * Have interstitial or native ads show up after x - swipes 
-      *probably native ads should be better if they show up as a card that can be swiped rather than an interstitial which will slow down user usage
- *Refactor code
-     *Take deep look and delete ALL non-necessary code (including things that are not commented out and/or listed as unused by Android Studio)
+      * probably native ads should be better if they show up as a card that can be swiped rather than an interstitial which will slow down user usage
+ * Refactor code
+     * Take deep look and delete ALL non-necessary code (including things that are not commented out and/or listed as unused by Android Studio)
 
 ### Done
  * Set up swipe card layout
