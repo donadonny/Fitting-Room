@@ -3,7 +3,6 @@ package tk.talcharnes.unborify;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,13 +32,15 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import id.zelory.compressor.Compressor;
 
 import static android.app.Activity.RESULT_OK;
 import static java.lang.Math.toIntExact;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
-import static tk.talcharnes.unborify.PhotoUtilities.getCameraPhotoOrientation;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -60,6 +61,10 @@ public class PhotoUploadActivityFragment extends Fragment {
     String photoDescription;
     ProgressBar progressBar;
     String user;
+    private Uri compressedPhotoUri;
+    private File compressedImage;
+    File photoFile;
+
 
     public PhotoUploadActivityFragment() {
     }
@@ -97,9 +102,10 @@ public class PhotoUploadActivityFragment extends Fragment {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Create the File where the photo should go
-        File photoFile = null;
+         photoFile = null;
         try {
             photoFile = getFile();
+
         } catch (IOException ex) {
             // Error occurred while creating the File
 
@@ -108,6 +114,7 @@ public class PhotoUploadActivityFragment extends Fragment {
             photoURI = FileProvider.getUriForFile(getContext(),
                     "com.example.android.fileprovider",
                     photoFile);
+
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
@@ -125,7 +132,6 @@ public class PhotoUploadActivityFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -162,9 +168,11 @@ public class PhotoUploadActivityFragment extends Fragment {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             canUpload = true;
             Uri imageUri = photoURI;
+            compressPhotoFactory(photoFile);
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,11 +192,13 @@ public class PhotoUploadActivityFragment extends Fragment {
         photo_description_edit_text.setVisibility(View.GONE);
         removeImageOnClick();
 
-
-        StorageReference riversRef = mStorageRef.child("images/" + imageFileNameNoJPG);
+        final String compressedImageFileName = imageFileNameNoJPG + ".webp";
+        StorageReference riversRef = mStorageRef.child("images/" + compressedImageFileName);
         if(mCurrentPhotoPath != null) {
             final UploadTask uploadTask =
-                    riversRef.putFile(photoURI);
+//                    The following line makes app upload original photo
+//                    riversRef.putFile(photoURI);
+                    riversRef.putFile(compressedPhotoUri);
 
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -217,7 +227,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     }
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Photo photo = new Photo();
-                    photo.setUrl(imageFileNameNoJPG);
+                    photo.setUrl(compressedImageFileName);
                     photo.setUser(user);
                     photo.setLikes(0);
                     photo.setDislikes(0);
@@ -290,6 +300,17 @@ public class PhotoUploadActivityFragment extends Fragment {
                 }
             }
         });
+    }
+    private void compressPhotoFactory(File photoFile){
+        try {
+            compressedImage = new Compressor(getContext()).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(photoFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        compressedPhotoUri = Uri.fromFile(new File(compressedImage.getAbsolutePath()));
+        Log.d(LOG_TAG, "COMPRESSED PHOTO URI = " + compressedPhotoUri.toString());
+
     }
 
 }
