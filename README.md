@@ -39,6 +39,15 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Allows for querying based on amount of reports (so higher amount of reports will show up first)
       * Name idea for key is NUMBER-OF-REPORTS_photoURL
    * Clicking report will report the photo and go on to the next photo without voting
+* Add comments to each photo
+     * make comments viewable by original poster
+     * Perhaps make a my activity section in user profile section of app
+* Add badges
+     * x amount of photos uploaded
+     * x amount of photos rated
+     * x amount positive rated photos (both sent and received)
+     * x amount negative rated photos (both sent and received)
+     * Surpassed x% positive and negative rating on a photo.
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
 ```java
  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
