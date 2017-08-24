@@ -62,6 +62,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 
 ### Possible features:
+* Make a sort of timeline view like facebook/instagram?
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 * Allow following other users
    * This will add a field to the user part of the database which will be followed users. Possibilities for this are:
