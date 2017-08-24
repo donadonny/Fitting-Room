@@ -26,6 +26,11 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create catchy launcher icon 
  * Localize all strings
  * Make a progress bar for user to see photo upload progress
+ * Decreased image size by an average of 33 times with unnoticeable image quality loss in order to reduce:
+     * Server storage space
+     * Server bandwidth usage
+     * User upload time
+     * Time it takes user to view photos
 
 ### Known bugs/ to fix:
 * Gets repeat photos
