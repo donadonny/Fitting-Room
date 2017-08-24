@@ -55,7 +55,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * x amount positive rated photos (both sent and received)
      * x amount negative rated photos (both sent and received)
      * Surpassed x% positive and negative rating on a photo.
-* Compress photos so that they take less space
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
 ```java
  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
