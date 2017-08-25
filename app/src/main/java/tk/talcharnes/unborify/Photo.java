@@ -1,5 +1,7 @@
 package tk.talcharnes.unborify;
 
+import java.util.HashMap;
+
 /**
  * Created by Tal on 6/29/2017.
  */
@@ -8,6 +10,7 @@ public class Photo {
     private long likes;
     private long dislikes;
     private String url;
+    private HashMap<String, String> Votes;
     private long reports;
     private String user;
     private String occasion_subtitle;
@@ -43,6 +46,14 @@ public class Photo {
 
     public void setLikes(long likes) {
         this.likes = likes;
+    }
+
+    public void setVotes(HashMap<String, String> Votes) {
+        this.Votes = Votes;
+    }
+
+    public HashMap<String, String> getVotes() {
+        return this.Votes;
     }
 
     public long getDislikes() {
