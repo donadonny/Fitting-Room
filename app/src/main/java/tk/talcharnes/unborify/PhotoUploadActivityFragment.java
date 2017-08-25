@@ -192,8 +192,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         photo_description_edit_text.setVisibility(View.GONE);
         removeImageOnClick();
 
-        final String compressedImageFileName = imageFileNameNoJPG ;
-//                + ".webp";
+        final String compressedImageFileName = imageFileNameNoJPG + ".webp";
         StorageReference riversRef = mStorageRef.child("images/" + compressedImageFileName);
         if(mCurrentPhotoPath != null) {
             final UploadTask uploadTask =
