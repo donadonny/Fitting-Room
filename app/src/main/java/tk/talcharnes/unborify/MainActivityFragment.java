@@ -10,14 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
@@ -42,7 +47,7 @@ public class MainActivityFragment extends Fragment {
     private int i = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String userId;
-    private String oldestPostId;
+    private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
     DatabaseReference userReference = firebaseDatabase.getReference().child("users");
@@ -52,8 +57,12 @@ public class MainActivityFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     public static final int RC_SIGN_IN = 1;
+    private InterstitialAd mInterstitialAd;
+    private Boolean showAd = false;
 
-
+    /**
+     * Constructor.
+     * */
     public MainActivityFragment() {
 
     }
@@ -66,6 +75,10 @@ public class MainActivityFragment extends Fragment {
         dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
 //            For firebase auth
         mAuth = FirebaseAuth.getInstance();
+        mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -92,29 +105,12 @@ public class MainActivityFragment extends Fragment {
             }
         };
 
-
-        // Read from the database
-        photoReference.limitToFirst(8).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                initializePhotoList = true;
-                addPhotosToArrayList(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(LOG_TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
 
-        swipeViewAdapter = new SwipeViewAdapter(getContext(), photoList);
+        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
 
-        swipeFlingAdapterView = (SwipeFlingAdapterView) rootView.findViewById(R.id.frame);
+        swipeFlingAdapterView = rootView.findViewById(R.id.frame);
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,27 +136,29 @@ public class MainActivityFragment extends Fragment {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 photoList.remove(0);
+                if(photoList.isEmpty() && !oldestPostId.isEmpty()) {
+                    showAd = true;
+                }
                 swipeViewAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onLeftCardExit(Object dataObject) {
                 final Photo photo = (Photo) dataObject;
-                final String photoKey = photo.getUrl().substring(0, photo.getUrl().length() -5);
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
                 if (!userId.equals(photo.getUser())) {
 
-                    photoReference.child(photoKey).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 if (snapshot.getValue().toString().equals(likeStringKey)) {
                                     photo.setLikes(photo.getLikes() - 1);
                                     photo.setDislikes(photo.getDislikes() + 1);
-                                    photoReference.child(photoKey).setValue(photo);
-                                    userReference.child(photo.getUser()).child(photoKey).setValue(photo);
-                                    photoReference.child(photoKey).child("Votes").child(userId).setValue(dislikeStringKey);
+                                    photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                    userReference.child(photo.getUser()).child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(dislikeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is like");
                                 } else {
@@ -169,9 +167,9 @@ public class MainActivityFragment extends Fragment {
 
                             } else {
                                 photo.setDislikes(photo.getDislikes() + 1);
-                                photoReference.child(photoKey).setValue(photo);
-                                userReference.child(photo.getUser()).child(photoKey).setValue(photo);
-                                photoReference.child(photoKey).child("Votes").child(userId).setValue(dislikeStringKey);
+                                photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                userReference.child(photo.getUser()).child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(dislikeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
                         }
@@ -192,11 +190,10 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onRightCardExit(Object dataObject) {
                 final Photo photo = (Photo) dataObject;
-                final String photoKey = photo.getUrl().substring(0, photo.getUrl().length() -5);
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
                 if (!userId.equals(photo.getUser())) {
-                    photoReference.child(photoKey).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
@@ -205,16 +202,16 @@ public class MainActivityFragment extends Fragment {
                                 } else {
                                     photo.setLikes(photo.getLikes() + 1);
                                     photo.setDislikes(photo.getDislikes() - 1);
-                                    photoReference.child(photoKey).setValue(photo);
-                                    photoReference.child(photoKey).child("Votes").child(userId).setValue(likeStringKey);
+                                    photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(likeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is dislike");
                                 }
 
                             } else {
                                 photo.setLikes(photo.getLikes() + 1);
-                                photoReference.child(photoKey).setValue(photo);
-                                photoReference.child(photoKey).child("Votes").child(userId).setValue(likeStringKey);
+                                photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
+                                photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(likeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
                         }
@@ -232,40 +229,57 @@ public class MainActivityFragment extends Fragment {
                 Log.d(LOG_TAG, "Right card Exit");
             }
 
+            /**
+             * This function starts a query calls to retrieve the images.
+             * */
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
 
                 // TODO: 7/17/2017 add ads
-                photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        initializePhotoList = false;
-                        addPhotosToArrayList(dataSnapshot);
-                    }
+                if (mInterstitialAd.isLoaded() && showAd) {
+                    mInterstitialAd.show();
+                    showAd = false;
+                } else {
+                    //Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(LOG_TAG, "Failed to read value.", databaseError.toException());
-                    }
-                });
+                if(photoList.isEmpty()) {
+                    Query query = (oldestPostId.isEmpty()) ?
+                            photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
+                            photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
 
+                    // Read from the database
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            initializePhotoList = true;
+                            addPhotosToArrayList(dataSnapshot);
+                            System.out.println("Got data.");
+                        }
 
-                Log.d("LIST", "notified");
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            // Failed to read value
+                            Log.w(LOG_TAG, "Failed to read value.", error.toException());
+                        }
+                    });
+                }
             }
 
+            /**
+             * No idea what this does.
+             * */
             @Override
             public void onScroll(float v) {
                 View view = swipeFlingAdapterView.getSelectedView();
-
-
-//                    REMOVE Comments below to add transparency effect on thumbs up/down and rating numbers
-
-//                    view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
-//                    view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
-//                    view.findViewById(R.id.amount_thumbs_up).setAlpha(v < 0 ? -v : 0);
-//                    view.findViewById(R.id.amount_thumbs_down).setAlpha(v > 0 ? v : 0);
+            /* REMOVE Comments below to add transparency effect on thumbs up/down and rating numbers
+               view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
+               view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
+               view.findViewById(R.id.amount_thumbs_up).setAlpha(v < 0 ? -v : 0);
+               view.findViewById(R.id.amount_thumbs_down).setAlpha(v > 0 ? v : 0); */
             }
+
         });
 
         // Optionally add an OnItemClickListener
@@ -276,39 +290,135 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        initializeAd();
+
         return rootView;
     }
 
+
+    /**
+     * Initializes Ad.
+     * */
+    private void initializeAd() {
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad");
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+                Log.i("Ads", "onAdOpened");
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.i("Ads", "onAdLeftApplication");
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                showAd = false;
+                Log.i("Ads", "onAdClosed");
+            }
+        });
+    }
+
+    /**
+     * Retrieves and adds photos to the photoList.
+     * */
+    private void addPhotosToArrayList(DataSnapshot dataSnapshot) {
+        for(DataSnapshot child : dataSnapshot.getChildren()) {
+            Photo photo = child.getValue(Photo.class);
+            photoList.add(photo);
+        }
+        if(photoList.size() > 1) {
+            photoList.remove(0);
+        }
+        oldestPostId = photoList.get(photoList.size()-1).getUrl();
+        swipeViewAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * This function records the user's vote in the database.
+     * */
+    private void setVote(final Photo photo, final String rating) {
+        if (!userId.equals(photo.getUser())) {
+            Query query = photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String value = photo.getVotes().get(userId);
+                        if(value.equals(rating)) {
+                            Log.d(LOG_TAG, "User already " + rating + " this photo.");
+                        } else {
+                            if(rating.equals("like")) {
+                                photo.setLikes(photo.getLikes() + 1);
+                                photo.setDislikes(photo.getDislikes() - 1);
+                            } else {
+                                photo.setLikes(photo.getLikes() - 1);
+                                photo.setDislikes(photo.getDislikes() + 1);
+                            }
+                            //photoReference.child(photo.getUrl()).setValue(photo);
+                            //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
+                        }
+
+                    } else {
+                        if(rating.equals("like")) {
+                            photo.setLikes(photo.getLikes() + 1);
+                        } else {
+                            photo.setDislikes(photo.getDislikes() + 1);
+                        }
+                        //photoReference.child(photo.getUrl()).setValue(photo);
+                        //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
+                        Log.d(LOG_TAG, "snapshot value does not exist");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+                }
+
+            });
+        } else {
+            Log.d(LOG_TAG, "User trying to vote on own photo");
+        }
+    }
+
+    /**
+     * Adds the Auth Listener when the app is started up.
+     * */
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    /**
+     * Removes the Auth Listener when the app is closed.
+     * */
     @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-
-    private void addPhotosToArrayList(DataSnapshot dataSnapshot) {
-        // Make int counter to delete first item in array as it is a repeat
-        int i = 0;
-        for (DataSnapshot child : dataSnapshot.getChildren()) {
-            if (i == 0 && !initializePhotoList) {
-                i++;
-            } else {
-                oldestPostId = child.getKey();
-                Photo photo = child.getValue(Photo.class);
-                photoList.add(photo);
-                System.out.println("here si the data==>>" + child.getKey());
-            }
-        }
-
-        swipeViewAdapter.notifyDataSetChanged();
-
     }
 
 }
