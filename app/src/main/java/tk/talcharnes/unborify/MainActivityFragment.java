@@ -146,20 +146,21 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onLeftCardExit(Object dataObject) {
                 final Photo photo = (Photo) dataObject;
+                final String photoKey = photo.getUrl().substring(0, photo.getUrl().length() -5);
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
                 if (!userId.equals(photo.getUser())) {
 
-                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    photoReference.child(photoKey).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 if (snapshot.getValue().toString().equals(likeStringKey)) {
                                     photo.setLikes(photo.getLikes() - 1);
                                     photo.setDislikes(photo.getDislikes() + 1);
-                                    photoReference.child(photo.getUrl()).setValue(photo);
-                                    userReference.child(photo.getUser()).child(photo.getUrl()).setValue(photo);
-                                    photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
+                                    photoReference.child(photoKey).setValue(photo);
+                                    userReference.child(photo.getUser()).child(photoKey).setValue(photo);
+                                    photoReference.child(photoKey).child("Votes").child(userId).setValue(dislikeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is like");
                                 } else {
@@ -168,9 +169,9 @@ public class MainActivityFragment extends Fragment {
 
                             } else {
                                 photo.setDislikes(photo.getDislikes() + 1);
-                                photoReference.child(photo.getUrl()).setValue(photo);
-                                userReference.child(photo.getUser()).child(photo.getUrl()).setValue(photo);
-                                photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(dislikeStringKey);
+                                photoReference.child(photoKey).setValue(photo);
+                                userReference.child(photo.getUser()).child(photoKey).setValue(photo);
+                                photoReference.child(photoKey).child("Votes").child(userId).setValue(dislikeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
                         }
@@ -191,10 +192,11 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onRightCardExit(Object dataObject) {
                 final Photo photo = (Photo) dataObject;
+                final String photoKey = photo.getUrl().substring(0, photo.getUrl().length() -5);
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
                 if (!userId.equals(photo.getUser())) {
-                    photoReference.child(photo.getUrl()).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    photoReference.child(photoKey).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
@@ -203,16 +205,16 @@ public class MainActivityFragment extends Fragment {
                                 } else {
                                     photo.setLikes(photo.getLikes() + 1);
                                     photo.setDislikes(photo.getDislikes() - 1);
-                                    photoReference.child(photo.getUrl()).setValue(photo);
-                                    photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(likeStringKey);
+                                    photoReference.child(photoKey).setValue(photo);
+                                    photoReference.child(photoKey).child("Votes").child(userId).setValue(likeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is dislike");
                                 }
 
                             } else {
                                 photo.setLikes(photo.getLikes() + 1);
-                                photoReference.child(photo.getUrl()).setValue(photo);
-                                photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(likeStringKey);
+                                photoReference.child(photoKey).setValue(photo);
+                                photoReference.child(photoKey).child("Votes").child(userId).setValue(likeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
                         }
