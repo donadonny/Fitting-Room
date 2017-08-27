@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,17 +24,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
     FloatingActionButton fab;
-    FloatingActionButton likeButton;
-    FloatingActionButton dislikeButton;
-    FloatingActionButton reportButton;
+    FloatingActionButton likeButton, dislikeButton, reportButton;
 
     SwipeFlingAdapterView swipeFlingAdapterView;
     SwipeViewAdapter swipeViewAdapter;
@@ -59,6 +59,8 @@ public class MainActivityFragment extends Fragment {
     public static final int RC_SIGN_IN = 1;
     private InterstitialAd mInterstitialAd;
     private Boolean showAd = false;
+    private View rootView;
+    private Boolean isReported =  false;
 
     /**
      * Constructor.
@@ -70,14 +72,25 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        likeButton = rootView.findViewById(R.id.thumbs_up_fab);
-        dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
-//            For firebase auth
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        isUserLoggedIn();
+
+        initializeBasicSetup();
+
+        initializeFlingAdapterView();
+
+        initializeAd();
+
+        return rootView;
+    }
+
+    /**
+     * Checks if the user is logged in. If not, then the user is prompt to log in.
+     * */
+    private void isUserLoggedIn() {
+        //For firebase auth
         mAuth = FirebaseAuth.getInstance();
-        mAdView = (AdView) rootView.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,18 +117,29 @@ public class MainActivityFragment extends Fragment {
 
             }
         };
+    }
 
+    /**
+     * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
+     * */
+    private void initializeBasicSetup() {
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
 
-        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
+        //Native banner ad
+        mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
-        swipeFlingAdapterView = rootView.findViewById(R.id.frame);
+        //Fab buttons
+        likeButton = rootView.findViewById(R.id.thumbs_up_fab);
+        dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
+        reportButton = rootView.findViewById(R.id.report_button_fab);
+
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 swipeFlingAdapterView.getTopCardListener().selectLeft();
-
             }
         });
 
@@ -126,9 +150,27 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isReported = true;
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+            }
+        });
+    }
+
+    /**
+     * Initializes FlingAdapterView.
+     * */
+    private void initializeFlingAdapterView() {
+        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
+
+        swipeFlingAdapterView = rootView.findViewById(R.id.frame);
+
+        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
+
         //set the listener and the adapter
         swipeFlingAdapterView.setAdapter(swipeViewAdapter);
-
 
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -145,20 +187,54 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onLeftCardExit(Object dataObject) {
                 final Photo photo = (Photo) dataObject;
+                final String name = photo.getUrl().replace(".webp","");
                 final String dislikeStringKey = "dislike";
                 final String likeStringKey = "like";
-                if (!userId.equals(photo.getUser())) {
+                if(isReported) {
+                    final DatabaseReference reportsRef = firebaseDatabase.getReference().child("Reports");
+                    final Query query = reportsRef.child(name);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if(snapshot.exists()) {
+                                if(!snapshot.child("reported_by").child(userId).exists()) {
+                                    Log.d(LOG_TAG, "User already reported photo.");
+                                } else {
+                                    long numReports = (long) snapshot.child("numReports").getValue();
+                                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
+                                    photoReference.child(name).child("reports").setValue(numReports + 1);
+                                    reportsRef.child(name).child("numReports").setValue(numReports + 1);
+                                    reportsRef.child(name).child("reported_by").child(userId).setValue(timeStamp);
+                                    Log.d(LOG_TAG, "Another report add.");
+                                }
+                            } else {
+                                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
+                                HashMap<String, String> reports = new HashMap<String, String>();
+                                reports.put(userId, timeStamp);
+                                Report report = new Report(1, reports);
+                                reportsRef.child(name).setValue(report);
+                                photoReference.child(name).child("reports").setValue(1);
+                                Log.d(LOG_TAG, "A new report.");
+                            }
+                        }
 
-                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+                        }
+                    });
+                } else if(!userId.equals(photo.getUser())) {
+                    Query query = photoReference.child(name).child("Votes").child(userId);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 if (snapshot.getValue().toString().equals(likeStringKey)) {
                                     photo.setLikes(photo.getLikes() - 1);
                                     photo.setDislikes(photo.getDislikes() + 1);
-                                    photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                    userReference.child(photo.getUser()).child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(dislikeStringKey);
+                                    photoReference.child(name).setValue(photo);
+                                    userReference.child(photo.getUser()).child(name).setValue(photo);
+                                    photoReference.child(name).child("Votes").child(userId).setValue(dislikeStringKey);
 
                                     Log.d(LOG_TAG, "snapshot value is like");
                                 } else {
@@ -167,9 +243,9 @@ public class MainActivityFragment extends Fragment {
 
                             } else {
                                 photo.setDislikes(photo.getDislikes() + 1);
-                                photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                userReference.child(photo.getUser()).child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(dislikeStringKey);
+                                photoReference.child(name).setValue(photo);
+                                userReference.child(photo.getUser()).child(name).setValue(photo);
+                                photoReference.child(name).child("Votes").child(userId).setValue(dislikeStringKey);
                                 Log.d(LOG_TAG, "snapshot value does not exist");
                             }
                         }
@@ -289,12 +365,7 @@ public class MainActivityFragment extends Fragment {
                 Log.d(LOG_TAG, "Item clicked");
             }
         });
-
-        initializeAd();
-
-        return rootView;
     }
-
 
     /**
      * Initializes Ad.
