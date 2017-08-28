@@ -35,6 +35,8 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Time it takes user to view photos
 
 ### Known bugs/ to fix:
+* Get rid of unused libraries (ex autofittextview and everything that old swipecardsview (diolor) used)
+* App crashes on launch
 * Text from next photo shows under the current photo if next photo text length is longer than current photo
 * Improve layout
    * Make it nice
@@ -80,6 +82,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 
 ###### Credit to
-* Diolor for SwipeCards Layout
+* Janishar for Placeholderview Library
 * Google for the Google Libraries used
 * Ben Manes for the Dependency Updates library
