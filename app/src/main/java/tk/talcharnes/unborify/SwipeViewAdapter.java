@@ -74,20 +74,6 @@ public class SwipeViewAdapter extends ArrayAdapter<Photo> {
         occastion_subtitle.setText(occastion_subtitle_string);
         occastion_subtitle.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
 
-//        final Button reportButton = (Button) convertView.findViewById(R.id.reportButton);
-//        reportButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                photo.setReports(photo.getReports() + 1);
-//                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//                final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
-//                photoReference.child(photo.getUrl()).setValue(photo);
-//                reportButton.setVisibility(View.GONE);
-//            }
-//        });
-
-        // Return the completed view to render on screen
-
         return convertView;
     }
 
