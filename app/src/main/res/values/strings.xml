@@ -16,7 +16,7 @@
     <string name="user_photo">User Photo</string>
     <string name="submit">Submit</string>
     <string name="title_activity_my_photos">MyPhotos</string>
-    <string name="occasion_for_outfit">Occasion for outfit</string>
+    <string name="occasion_for_outfit">Title for outfit</string>
     <string name="uploading">Uploading</string>
     <string name="upload_failed_error_string">Uh-Oh! Upload failed, please try again later!</string>
     <string name="signing_out">Signing out</string>

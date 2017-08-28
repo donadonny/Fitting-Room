@@ -270,17 +270,24 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
     private boolean checkEditTextNotNull(){
          photoDescription =  photo_description_edit_text.getText().toString();
+        int photoDescriptionLength = photoDescription.length();
         boolean editTextVerifiedForUpload;
-        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescription.length() <= 140){
+        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescriptionLength <= 40){
             editTextVerifiedForUpload = true;
         }
-
+        else if (photoDescriptionLength > 40){
+            int tooLongByThisManyCharacters = photoDescriptionLength - 40;
+            photo_description_edit_text.setError("Please remove " + tooLongByThisManyCharacters + " characters");
+            editTextVerifiedForUpload = false;
+        }
         else{
             photo_description_edit_text.setError(getString(R.string.occasion_cannot_be_empty_string));
             editTextVerifiedForUpload = false;
         }
             return  editTextVerifiedForUpload;
     }
+
+
     private void removeImageOnClick(){
         userImageToUploadView.setOnClickListener(new View.OnClickListener() {
             @Override

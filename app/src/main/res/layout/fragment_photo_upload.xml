@@ -8,9 +8,9 @@
     tools:context="tk.talcharnes.unborify.PhotoUploadActivityFragment"
     tools:showIn="@layout/activity_photo_upload">
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:tooltipText="Add photo"
         android:gravity="top"
         android:src="@drawable/ic_add_a_photo_black_48dp"
         android:id="@+id/uploadedPhoto"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/occasion_for_outfit"
         android:id="@+id/photo_description_edit_text"
-        android:maxLength="140"/>
+        android:maxLength="40"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
