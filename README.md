@@ -35,9 +35,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Time it takes user to view photos
 
 ### Known bugs/ to fix:
-* Gets repeat photos
-* Get rid of unused libraries (ex autofittextview and everything that old swipecardsview (diolor) used)
-* App crashes on launch
 * Text from next photo shows under the current photo if next photo text length is longer than current photo
 * Improve layout
    * Make it nice
