@@ -33,7 +33,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Have my account section with photos
  * Set up rating system for user likes or dislikes
  * Create catchy launcher icon 
- * Localize all strings
  * Make a progress bar for user to see photo upload progress
  * Decreased image size by up to 33 times with no noticeable image quality loss in order to reduce:
      * Server storage space
@@ -46,7 +45,10 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Make it nice
    * Decide what to do with add photo fab
    * Make tablet layout
+* Improve looks of native ads
+* Increase app performance
 * Reinstate report and voting functionality
+* Localize all strings
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
 ```java
  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
