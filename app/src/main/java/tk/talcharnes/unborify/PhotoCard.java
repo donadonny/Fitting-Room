@@ -136,13 +136,15 @@ public class PhotoCard {
      * This function records the user's vote in the database.
      * */
     private void setVote(final String rating) {
+        final String userID = mUserId;
+        Log.d(LOG_TAG, "<------------------"+userID+"---------------------->");
         if (!mUserId.equals(mPhoto.getUser())) {
             final String name = mPhoto.getUrl().replace(".webp", "");
             mPhotoReference.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("votes").child(mUserId).exists()) {
-                        String uRating = (dataSnapshot.child("votes").child(mUserId).getValue()+"");
+                    if(dataSnapshot.child("votes").child(userID).exists()) {
+                        String uRating = (dataSnapshot.child("votes").child(userID).getValue()+"");
                         if(uRating.equals(rating)) {
                             Log.d(LOG_TAG, "The already User " + rating + " the photo.");
                         } else {
@@ -151,12 +153,12 @@ public class PhotoCard {
                             long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
                             mPhotoReference.child(name).child(rating).setValue(ratingValue + 1);
                             mPhotoReference.child(name).child(rating2).setValue(ratingValue2 - 1);
-                            mPhotoReference.child(name).child("votes").child(mUserId).setValue(rating);
+                            mPhotoReference.child(name).child("votes").child(userID).setValue(rating);
                         }
                     } else {
                         long ratingValue = (long) dataSnapshot.child(rating).getValue();
                         mPhotoReference.child(name).child(rating).setValue(ratingValue + 1);
-                        mPhotoReference.child(name).child("votes").child(mUserId).setValue(rating);
+                        mPhotoReference.child(name).child("votes").child(userID).setValue(rating);
                         Log.d(LOG_TAG, "The User " + rating + " the photo.");
                     }
                 }
