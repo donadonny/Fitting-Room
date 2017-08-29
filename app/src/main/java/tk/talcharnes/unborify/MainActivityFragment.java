@@ -48,7 +48,7 @@ public class MainActivityFragment extends Fragment {
     private String userId;
     private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+    final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
     DatabaseReference reportRef = firebaseDatabase.getReference().child("Reports");
     DatabaseReference userReference = firebaseDatabase.getReference().child("users");
 
@@ -205,6 +205,8 @@ public class MainActivityFragment extends Fragment {
     private void getPhotos() {
         mContext = getContext();
 
+        final long startTime = System.currentTimeMillis();
+
         Query query = (oldestPostId.isEmpty()) ?
                 photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
                 photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
@@ -217,6 +219,7 @@ public class MainActivityFragment extends Fragment {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         if(len != 0 || firstTime) {
                             Photo photo = child.getValue(Photo.class);
+                            final DatabaseReference photoRef = photoReference.child(photo.getUrl().replace(".webp",""));
                             mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
                                     photoReference, reportRef));
                             oldestPostId = photo.getUrl();
@@ -226,6 +229,8 @@ public class MainActivityFragment extends Fragment {
                     }
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
+                    final long endTime = System.currentTimeMillis();
+                    System.out.println("<------------------------------------> Total execution time: " + (endTime - startTime) );
                 }
             }
 
@@ -235,6 +240,7 @@ public class MainActivityFragment extends Fragment {
                 Log.w(LOG_TAG, "Failed to read value.", error.toException());
             }
         });
+
     }
 
     /**
