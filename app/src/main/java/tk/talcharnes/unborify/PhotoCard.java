@@ -77,6 +77,7 @@ public class PhotoCard {
     static boolean isAd = false;
 
 
+
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
         mContext = context;
@@ -148,11 +149,11 @@ public class PhotoCard {
      * This function handles when the Card View is swiped left.
      * */
     @SwipeOut
-    private void onSwipedOut(){
+    private void onSwipedOut() {
         //Log.d("EVENT", "onSwipedOut");
         final boolean itsAnAd = isAd;
-        if(!itsAnAd) {
-            if (isReported) {
+        if (!itsAnAd) {
+            if (isReported != null && isReported) {
                 isReported = false;
                 setReport();
             } else {
@@ -198,12 +199,12 @@ public class PhotoCard {
      * */
     private void setVote(final String rating) {
         final boolean itsAnAd = isAd;
-        if(!itsAnAd) {
+        if (!itsAnAd) {
             final String userID = mUserId;
-            Log.d(LOG_TAG, "<------------------" + userID + "---------------------->");
+            final String name = mPhoto.getUrl().replace(".webp", "");
+            final DatabaseReference chosenPhoto = mPhotoReference.child(name);
             if (!mUserId.equals(mPhoto.getUser())) {
-                final String name = mPhoto.getUrl().replace(".webp", "");
-                mPhotoReference.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.child("votes").child(userID).exists()) {
@@ -214,14 +215,14 @@ public class PhotoCard {
                                 String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
                                 long ratingValue = (long) dataSnapshot.child(rating).getValue();
                                 long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
-                                mPhotoReference.child(name).child(rating).setValue(ratingValue + 1);
-                                mPhotoReference.child(name).child(rating2).setValue(ratingValue2 - 1);
-                                mPhotoReference.child(name).child("votes").child(userID).setValue(rating);
+                                chosenPhoto.child(rating).setValue(ratingValue + 1);
+                                chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
+                                chosenPhoto.child("votes").child(userID).setValue(rating);
                             }
                         } else {
-                            long ratingValue = (long) dataSnapshot.child(rating).getValue();
-                            mPhotoReference.child(name).child(rating).setValue(ratingValue + 1);
-                            mPhotoReference.child(name).child("votes").child(userID).setValue(rating);
+                            final long ratingValue = (long) dataSnapshot.child(rating).getValue();
+                            chosenPhoto.child(rating).setValue(ratingValue + 1);
+                            chosenPhoto.child("votes").child(userID).setValue(rating);
                             Log.d(LOG_TAG, "The User " + rating + " the photo.");
                         }
                     }
@@ -236,10 +237,9 @@ public class PhotoCard {
             }
         }
     }
-
-    /**
-     * This function changes the value of isReported.
-     * */
+        /**
+         * This function changes the value of isReported.
+         * */
     public static void setReported() {
         final boolean itsAnAd = isAd;
         if(!itsAnAd) {
