@@ -6,10 +6,17 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Put app on Google play
  * Create tests
  * Create Terms of Service
- * Have interstitial or native ads show up after x - swipes 
-      * probably native ads should be better if they show up as a card that can be swiped rather than an interstitial which will slow down user usage
  * Refactor code
      * Take deep look and delete ALL non-necessary code (including things that are not commented out and/or listed as unused by Android Studio)
+* Add comments section to each photo
+     * make comments viewable by original poster
+     * Perhaps make a my activity section in user profile section of app
+* Add badges
+     * x amount of photos uploaded
+     * x amount of photos rated
+     * x amount positive rated photos (both sent and received)
+     * x amount negative rated photos (both sent and received)
+     * Surpassed x% positive and negative rating on a photo.
 
 ### Done
  * Set up swipe card layout
@@ -35,25 +42,11 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Time it takes user to view photos
 
 ### Known bugs/ to fix:
-* Text from next photo shows under the current photo if next photo text length is longer than current photo
 * Improve layout
    * Make it nice
    * Decide what to do with add photo fab
    * Make tablet layout
-* Reinstate report button functionality
-   * Adds section to database for reports, photo, and username only (easier viewing)
-   * Allows for querying based on amount of reports (so higher amount of reports will show up first)
-      * Name idea for key is NUMBER-OF-REPORTS_photoURL
-   * Clicking report will report the photo and go on to the next photo without voting
-* Add comments to each photo
-     * make comments viewable by original poster
-     * Perhaps make a my activity section in user profile section of app
-* Add badges
-     * x amount of photos uploaded
-     * x amount of photos rated
-     * x amount positive rated photos (both sent and received)
-     * x amount negative rated photos (both sent and received)
-     * Surpassed x% positive and negative rating on a photo.
+* Reinstate report and voting functionality
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
 ```java
  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
