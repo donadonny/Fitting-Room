@@ -184,27 +184,28 @@ public class PhotoCard {
      * This function records the user's report in the database.
      * */
     private void setReport() {
+        final String userID = mUserId;
         final String name = mPhoto.getUrl().replace(".webp","");
-        System.out.println("------------------------------"+name+"----------------------------------");
+        System.out.println("------------------------------"+userID+"----------------------------------");
         final Query query = mReportsRef.child(name);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if(snapshot.exists()) {
-                    if(snapshot.child("reported_by").child(mUserId).exists()) {
+                    if(snapshot.child("reported_by").child(userID).exists()) {
                         Log.d(LOG_TAG, "User already reported photo.");
                     } else {
                         long numReports = (long) snapshot.child("numReports").getValue();
                         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
                         mPhotoReference.child(name).child("reports").setValue(numReports + 1);
                         mReportsRef.child(name).child("numReports").setValue(numReports + 1);
-                        mReportsRef.child(name).child("reported_by").child(mUserId).setValue(timeStamp);
+                        mReportsRef.child(name).child("reported_by").child(userID).setValue(timeStamp);
                         Log.d(LOG_TAG, "Another report add.");
                     }
                 } else {
                     String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
                     HashMap<String, String> reports = new HashMap<String, String>();
-                    reports.put(mUserId, timeStamp);
+                    reports.put(userID, timeStamp);
                     Report report = new Report(1, reports);
                     mReportsRef.child(name).setValue(report);
                     mPhotoReference.child(name).child("reports").setValue(1);
