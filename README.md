@@ -35,6 +35,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Time it takes user to view photos
 
 ### Known bugs/ to fix:
+* Gets repeat photos
 * Get rid of unused libraries (ex autofittextview and everything that old swipecardsview (diolor) used)
 * App crashes on launch
 * Text from next photo shows under the current photo if next photo text length is longer than current photo
@@ -42,7 +43,11 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Make it nice
    * Decide what to do with add photo fab
    * Make tablet layout
-   * Switch cards to this layout: https://blog.mindorks.com/android-tinder-swipe-view-example-3eca9b0d4794
+* Reinstate report button functionality
+   * Adds section to database for reports, photo, and username only (easier viewing)
+   * Allows for querying based on amount of reports (so higher amount of reports will show up first)
+      * Name idea for key is NUMBER-OF-REPORTS_photoURL
+   * Clicking report will report the photo and go on to the next photo without voting
 * Add comments to each photo
      * make comments viewable by original poster
      * Perhaps make a my activity section in user profile section of app
@@ -82,6 +87,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 
 ###### Credit to
+
 * Janishar for Placeholderview Library
 * Google for the Google Libraries used
 * Ben Manes for the Dependency Updates library
