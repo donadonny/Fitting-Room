@@ -73,6 +73,9 @@ public class PhotoCard {
         mReportsRef = reportsRef;
     }
 
+    /**
+     * This function sets up the Card View with an image, name, and the ratings.
+     * */
     @Resolve
     private void onResolved(){
         String url = mPhoto.getUrl();
@@ -90,18 +93,27 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * This function handles when the Card View is clicked.
+     * */
     @Click(R.id.photoImageView)
     private void onClick(){
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
     }
 
+    /**
+     * This function handles when the Card View is swiped right.
+     * */
     @SwipeIn
     private void onSwipeIn(){
         //Log.d("EVENT", "onSwipedIn");
         setVote("likes");
     }
 
+    /**
+     * This function handles when the Card View is swiped left.
+     * */
     @SwipeOut
     private void onSwipedOut(){
         //Log.d("EVENT", "onSwipedOut");
@@ -113,21 +125,33 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * This function handles when the Card View is moving right.
+     * */
     @SwipeInState
     private void onSwipeInState(){
         //Log.d("EVENT", "onSwipeInState");
     }
 
+    /**
+     * This function handles when the Card View is moving left.
+     * */
     @SwipeOutState
     private void onSwipeOutState(){
         //Log.d("EVENT", "onSwipeOutState");
     }
 
+    /**
+     * Don't know what this does.
+     * */
     @SwipeCancelState
     private void onSwipeCancelState(){
         Log.d("EVENT", "onSwipeCancelState");
     }
 
+    /**
+     * This function records the direction of user touches.
+     * */
     @SwipingDirection
     private void onSwipingDirection(SwipeDirection direction) {
         Log.d(LOG_TAG, "SwipingDirection " + direction.name());
@@ -185,27 +209,28 @@ public class PhotoCard {
      * This function records the user's report in the database.
      * */
     private void setReport() {
+        final String userID = mUserId;
         final String name = mPhoto.getUrl().replace(".webp","");
-        System.out.println("------------------------------"+name+"----------------------------------");
+        System.out.println("------------------------------"+userID+"----------------------------------");
         final Query query = mReportsRef.child(name);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if(snapshot.exists()) {
-                    if(snapshot.child("reported_by").child(mUserId).exists()) {
+                    if(snapshot.child("reported_by").child(userID).exists()) {
                         Log.d(LOG_TAG, "User already reported photo.");
                     } else {
                         long numReports = (long) snapshot.child("numReports").getValue();
                         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
                         mPhotoReference.child(name).child("reports").setValue(numReports + 1);
                         mReportsRef.child(name).child("numReports").setValue(numReports + 1);
-                        mReportsRef.child(name).child("reported_by").child(mUserId).setValue(timeStamp);
+                        mReportsRef.child(name).child("reported_by").child(userID).setValue(timeStamp);
                         Log.d(LOG_TAG, "Another report add.");
                     }
                 } else {
                     String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
                     HashMap<String, String> reports = new HashMap<String, String>();
-                    reports.put(mUserId, timeStamp);
+                    reports.put(userID, timeStamp);
                     Report report = new Report(1, reports);
                     mReportsRef.child(name).setValue(report);
                     mPhotoReference.child(name).child("reports").setValue(1);
