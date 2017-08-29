@@ -210,6 +210,9 @@ public class MainActivityFragment extends Fragment {
 
         final long startTime = System.currentTimeMillis();
 
+        final Photo adViewPhoto = new Photo();
+        adViewPhoto.setAd(true);
+
         Query query = (oldestPostId.isEmpty()) ?
                 photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
                 photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
@@ -227,13 +230,12 @@ public class MainActivityFragment extends Fragment {
                                     photoReference, reportRef));
                             oldestPostId = photo.getUrl();
                             firstTime = false;
+                        } else if(len == 0 && !firstTime) {
+                            mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId, photoReference,
+                                    reportRef));
                         }
                         len++;
                     }
-                    Photo adViewPhoto = new Photo();
-                    adViewPhoto.setAd(true);
-                    mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId, photoReference,
-                            reportRef));
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
