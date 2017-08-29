@@ -72,6 +72,9 @@ public class PhotoCard {
         mReportsRef = reportsRef;
     }
 
+    /**
+     * This function sets up the Card View with an image, name, and the ratings.
+     * */
     @Resolve
     private void onResolved(){
         String url = mPhoto.getUrl();
@@ -89,18 +92,27 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * This function handles when the Card View is clicked.
+     * */
     @Click(R.id.photoImageView)
     private void onClick(){
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
     }
 
+    /**
+     * This function handles when the Card View is swiped right.
+     * */
     @SwipeIn
     private void onSwipeIn(){
         //Log.d("EVENT", "onSwipedIn");
         setVote("likes");
     }
 
+    /**
+     * This function handles when the Card View is swiped left.
+     * */
     @SwipeOut
     private void onSwipedOut(){
         //Log.d("EVENT", "onSwipedOut");
@@ -112,21 +124,33 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * This function handles when the Card View is moving right.
+     * */
     @SwipeInState
     private void onSwipeInState(){
         //Log.d("EVENT", "onSwipeInState");
     }
 
+    /**
+     * This function handles when the Card View is moving left.
+     * */
     @SwipeOutState
     private void onSwipeOutState(){
         //Log.d("EVENT", "onSwipeOutState");
     }
 
+    /**
+     * Don't know what this does.
+     * */
     @SwipeCancelState
     private void onSwipeCancelState(){
         Log.d("EVENT", "onSwipeCancelState");
     }
 
+    /**
+     * This function records the direction of user touches.
+     * */
     @SwipingDirection
     private void onSwipingDirection(SwipeDirection direction) {
         Log.d(LOG_TAG, "SwipingDirection " + direction.name());
