@@ -1,10 +1,13 @@
 package tk.talcharnes.unborify;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,27 +25,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.mindorks.placeholderview.SwipeDecor;
+import com.mindorks.placeholderview.SwipePlaceHolderView;
+import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
+    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
     FloatingActionButton fab;
     FloatingActionButton likeButton, dislikeButton, reportButton;
 
-    SwipeFlingAdapterView swipeFlingAdapterView;
-    SwipeViewAdapter swipeViewAdapter;
-    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    private AdView mAdView;
-    private AdRequest mAdRequest;
     ArrayList<Photo> photoList;
     private int i = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -50,8 +49,8 @@ public class MainActivityFragment extends Fragment {
     private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+    DatabaseReference reportRef = firebaseDatabase.getReference().child("Reports");
     DatabaseReference userReference = firebaseDatabase.getReference().child("users");
-    boolean initializePhotoList;
 
     //        For Firebase Auth
     private FirebaseAuth mAuth;
@@ -61,6 +60,9 @@ public class MainActivityFragment extends Fragment {
     private Boolean showAd = false;
     private View rootView;
     private Boolean isReported =  false;
+    private SwipePlaceHolderView mSwipeView;
+    private Context mContext;
+    private Boolean firstTime = true;
 
     /**
      * Constructor.
@@ -78,7 +80,7 @@ public class MainActivityFragment extends Fragment {
 
         initializeBasicSetup();
 
-        initializeFlingAdapterView();
+        initializeSwipePlaceHolderView();
 
         initializeAd();
 
@@ -127,7 +129,7 @@ public class MainActivityFragment extends Fragment {
         photoList = new ArrayList<Photo>();
 
         //Native banner ad
-        mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -139,230 +141,98 @@ public class MainActivityFragment extends Fragment {
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                swipeFlingAdapterView.getTopCardListener().selectLeft();
+                mSwipeView.doSwipe(false);
             }
         });
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                swipeFlingAdapterView.getTopCardListener().selectRight();
+                mSwipeView.doSwipe(true);
             }
         });
 
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isReported = true;
-                swipeFlingAdapterView.getTopCardListener().selectLeft();
+                PhotoCard.setReported();
+                mSwipeView.doSwipe(false);
             }
         });
     }
 
     /**
-     * Initializes FlingAdapterView.
+     * Initializes SwipePlaceHolderView.
      * */
-    private void initializeFlingAdapterView() {
-        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
+    private void initializeSwipePlaceHolderView() {
+        mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
-        swipeFlingAdapterView = rootView.findViewById(R.id.frame);
+        int bottomMargin = Utils.dpToPx(180);
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
+        mSwipeView.getBuilder()
+                .setDisplayViewCount(3)
+                .setIsUndoEnabled(true)
+                .setHeightSwipeDistFactor(10)
+                .setWidthSwipeDistFactor(5)
+                .setSwipeDecor(new SwipeDecor()
+                        .setViewWidth((int)(windowSize.x*.9))
+                        .setViewHeight(((int)(windowSize.y*.9)) - bottomMargin)
+                        .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
+                        .setPaddingTop(20)
+                        .setRelativeScale(0.01f)
+                        .setSwipeInMsgLayoutId(R.layout.photo_swipe_in_msg_view)
+                        .setSwipeOutMsgLayoutId(R.layout.photo_swipe_out_msg_view));
+        getPhotos();
 
-        swipeViewAdapter = new SwipeViewAdapter(getActivity(), photoList);
-
-        //set the listener and the adapter
-        swipeFlingAdapterView.setAdapter(swipeViewAdapter);
-
-        swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+        mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
             @Override
-            public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
-                photoList.remove(0);
-                if(photoList.isEmpty() && !oldestPostId.isEmpty()) {
-                    showAd = true;
-                }
-                swipeViewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onLeftCardExit(Object dataObject) {
-                final Photo photo = (Photo) dataObject;
-                final String name = photo.getUrl().replace(".webp","");
-                final String dislikeStringKey = "dislike";
-                final String likeStringKey = "like";
-                if(isReported) {
-                    final DatabaseReference reportsRef = firebaseDatabase.getReference().child("Reports");
-                    final Query query = reportsRef.child(name);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if(snapshot.exists()) {
-                                if(!snapshot.child("reported_by").child(userId).exists()) {
-                                    Log.d(LOG_TAG, "User already reported photo.");
-                                } else {
-                                    long numReports = (long) snapshot.child("numReports").getValue();
-                                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                                    photoReference.child(name).child("reports").setValue(numReports + 1);
-                                    reportsRef.child(name).child("numReports").setValue(numReports + 1);
-                                    reportsRef.child(name).child("reported_by").child(userId).setValue(timeStamp);
-                                    Log.d(LOG_TAG, "Another report add.");
-                                }
-                            } else {
-                                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                                HashMap<String, String> reports = new HashMap<String, String>();
-                                reports.put(userId, timeStamp);
-                                Report report = new Report(1, reports);
-                                reportsRef.child(name).setValue(report);
-                                photoReference.child(name).child("reports").setValue(1);
-                                Log.d(LOG_TAG, "A new report.");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                        }
-                    });
-                } else if(!userId.equals(photo.getUser())) {
-                    Query query = photoReference.child(name).child("Votes").child(userId);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                if (snapshot.getValue().toString().equals(likeStringKey)) {
-                                    photo.setLikes(photo.getLikes() - 1);
-                                    photo.setDislikes(photo.getDislikes() + 1);
-                                    photoReference.child(name).setValue(photo);
-                                    userReference.child(photo.getUser()).child(name).setValue(photo);
-                                    photoReference.child(name).child("Votes").child(userId).setValue(dislikeStringKey);
-
-                                    Log.d(LOG_TAG, "snapshot value is like");
-                                } else {
-                                    Log.d(LOG_TAG, "snapshot value is already dislike");
-                                }
-
-                            } else {
-                                photo.setDislikes(photo.getDislikes() + 1);
-                                photoReference.child(name).setValue(photo);
-                                userReference.child(photo.getUser()).child(name).setValue(photo);
-                                photoReference.child(name).child("Votes").child(userId).setValue(dislikeStringKey);
-                                Log.d(LOG_TAG, "snapshot value does not exist");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                        }
-
-                    });
-
-                } else {
-                    Log.d(LOG_TAG, "User trying to vote on own photo");
-                }
-                Log.d(LOG_TAG, "Left card Exit");
-            }
-
-            @Override
-            public void onRightCardExit(Object dataObject) {
-                final Photo photo = (Photo) dataObject;
-                final String dislikeStringKey = "dislike";
-                final String likeStringKey = "like";
-                if (!userId.equals(photo.getUser())) {
-                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                if (snapshot.getValue().toString().equals(likeStringKey)) {
-                                    Log.d(LOG_TAG, "snapshot value is already like");
-                                } else {
-                                    photo.setLikes(photo.getLikes() + 1);
-                                    photo.setDislikes(photo.getDislikes() - 1);
-                                    photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                    photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(likeStringKey);
-
-                                    Log.d(LOG_TAG, "snapshot value is dislike");
-                                }
-
-                            } else {
-                                photo.setLikes(photo.getLikes() + 1);
-                                photoReference.child(photo.getUrl().replace(".webp", "")).setValue(photo);
-                                photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId).setValue(likeStringKey);
-                                Log.d(LOG_TAG, "snapshot value does not exist");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                        }
-
-                    });
-                } else {
-                    Log.d(LOG_TAG, "User trying to vote on own photo");
-                }
-
-                Log.d(LOG_TAG, "Right card Exit");
-            }
-
-            /**
-             * This function starts a query calls to retrieve the images.
-             * */
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // TODO: 7/17/2017 Get another chunk of photos (15 or whatever is left in the list. whichever is less).
-
-                // TODO: 7/17/2017 add ads
-                if (mInterstitialAd.isLoaded() && showAd) {
-                    mInterstitialAd.show();
-                    showAd = false;
-                } else {
-                    //Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
-
-                if(photoList.isEmpty()) {
-                    Query query = (oldestPostId.isEmpty()) ?
-                            photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
-                            photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
-
-                    // Read from the database
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            initializePhotoList = true;
-                            addPhotosToArrayList(dataSnapshot);
-                            System.out.println("Got data.");
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-                            // Failed to read value
-                            Log.w(LOG_TAG, "Failed to read value.", error.toException());
-                        }
-                    });
+            public void onItemRemoved(int count) {
+                //do something when the count changes to some specific value.
+                //For Example: Call server to fetch more data when count is zero
+                if (count < 1) {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                    getPhotos();
                 }
             }
-
-            /**
-             * No idea what this does.
-             * */
-            @Override
-            public void onScroll(float v) {
-                View view = swipeFlingAdapterView.getSelectedView();
-            /* REMOVE Comments below to add transparency effect on thumbs up/down and rating numbers
-               view.findViewById(R.id.thumb_up).setAlpha(v < 0 ? -v : 0);
-               view.findViewById(R.id.thumb_down).setAlpha(v > 0 ? v : 0);
-               view.findViewById(R.id.amount_thumbs_up).setAlpha(v < 0 ? -v : 0);
-               view.findViewById(R.id.amount_thumbs_down).setAlpha(v > 0 ? v : 0); */
-            }
-
         });
+    }
 
-        // Optionally add an OnItemClickListener
-        swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+    /**
+     * Get photos from the database and adds it to the SwipePlaceHolderView.
+     * */
+    private void getPhotos() {
+        mContext = getContext();
+
+        Query query = (oldestPostId.isEmpty()) ?
+                photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
+                photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
-                Log.d(LOG_TAG, "Item clicked");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    int len = 0;
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if(len != 0 || firstTime) {
+                            Photo photo = child.getValue(Photo.class);
+                            mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
+                                    photoReference, reportRef));
+                            oldestPostId = photo.getUrl();
+                            firstTime = false;
+                        }
+                        len++;
+                    }
+                    System.out.println("Got data.");
+                    mSwipeView.refreshDrawableState();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(LOG_TAG, "Failed to read value.", error.toException());
             }
         });
     }
@@ -407,69 +277,6 @@ public class MainActivityFragment extends Fragment {
                 Log.i("Ads", "onAdClosed");
             }
         });
-    }
-
-    /**
-     * Retrieves and adds photos to the photoList.
-     * */
-    private void addPhotosToArrayList(DataSnapshot dataSnapshot) {
-        for(DataSnapshot child : dataSnapshot.getChildren()) {
-            Photo photo = child.getValue(Photo.class);
-            photoList.add(photo);
-        }
-        if(photoList.size() > 1) {
-            photoList.remove(0);
-        }
-        oldestPostId = photoList.get(photoList.size()-1).getUrl();
-        swipeViewAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * This function records the user's vote in the database.
-     * */
-    private void setVote(final Photo photo, final String rating) {
-        if (!userId.equals(photo.getUser())) {
-            Query query = photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        String value = photo.getVotes().get(userId);
-                        if(value.equals(rating)) {
-                            Log.d(LOG_TAG, "User already " + rating + " this photo.");
-                        } else {
-                            if(rating.equals("like")) {
-                                photo.setLikes(photo.getLikes() + 1);
-                                photo.setDislikes(photo.getDislikes() - 1);
-                            } else {
-                                photo.setLikes(photo.getLikes() - 1);
-                                photo.setDislikes(photo.getDislikes() + 1);
-                            }
-                            //photoReference.child(photo.getUrl()).setValue(photo);
-                            //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
-                        }
-
-                    } else {
-                        if(rating.equals("like")) {
-                            photo.setLikes(photo.getLikes() + 1);
-                        } else {
-                            photo.setDislikes(photo.getDislikes() + 1);
-                        }
-                        //photoReference.child(photo.getUrl()).setValue(photo);
-                        //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
-                        Log.d(LOG_TAG, "snapshot value does not exist");
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                }
-
-            });
-        } else {
-            Log.d(LOG_TAG, "User trying to vote on own photo");
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Old_Files;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -16,6 +16,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+
+import tk.talcharnes.unborify.MyTransformation;
+import tk.talcharnes.unborify.Photo;
+import tk.talcharnes.unborify.R;
 
 /**
  * Created by Tal on 7/2/2017.
