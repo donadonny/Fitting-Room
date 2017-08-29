@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -78,9 +77,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        getScreenMeasurements();
-
+        
         isUserLoggedIn();
 
         initializeBasicSetup();
@@ -224,7 +221,7 @@ public class MainActivityFragment extends Fragment {
                         if (len != 0 || firstTime) {
                             Photo photo = child.getValue(Photo.class);
                             mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
-                                    photoReference, reportRef, heightInDP, widthInDP));
+                                    photoReference, reportRef));
                             oldestPostId = photo.getUrl();
                             firstTime = false;
                         }
@@ -233,7 +230,7 @@ public class MainActivityFragment extends Fragment {
                     Photo adViewPhoto = new Photo();
                     adViewPhoto.setAd(true);
                     mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId, photoReference,
-                            reportRef, heightInDP, widthInDP));
+                            reportRef));
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                 }
@@ -308,13 +305,4 @@ public class MainActivityFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
-    private void getScreenMeasurements() {
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        heightInDP = Math.round(dpHeight);
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        widthInDP = Math.round(dpWidth);
-    }
-
 }

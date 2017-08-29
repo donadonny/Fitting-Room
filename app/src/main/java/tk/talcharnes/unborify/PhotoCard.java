@@ -75,11 +75,10 @@ public class PhotoCard {
     private DatabaseReference mPhotoReference, mReportsRef;
     static Boolean isReported = false;
     static boolean isAd = false;
-    private int mScreenHeightInDP;
-    private int mScreenWidthInDP;
+
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
-                     DatabaseReference photoReference, DatabaseReference reportsRef, int heightInDP, int widthInDP) {
+                     DatabaseReference photoReference, DatabaseReference reportsRef) {
         mContext = context;
         mPhoto = photo;
         mSwipeView = swipeView;
@@ -88,8 +87,7 @@ public class PhotoCard {
         mReportsRef = reportsRef;
         isAd = photo.isAd();
         Log.d(LOG_TAG, "isAd = " + isAd);
-        mScreenHeightInDP = heightInDP;
-        mScreenWidthInDP = widthInDP;
+
     }
 
     /**
