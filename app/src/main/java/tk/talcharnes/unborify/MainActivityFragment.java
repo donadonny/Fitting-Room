@@ -59,14 +59,16 @@ public class MainActivityFragment extends Fragment {
     private InterstitialAd mInterstitialAd;
     private Boolean showAd = false;
     private View rootView;
-    private Boolean isReported =  false;
+    private Boolean isReported = false;
     private SwipePlaceHolderView mSwipeView;
     private Context mContext;
     private Boolean firstTime = true;
+    private int widthInDP;
+    private int heightInDP;
 
     /**
      * Constructor.
-     * */
+     */
     public MainActivityFragment() {
 
     }
@@ -75,7 +77,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+        
         isUserLoggedIn();
 
         initializeBasicSetup();
@@ -84,12 +86,13 @@ public class MainActivityFragment extends Fragment {
 
         initializeAd();
 
+
         return rootView;
     }
 
     /**
      * Checks if the user is logged in. If not, then the user is prompt to log in.
-     * */
+     */
     private void isUserLoggedIn() {
         //For firebase auth
         mAuth = FirebaseAuth.getInstance();
@@ -123,7 +126,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
-     * */
+     */
     private void initializeBasicSetup() {
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
@@ -163,7 +166,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Initializes SwipePlaceHolderView.
-     * */
+     */
     private void initializeSwipePlaceHolderView() {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
@@ -175,8 +178,8 @@ public class MainActivityFragment extends Fragment {
                 .setHeightSwipeDistFactor(10)
                 .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
-                        .setViewWidth((int)(windowSize.x*.9))
-                        .setViewHeight(((int)(windowSize.y*.9)) - bottomMargin)
+                        .setViewWidth((int) (windowSize.x * .9))
+                        .setViewHeight(((int) (windowSize.y * .9)) - bottomMargin)
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
@@ -201,7 +204,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Get photos from the database and adds it to the SwipePlaceHolderView.
-     * */
+     */
     private void getPhotos() {
         mContext = getContext();
 
@@ -214,10 +217,10 @@ public class MainActivityFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     int len = 0;
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        if(len != 0 || firstTime) {
+                        if (len != 0 || firstTime) {
                             Photo photo = child.getValue(Photo.class);
                             final DatabaseReference photoRef = photoReference.child(photo.getUrl().replace(".webp",""));
                             mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
@@ -227,6 +230,10 @@ public class MainActivityFragment extends Fragment {
                         }
                         len++;
                     }
+                    Photo adViewPhoto = new Photo();
+                    adViewPhoto.setAd(true);
+                    mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId, photoReference,
+                            reportRef));
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
@@ -245,7 +252,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Initializes Ad.
-     * */
+     */
     private void initializeAd() {
         mInterstitialAd = new InterstitialAd(getActivity());
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -287,7 +294,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Adds the Auth Listener when the app is started up.
-     * */
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -296,7 +303,7 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Removes the Auth Listener when the app is closed.
-     * */
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -304,5 +311,4 @@ public class MainActivityFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 }

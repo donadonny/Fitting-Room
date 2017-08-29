@@ -2,12 +2,15 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +53,15 @@ public class PhotoCard {
     @View(R.id.likesText)
     private TextView likeTextView;
 
+    @View(R.id.realPhotoSwipeCard)
+    private CardView realPhotoSwipeCard;
+
+    @View(R.id.adPhotoSwipeCard)
+    private CardView adPhotoSwipeCard;
+
+    @View(R.id.nativeAdView)
+    private NativeExpressAdView adView;
+
     @View(R.id.nameText)
     private TextView nameTextView;
 
@@ -61,7 +73,10 @@ public class PhotoCard {
     private SwipePlaceHolderView mSwipeView;
     private String mUserId;
     private DatabaseReference mPhotoReference, mReportsRef;
-    private static Boolean isReported = false;
+    static Boolean isReported = false;
+    static boolean isAd = false;
+
+
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
@@ -71,6 +86,9 @@ public class PhotoCard {
         mUserId = userId;
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
+        isAd = photo.isAd();
+        Log.d(LOG_TAG, "isAd = " + isAd);
+
     }
 
     /**
@@ -78,18 +96,31 @@ public class PhotoCard {
      * */
     @Resolve
     private void onResolved(){
-        String url = mPhoto.getUrl();
-        if(url != null && !url.isEmpty()) {
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(url);
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
-                    .load(storageRef)
-                    .into(photoImageView);
-            String dislikes = "Dislikes: "+mPhoto.getDislikes();
-            dislikeTextView.setText(dislikes);
-            nameTextView.setText(mPhoto.getOccasion_subtitle());
-            String likes = "Likes: "+mPhoto.getLikes();
-            likeTextView.setText(likes);
+
+        final boolean itsAnAd = isAd;
+        if(!itsAnAd) {
+            String url = mPhoto.getUrl();
+            if (url != null && !url.isEmpty()) {
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(url);
+                Glide.with(mContext)
+                        .using(new FirebaseImageLoader())
+                        .load(storageRef)
+                        .into(photoImageView);
+                String dislikes = "Dislikes: " + mPhoto.getDislikes();
+                dislikeTextView.setText(dislikes);
+                nameTextView.setText(mPhoto.getOccasion_subtitle());
+                String likes = "Likes: " + mPhoto.getLikes();
+                likeTextView.setText(likes);
+            }
+        }
+        else {
+
+            realPhotoSwipeCard.setVisibility(android.view.View.GONE);
+            adPhotoSwipeCard.setVisibility(android.view.View.VISIBLE);
+
+
+            AdRequest request = new AdRequest.Builder().build();
+            adView.loadAd(request);
         }
     }
 
@@ -108,20 +139,26 @@ public class PhotoCard {
     @SwipeIn
     private void onSwipeIn(){
         //Log.d("EVENT", "onSwipedIn");
-        setVote("likes");
+        final boolean itsAnAd = isAd;
+        if(!itsAnAd) {
+            setVote("likes");
+        }
     }
 
     /**
      * This function handles when the Card View is swiped left.
      * */
     @SwipeOut
-    private void onSwipedOut(){
+    private void onSwipedOut() {
         //Log.d("EVENT", "onSwipedOut");
-        if(isReported != null && isReported) {
-            isReported = false;
-            setReport();
-        } else {
-            setVote("dislikes");
+        final boolean itsAnAd = isAd;
+        if (!itsAnAd) {
+            if (isReported != null && isReported) {
+                isReported = false;
+                setReport();
+            } else {
+                setVote("dislikes");
+            }
         }
     }
 
@@ -161,30 +198,87 @@ public class PhotoCard {
      * This function records the user's vote in the database.
      * */
     private void setVote(final String rating) {
-        final String userID = mUserId;
-        final String name = mPhoto.getUrl().replace(".webp", "");
-        final DatabaseReference chosenPhoto = mPhotoReference.child(name);
-        if (!mUserId.equals(mPhoto.getUser())) {
-            chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("votes").child(userID).exists()) {
-                        String uRating = (dataSnapshot.child("votes").child(userID).getValue()+"");
-                        if(uRating.equals(rating)) {
-                            Log.d(LOG_TAG, "The already User " + rating + " the photo.");
+        final boolean itsAnAd = isAd;
+        if (!itsAnAd) {
+            final String userID = mUserId;
+            final String name = mPhoto.getUrl().replace(".webp", "");
+            final DatabaseReference chosenPhoto = mPhotoReference.child(name);
+            if (!mUserId.equals(mPhoto.getUser())) {
+                chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.child("votes").child(userID).exists()) {
+                            String uRating = (dataSnapshot.child("votes").child(userID).getValue() + "");
+                            if (uRating.equals(rating)) {
+                                Log.d(LOG_TAG, "The already User " + rating + " the photo.");
+                            } else {
+                                String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
+                                long ratingValue = (long) dataSnapshot.child(rating).getValue();
+                                long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
+                                chosenPhoto.child(rating).setValue(ratingValue + 1);
+                                chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
+                                chosenPhoto.child("votes").child(userID).setValue(rating);
+                            }
                         } else {
-                            String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
-                            long ratingValue = (long) dataSnapshot.child(rating).getValue();
-                            long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
+                            final long ratingValue = (long) dataSnapshot.child(rating).getValue();
                             chosenPhoto.child(rating).setValue(ratingValue + 1);
-                            chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
                             chosenPhoto.child("votes").child(userID).setValue(rating);
+                            Log.d(LOG_TAG, "The User " + rating + " the photo.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+                    }
+                });
+            } else {
+                Log.d(LOG_TAG, "User trying to vote on own photo");
+            }
+        }
+    }
+        /**
+         * This function changes the value of isReported.
+         * */
+    public static void setReported() {
+        final boolean itsAnAd = isAd;
+        if(!itsAnAd) {
+            isReported = true;
+        }
+    }
+
+    /**
+     * This function records the user's report in the database.
+     * */
+    private void setReport() {
+        final boolean itsAnAd = isAd;
+        if (!itsAnAd) {
+            final String userID = mUserId;
+            final String name = mPhoto.getUrl().replace(".webp", "");
+            System.out.println("------------------------------" + userID + "----------------------------------");
+            final Query query = mReportsRef.child(name);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        if (snapshot.child("reported_by").child(userID).exists()) {
+                            Log.d(LOG_TAG, "User already reported photo.");
+                        } else {
+                            long numReports = (long) snapshot.child("numReports").getValue();
+                            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
+                            mPhotoReference.child(name).child("reports").setValue(numReports + 1);
+                            mReportsRef.child(name).child("numReports").setValue(numReports + 1);
+                            mReportsRef.child(name).child("reported_by").child(userID).setValue(timeStamp);
+                            Log.d(LOG_TAG, "Another report add.");
                         }
                     } else {
-                        final long ratingValue = (long) dataSnapshot.child(rating).getValue();
-                        chosenPhoto.child(rating).setValue(ratingValue + 1);
-                        chosenPhoto.child("votes").child(userID).setValue(rating);
-                        Log.d(LOG_TAG, "The User " + rating + " the photo.");
+                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
+                        HashMap<String, String> reports = new HashMap<String, String>();
+                        reports.put(userID, timeStamp);
+                        Report report = new Report(1, reports);
+                        mReportsRef.child(name).setValue(report);
+                        mPhotoReference.child(name).child("reports").setValue(1);
+                        Log.d(LOG_TAG, "A new report.");
                     }
                 }
 
@@ -193,55 +287,6 @@ public class PhotoCard {
                     Log.d(LOG_TAG, "cancelled with error - " + databaseError);
                 }
             });
-        } else {
-            Log.d(LOG_TAG, "User trying to vote on own photo");
         }
-    }
-
-    /**
-     * This function changes the value of isReported.
-     * */
-    public static void setReported() {
-        isReported = true;
-    }
-
-    /**
-     * This function records the user's report in the database.
-     * */
-    private void setReport() {
-        final String userID = mUserId;
-        final String name = mPhoto.getUrl().replace(".webp","");
-        System.out.println("------------------------------"+userID+"----------------------------------");
-        final Query query = mReportsRef.child(name);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    if(snapshot.child("reported_by").child(userID).exists()) {
-                        Log.d(LOG_TAG, "User already reported photo.");
-                    } else {
-                        long numReports = (long) snapshot.child("numReports").getValue();
-                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                        mPhotoReference.child(name).child("reports").setValue(numReports + 1);
-                        mReportsRef.child(name).child("numReports").setValue(numReports + 1);
-                        mReportsRef.child(name).child("reported_by").child(userID).setValue(timeStamp);
-                        Log.d(LOG_TAG, "Another report add.");
-                    }
-                } else {
-                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                    HashMap<String, String> reports = new HashMap<String, String>();
-                    reports.put(userID, timeStamp);
-                    Report report = new Report(1, reports);
-                    mReportsRef.child(name).setValue(report);
-                    mPhotoReference.child(name).child("reports").setValue(1);
-                    Log.d(LOG_TAG, "A new report.");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-            }
-        });
     }
 }
