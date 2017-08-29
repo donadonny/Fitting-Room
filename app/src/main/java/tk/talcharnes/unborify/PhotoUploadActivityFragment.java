@@ -270,6 +270,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
     private boolean checkEditTextNotNull(){
          photoDescription =  photo_description_edit_text.getText().toString();
+
         int photoDescriptionLength = photoDescription.length();
         boolean editTextVerifiedForUpload;
         if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescriptionLength <= 40){
@@ -286,8 +287,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         }
             return  editTextVerifiedForUpload;
     }
-
-
+  
     private void removeImageOnClick(){
         userImageToUploadView.setOnClickListener(new View.OnClickListener() {
             @Override

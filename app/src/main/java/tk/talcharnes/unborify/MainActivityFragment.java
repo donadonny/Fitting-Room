@@ -1,10 +1,13 @@
 package tk.talcharnes.unborify;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +32,16 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static tk.talcharnes.unborify.R.id.frame;
-
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
+    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
     FloatingActionButton fab;
     FloatingActionButton likeButton, dislikeButton, reportButton;
 
-    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    private AdView mAdView;
-    private AdRequest mAdRequest;
     ArrayList<Photo> photoList;
     private int i = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -48,12 +49,8 @@ public class MainActivityFragment extends Fragment {
     private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
+    DatabaseReference reportRef = firebaseDatabase.getReference().child("Reports");
     DatabaseReference userReference = firebaseDatabase.getReference().child("users");
-    boolean initializePhotoList;
-
-//    For swipe views
-private SwipePlaceHolderView mSwipeView;
-
 
     //        For Firebase Auth
     private FirebaseAuth mAuth;
@@ -63,6 +60,9 @@ private SwipePlaceHolderView mSwipeView;
     private Boolean showAd = false;
     private View rootView;
     private Boolean isReported =  false;
+    private SwipePlaceHolderView mSwipeView;
+    private Context mContext;
+    private Boolean firstTime = true;
 
     /**
      * Constructor.
@@ -80,7 +80,7 @@ private SwipePlaceHolderView mSwipeView;
 
         initializeBasicSetup();
 
-        initializeFlingAdapterView();
+        initializeSwipePlaceHolderView();
 
         initializeAd();
 
@@ -125,12 +125,11 @@ private SwipePlaceHolderView mSwipeView;
      * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
      * */
     private void initializeBasicSetup() {
-        mSwipeView = (SwipePlaceHolderView) getActivity().findViewById(frame);
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
 
         //Native banner ad
-        mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -156,76 +155,87 @@ private SwipePlaceHolderView mSwipeView;
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isReported = true;
+                PhotoCard.setReported();
                 mSwipeView.doSwipe(false);
             }
         });
     }
 
     /**
-     * Initializes FlingAdapterView.
+     * Initializes SwipePlaceHolderView.
      * */
-    private void initializeFlingAdapterView() {
+    private void initializeSwipePlaceHolderView() {
+        mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
+
+        int bottomMargin = Utils.dpToPx(180);
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
+                .setIsUndoEnabled(true)
+                .setHeightSwipeDistFactor(10)
+                .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
+                        .setViewWidth((int)(windowSize.x*.9))
+                        .setViewHeight(((int)(windowSize.y*.9)) - bottomMargin)
+                        .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
-                        .setSwipeInMsgLayoutId(R.layout.swipe_like)
-                        .setSwipeOutMsgLayoutId(R.layout.swipe_dislike));
+                        .setSwipeInMsgLayoutId(R.layout.photo_swipe_in_msg_view)
+                        .setSwipeOutMsgLayoutId(R.layout.photo_swipe_out_msg_view));
+        getPhotos();
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
-
             @Override
             public void onItemRemoved(int count) {
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
-                if (count <= 3) {
-                    onAdapterAboutToEmpty();
+                if (count < 1) {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                    getPhotos();
                 }
             }
         });
-
-        for (Photo photo : photoList) {
-            mSwipeView.addView(new PhotoCard(getContext(), photo, mSwipeView, firebaseDatabase, photoReference, userReference, userId));
-        }
     }
 
+    /**
+     * Get photos from the database and adds it to the SwipePlaceHolderView.
+     * */
+    private void getPhotos() {
+        mContext = getContext();
 
-            /**
-             * This function starts a query calls to retrieve the images.
-             * */
-            private void onAdapterAboutToEmpty() {
-                if (mInterstitialAd.isLoaded() && showAd) {
-                    mInterstitialAd.show();
-                    showAd = false;
-                } else {
-                    //Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
+        Query query = (oldestPostId.isEmpty()) ?
+                photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
+                photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
 
-                if(photoList.isEmpty()) {
-                    Query query = (oldestPostId.isEmpty()) ?
-                            photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
-                            photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
-
-                    // Read from the database
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            initializePhotoList = true;
-                            addPhotosToArrayList(dataSnapshot);
-                            System.out.println("Got data.");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    int len = 0;
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if(len != 0 || firstTime) {
+                            Photo photo = child.getValue(Photo.class);
+                            mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
+                                    photoReference, reportRef));
+                            oldestPostId = photo.getUrl();
+                            firstTime = false;
                         }
-
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-                            // Failed to read value
-                            Log.w(LOG_TAG, "Failed to read value.", error.toException());
-                        }
-                    });
+                        len++;
+                    }
+                    System.out.println("Got data.");
+                    mSwipeView.refreshDrawableState();
                 }
             }
 
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(LOG_TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
 
     /**
      * Initializes Ad.
@@ -267,68 +277,6 @@ private SwipePlaceHolderView mSwipeView;
                 Log.i("Ads", "onAdClosed");
             }
         });
-    }
-
-    /**
-     * Retrieves and adds photos to the photoList.
-     * */
-    private void addPhotosToArrayList(DataSnapshot dataSnapshot) {
-        for(DataSnapshot child : dataSnapshot.getChildren()) {
-            Photo photo = child.getValue(Photo.class);
-            photoList.add(photo);
-        }
-        if(photoList.size() > 1) {
-            photoList.remove(0);
-        }
-        oldestPostId = photoList.get(photoList.size()-1).getUrl();
-    }
-
-    /**
-     * This function records the user's vote in the database.
-     * */
-    private void setVote(final Photo photo, final String rating) {
-        if (!userId.equals(photo.getUser())) {
-            Query query = photoReference.child(photo.getUrl().replace(".webp", "")).child("Votes").child(userId);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        String value = photo.getVotes().get(userId);
-                        if(value.equals(rating)) {
-                            Log.d(LOG_TAG, "User already " + rating + " this photo.");
-                        } else {
-                            if(rating.equals("like")) {
-                                photo.setLikes(photo.getLikes() + 1);
-                                photo.setDislikes(photo.getDislikes() - 1);
-                            } else {
-                                photo.setLikes(photo.getLikes() - 1);
-                                photo.setDislikes(photo.getDislikes() + 1);
-                            }
-                            //photoReference.child(photo.getUrl()).setValue(photo);
-                            //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
-                        }
-
-                    } else {
-                        if(rating.equals("like")) {
-                            photo.setLikes(photo.getLikes() + 1);
-                        } else {
-                            photo.setDislikes(photo.getDislikes() + 1);
-                        }
-                        //photoReference.child(photo.getUrl()).setValue(photo);
-                        //photoReference.child(photo.getUrl()).child("Votes").child(userId).setValue(rating);
-                        Log.d(LOG_TAG, "snapshot value does not exist");
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                }
-
-            });
-        } else {
-            Log.d(LOG_TAG, "User trying to vote on own photo");
-        }
     }
 
     /**
