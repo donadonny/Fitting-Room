@@ -234,6 +234,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setReports(0);
                     photo.setOccasion_subtitle(photoDescription);
                     photo.setOrientation(photoOrientation);
+                    photo.setAd(false);
 
                     DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
                     DatabaseReference userReference = database.getReference().child("users").child(user).child(imageFileNameNoJPG);
