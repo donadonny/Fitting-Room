@@ -54,8 +54,8 @@ public class PhotoCard {
     @View(R.id.likesText)
     private TextView likeTextView;
 
-    @View(R.id.nativeAdView)
-    private NativeExpressAdView adView;
+    @View(R.id.realPhotoSwipeCard)
+    private CardView realPhotoSwipeCard;
 
     @View(R.id.nameText)
     private TextView nameTextView;
@@ -111,10 +111,14 @@ public class PhotoCard {
         else {
 
             photoImageView.setVisibility(android.view.View.GONE);
-            adView.setVisibility(android.view.View.VISIBLE);
+
+            NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
+            mAdView.setAdSize(new AdSize(300,300));
+            mAdView.setAdUnitId("ca-app-pub-6667404740993831/9531692095");
+            realPhotoSwipeCard.addView(mAdView);
 
             AdRequest request = new AdRequest.Builder().build();
-            adView.loadAd(request);
+            mAdView.loadAd(request);
         }
     }
 

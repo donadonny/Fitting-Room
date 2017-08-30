@@ -25,15 +25,6 @@
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
 
-        <com.google.android.gms.ads.NativeExpressAdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/nativeAdView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            ads:adSize="360x360"
-            android:layout_gravity="center"
-            ads:adUnitId="ca-app-pub-3940256099942544/2177258514" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="75dp"
