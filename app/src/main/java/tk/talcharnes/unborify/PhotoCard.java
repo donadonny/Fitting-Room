@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,12 +53,6 @@ public class PhotoCard {
 
     @View(R.id.likesText)
     private TextView likeTextView;
-
-    @View(R.id.realPhotoSwipeCard)
-    private CardView realPhotoSwipeCard;
-
-    @View(R.id.adPhotoSwipeCard)
-    private CardView adPhotoSwipeCard;
 
     @View(R.id.nativeAdView)
     private NativeExpressAdView adView;
@@ -115,9 +110,8 @@ public class PhotoCard {
         }
         else {
 
-            realPhotoSwipeCard.setVisibility(android.view.View.GONE);
-            adPhotoSwipeCard.setVisibility(android.view.View.VISIBLE);
-
+            photoImageView.setVisibility(android.view.View.GONE);
+            adView.setVisibility(android.view.View.VISIBLE);
 
             AdRequest request = new AdRequest.Builder().build();
             adView.loadAd(request);
