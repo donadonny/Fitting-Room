@@ -48,8 +48,6 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
    * Decide what to do with add photo fab
    * Make tablet layout
 * Improve looks of native ads
-* Increase app performance
-* Reinstate report and voting functionality
 * Localize all strings
 * The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
     * BIG CHANCE IT WAS DUE TO A FAULTY UPLOAD. 
