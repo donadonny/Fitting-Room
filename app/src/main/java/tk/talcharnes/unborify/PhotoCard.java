@@ -2,14 +2,14 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
-import android.graphics.Point;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,6 +69,9 @@ public class PhotoCard {
     @View(R.id.dislikesText)
     private TextView dislikeTextView;
 
+    @View(R.id.zoom_button)
+    private ImageButton zoom_button;
+
     private Photo mPhoto;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
@@ -99,7 +102,7 @@ public class PhotoCard {
     private void onResolved() {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
-            String url = mPhoto.getUrl();
+            final String url = mPhoto.getUrl();
             if (url != null && !url.isEmpty()) {
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                         .child("images").child(url);
@@ -112,8 +115,19 @@ public class PhotoCard {
                 nameTextView.setText(mPhoto.getOccasion_subtitle());
                 String likes = "Likes: " + mPhoto.getLikes();
                 likeTextView.setText(likes);
+
+                ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
+                x.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+                        Intent intent = new Intent(mContext, ZoomPhoto.class);
+                        intent.putExtra("url", mPhoto.getUrl());
+                        mContext.startActivity(intent);
+                    }
+                });
             }
         } else {
+            zoom_button.setVisibility(android.view.View.GONE);
 
             ViewTreeObserver vto = photoImageView.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

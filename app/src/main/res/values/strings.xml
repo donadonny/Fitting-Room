@@ -25,4 +25,8 @@
     <string name="sending_failed">Sending failed</string>
     <string name="occasion_cannot_be_empty_string">Occasion can not be empty</string>
 
+    <string name="title_activity_zoom_photo">ZoomPhoto</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>
