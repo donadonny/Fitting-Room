@@ -2,8 +2,12 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,8 +74,8 @@ public class PhotoCard {
     private DatabaseReference mPhotoReference, mReportsRef;
     static Boolean isReported = false;
     static boolean isAd = false;
-
-
+    int width;
+    int height;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
@@ -88,12 +92,12 @@ public class PhotoCard {
 
     /**
      * This function sets up the Card View with an image, name, and the ratings.
-     * */
+     */
     @Resolve
-    private void onResolved(){
+    private void onResolved() {
 
         final boolean itsAnAd = isAd;
-        if(!itsAnAd) {
+        if (!itsAnAd) {
             String url = mPhoto.getUrl();
             if (url != null && !url.isEmpty()) {
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(url);
@@ -107,45 +111,82 @@ public class PhotoCard {
                 String likes = "Likes: " + mPhoto.getLikes();
                 likeTextView.setText(likes);
             }
-        }
-        else {
+        } else {
 
-            photoImageView.setVisibility(android.view.View.GONE);
+            ViewTreeObserver vto = photoImageView.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        photoImageView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        photoImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    width = pxToDp(photoImageView.getMeasuredWidth());
+                    height = pxToDp(photoImageView.getMeasuredHeight());
 
-            NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
-            mAdView.setAdSize(new AdSize(300,300));
-            mAdView.setAdUnitId("ca-app-pub-6667404740993831/9531692095");
-            realPhotoSwipeCard.addView(mAdView);
 
-            AdRequest request = new AdRequest.Builder().build();
-            mAdView.loadAd(request);
+                    Log.d(LOG_TAG, " Initial Width = " + width + " Initial Height = " + height);
+
+                    if (width > 1200) {
+                        width = 1200;
+                    } else if (width < 280) {
+                        width = 280;
+                    }
+//                    NOT SURE WHY... BUT width is off by a certain amount of DPs
+                    else width = width - 26;
+
+                    if (height > 1200) {
+                        height = 1200;
+                    } else if (height < 80) {
+                        height = 80;
+                    }
+//                  NOT SURE WHY... BUT width is off by a certain amount of DPs
+                    else
+                        height = height - 75;
+
+                    Log.d(LOG_TAG, " Width = " + width + " Height = " + height);
+
+                    photoImageView.setVisibility(android.view.View.GONE);
+                    CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.MATCH_PARENT - 75, Gravity.TOP);
+
+                    NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
+                    mAdView.setAdSize(new AdSize(width, height));
+                    mAdView.setAdUnitId("ca-app-pub-6667404740993831/9531692095");
+                    realPhotoSwipeCard.addView(mAdView, params);
+
+                    AdRequest request = new AdRequest.Builder().build();
+                    mAdView.loadAd(request);
+
+                }
+            });
         }
     }
 
     /**
      * This function handles when the Card View is clicked.
-     * */
+     */
     @Click(R.id.photoImageView)
-    private void onClick(){
+    private void onClick() {
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
     }
 
     /**
      * This function handles when the Card View is swiped right.
-     * */
+     */
     @SwipeIn
-    private void onSwipeIn(){
+    private void onSwipeIn() {
         //Log.d("EVENT", "onSwipedIn");
         final boolean itsAnAd = isAd;
-        if(!itsAnAd) {
+        if (!itsAnAd) {
             setVote("likes");
         }
     }
 
     /**
      * This function handles when the Card View is swiped left.
-     * */
+     */
     @SwipeOut
     private void onSwipedOut() {
         //Log.d("EVENT", "onSwipedOut");
@@ -162,31 +203,31 @@ public class PhotoCard {
 
     /**
      * This function handles when the Card View is moving right.
-     * */
+     */
     @SwipeInState
-    private void onSwipeInState(){
+    private void onSwipeInState() {
         //Log.d("EVENT", "onSwipeInState");
     }
 
     /**
      * This function handles when the Card View is moving left.
-     * */
+     */
     @SwipeOutState
-    private void onSwipeOutState(){
+    private void onSwipeOutState() {
         //Log.d("EVENT", "onSwipeOutState");
     }
 
     /**
      * Don't know what this does.
-     * */
+     */
     @SwipeCancelState
-    private void onSwipeCancelState(){
+    private void onSwipeCancelState() {
         Log.d("EVENT", "onSwipeCancelState");
     }
 
     /**
      * This function records the direction of user touches.
-     * */
+     */
     @SwipingDirection
     private void onSwipingDirection(SwipeDirection direction) {
         Log.d(LOG_TAG, "SwipingDirection " + direction.name());
@@ -194,7 +235,7 @@ public class PhotoCard {
 
     /**
      * This function records the user's vote in the database.
-     * */
+     */
     private void setVote(final String rating) {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
@@ -235,19 +276,20 @@ public class PhotoCard {
             }
         }
     }
-        /**
-         * This function changes the value of isReported.
-         * */
+
+    /**
+     * This function changes the value of isReported.
+     */
     public static void setReported() {
         final boolean itsAnAd = isAd;
-        if(!itsAnAd) {
+        if (!itsAnAd) {
             isReported = true;
         }
     }
 
     /**
      * This function records the user's report in the database.
-     * */
+     */
     private void setReport() {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
@@ -286,5 +328,11 @@ public class PhotoCard {
                 }
             });
         }
+    }
+
+    private int pxToDp(int px) {
+        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
     }
 }
