@@ -134,7 +134,7 @@ public class PhotoCard {
                         width = 280;
                     }
 //                    NOT SURE WHY... BUT width is off by a certain amount of DPs
-                    else width = width - 26;
+                    width = (int)(width * .9);
 
                     if (height > 1200) {
                         height = 1200;
@@ -143,7 +143,7 @@ public class PhotoCard {
                     }
 //                  NOT SURE WHY... BUT width is off by a certain amount of DPs
                     else
-                        height = height - 75;
+                    height = (int) (height * .9);
 
                     Log.d(LOG_TAG, " Width = " + width + " Height = " + height);
 
