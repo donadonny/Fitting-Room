@@ -80,8 +80,8 @@ public class PhotoCard {
     private DatabaseReference mPhotoReference, mReportsRef;
     static Boolean isReported = false;
     static boolean isAd = false;
-    int width;
-    int height;
+    private int width;
+    private int height;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
@@ -101,13 +101,14 @@ public class PhotoCard {
      */
     @Resolve
     private void onResolved() {
-
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             final String url = mPhoto.getUrl();
             if (url != null && !url.isEmpty()) {
                 final int rotation = getRotation();
-                StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(url);
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                        .child("images").child(url);
+
                 Glide.with(mContext)
                         .using(new FirebaseImageLoader())
                         .load(storageRef).transform(new MyTransformation(mContext, rotation))
@@ -136,38 +137,24 @@ public class PhotoCard {
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        photoImageView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        photoImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
+                    photoImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
                     width = pxToDp(photoImageView.getMeasuredWidth());
                     height = pxToDp(photoImageView.getMeasuredHeight());
 
+                    Log.d(LOG_TAG, "Initial Width = " + width +
+                            " ----------------------------------- Initial Height = " + height);
 
-                    Log.d(LOG_TAG, " Initial Width = " + width + " Initial Height = " + height);
+                    width = (width < 80) ? 80 : (width > 1200) ? 1200: (int)(width * .9);
+                    height = (height < 80) ? 80 : (height > 1200) ? 1200: (int) (height * .9);
 
-                    if (width > 1200) {
-                        width = 1200;
-                    } else if (width < 280) {
-                        width = 280;
-                    }
-//                    NOT SURE WHY... BUT width is off by a certain amount of DPs
-                    width = (int) (width * .9);
-
-                    if (height > 1200) {
-                        height = 1200;
-                    } else if (height < 80) {
-                        height = 80;
-                    }
-//                  NOT SURE WHY... BUT width is off by a certain amount of DPs
-                    else
-                        height = (int) (height * .9);
-
-                    Log.d(LOG_TAG, " Width = " + width + " Height = " + height);
+                    Log.d(LOG_TAG, "Final Width = " + width +
+                            " ----------------------------------- Final Height = " + height);
 
                     photoImageView.setVisibility(android.view.View.GONE);
-                    CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.MATCH_PARENT - 75, Gravity.TOP);
+                    CardView.LayoutParams params = new CardView.LayoutParams(
+                            CardView.LayoutParams.MATCH_PARENT,
+                            CardView.LayoutParams.MATCH_PARENT - 75, Gravity.TOP);
 
                     NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
                     mAdView.setAdSize(new AdSize(width, height));
