@@ -3,6 +3,7 @@ package tk.talcharnes.unborify;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -105,10 +106,11 @@ public class PhotoCard {
         if (!itsAnAd) {
             final String url = mPhoto.getUrl();
             if (url != null && !url.isEmpty()) {
+                final int rotation = getRotation();
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(url);
                 Glide.with(mContext)
                         .using(new FirebaseImageLoader())
-                        .load(storageRef)
+                        .load(storageRef).transform(new MyTransformation(mContext, rotation))
                         .into(photoImageView);
                 String dislikes = "Dislikes: " + mPhoto.getDislikes();
                 dislikeTextView.setText(dislikes);
@@ -122,6 +124,7 @@ public class PhotoCard {
                     public void onClick(android.view.View view) {
                         Intent intent = new Intent(mContext, ZoomPhoto.class);
                         intent.putExtra("url", mPhoto.getUrl());
+                        intent.putExtra("rotation", rotation);
                         mContext.startActivity(intent);
                     }
                 });
@@ -150,7 +153,7 @@ public class PhotoCard {
                         width = 280;
                     }
 //                    NOT SURE WHY... BUT width is off by a certain amount of DPs
-                    width = (int)(width * .9);
+                    width = (int) (width * .9);
 
                     if (height > 1200) {
                         height = 1200;
@@ -159,7 +162,7 @@ public class PhotoCard {
                     }
 //                  NOT SURE WHY... BUT width is off by a certain amount of DPs
                     else
-                    height = (int) (height * .9);
+                        height = (int) (height * .9);
 
                     Log.d(LOG_TAG, " Width = " + width + " Height = " + height);
 
@@ -351,4 +354,19 @@ public class PhotoCard {
         int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return dp;
     }
+
+    private int getRotation() {
+        int rotation = 0;
+        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mPhoto.getOrientation() != 0) {
+                rotation = 90;
+            }
+        } else if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (mPhoto.getOrientation() == 0) {
+                rotation = 90;
+            }
+        }
+        return rotation;
+    }
+
 }

@@ -26,6 +26,7 @@ public class ZoomPhoto extends AppCompatActivity {
      */
     private static final boolean AUTO_HIDE = true;
     private String url;
+    private int rotation;
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
@@ -97,13 +98,14 @@ public class ZoomPhoto extends AppCompatActivity {
         setContentView(R.layout.zoom_photo);
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
+        rotation = intent.getIntExtra("rotation", 0);
         mVisible = true;
 
 
         PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images").child(url);
         Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
-                .load(storageReference)
+                .load(storageReference).transform(new MyTransformation(getApplicationContext(), rotation))
                 .into(photoView);
 
 
