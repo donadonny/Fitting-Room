@@ -170,7 +170,7 @@ public class MainActivityFragment extends Fragment {
     private void initializeSwipePlaceHolderView() {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
-        int bottomMargin = Utils.dpToPx(180);
+        int bottomMargin = Utils.dpToPx(140);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)

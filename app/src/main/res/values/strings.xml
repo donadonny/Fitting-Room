@@ -29,4 +29,60 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <!-- Dialog String -->
+    <string name="sign_out_title">Are you sure you want sign out?</string>
+    <string name="confirm">Yes</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Navigation Drawer Strings -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_home">Home</string>
+    <string name="nav_photos">My Photos</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_contact_us">Contact Us</string>
+    <string name="nav_about_us">About Us</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>Home</item>
+        <item>My Photos</item>
+        <item>Notifications</item>
+    </string-array>
+
+    <string name="activity_title_about_us">About Us</string>
+    <string name="activity_title_privacy_policy">Privacy Policy</string>
+    <string name="submenu_title_other">Other</string>
+    <string name="action_clear_all">Clear All</string>
+    <string name="action_mark_all_read">Mark All as Read</string>
+    <string name="action_sign_out">Sign Out</string>
+
+    <!-- String for the help screen -->
+    <string name="next">NEXT</string>
+    <!--string name="skip">SKIP</string>
+    <string name="start">GOT IT</string-->
+
+    <string name="help_slide_1_title">Swiping Right Or Left</string>
+    <string name="help_slide_1_desc">Swiping right allows you to like the photo. Likewise,
+        swiping left allows you to dislike the photo. Note, you can not like or dislike your
+        photos.</string>
+
+    <string name="help_slide_2_title">Reporting</string>
+    <string name="help_slide_2_desc">If you happen to find a photo that offends or violates our
+        terms of services. Click the report button and the photo is reported. The photo is also
+        skip so you can continue voting other photos.</string>
+
+    <string name="help_slide_3_title">Add Your Own Photo</string>
+    <string name="help_slide_3_desc">Don\'t just like or dislike photos from others. Add your own
+        to be voted on. Remember that each time you vote on picture is equals more photos you can
+        upload.</string>
+
+    <string name="help_slide_4_title">Remember To Fun!</string>
+    <string name="help_slide_4_desc">Just don\'t think of this app as a competition app. </string>
+
 </resources>
