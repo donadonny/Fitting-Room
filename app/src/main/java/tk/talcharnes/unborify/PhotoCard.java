@@ -72,6 +72,9 @@ public class PhotoCard {
     @View(R.id.zoom_button)
     private ImageButton zoom_button;
 
+    @View(R.id.comment_button)
+    private ImageButton comment_button;
+
     private Photo mPhoto;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
@@ -120,7 +123,7 @@ public class PhotoCard {
                 likeTextView.setText(likes);
 
                 ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
-                x.setOnClickListener(new android.view.View.OnClickListener() {
+                zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
                         Intent intent = new Intent(mContext, ZoomPhoto.class);
@@ -129,9 +132,19 @@ public class PhotoCard {
                         mContext.startActivity(intent);
                     }
                 });
+
+                comment_button.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+                        Intent intent = new Intent(mContext, CommentActivity.class);
+                        intent.putExtra("url", mPhoto.getUrl());
+                        mContext.startActivity(intent);
+                    }
+                });
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);
+            comment_button.setVisibility(android.view.View.GONE);
 
             ViewTreeObserver vto = photoImageView.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -361,10 +374,12 @@ public class PhotoCard {
     private void togglePhotoAddOns(){
         if(mVisible){
             zoom_button.setVisibility(android.view.View.GONE);
+            comment_button.setVisibility(android.view.View.GONE);
             mVisible = false;
         }
         else {
             zoom_button.setVisibility(android.view.View.VISIBLE);
+            comment_button.setVisibility(android.view.View.VISIBLE);
             mVisible = true;
         }
     }
