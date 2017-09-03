@@ -116,10 +116,10 @@ public class PhotoCard {
                         .using(new FirebaseImageLoader())
                         .load(storageRef).transform(new MyTransformation(mContext, rotation))
                         .into(photoImageView);
-                String dislikes = "Dislikes: " + mPhoto.getDislikes();
+                String dislikes = "" + mPhoto.getDislikes();
                 dislikeTextView.setText(dislikes);
                 nameTextView.setText(mPhoto.getOccasion_subtitle());
-                String likes = "Likes: " + mPhoto.getLikes();
+                String likes = "" + mPhoto.getLikes();
                 likeTextView.setText(likes);
 
                 ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);

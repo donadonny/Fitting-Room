@@ -15,7 +15,7 @@
         android:background="@color/cardview_dark_background"
         android:layout_height="match_parent"/>
 
-    <com.google.android.gms.ads.AdView
+    <!--com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
         android:layout_above="@+id/action_layout"
@@ -26,7 +26,7 @@
         android:layout_alignParentBottom="true"
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
-    </com.google.android.gms.ads.AdView>
+    </com.google.android.gms.ads.AdView-->
 
     <LinearLayout
         android:id="@+id/action_layout"
