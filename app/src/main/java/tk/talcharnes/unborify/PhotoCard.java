@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -74,6 +75,9 @@ public class PhotoCard {
 
     @View(R.id.comment_button)
     private ImageButton comment_button;
+
+    @View(R.id.photo_card_options)
+    private ImageButton photo_card_options;
 
     private Photo mPhoto;
     private Context mContext;
@@ -141,10 +145,20 @@ public class PhotoCard {
                         mContext.startActivity(intent);
                     }
                 });
+
+                photo_card_options.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+                        Toast.makeText(mContext, "Create menu here that will allow reporting", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);
             comment_button.setVisibility(android.view.View.GONE);
+            photo_card_options.setVisibility(android.view.View.GONE);
 
             ViewTreeObserver vto = photoImageView.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -375,11 +389,14 @@ public class PhotoCard {
         if(mVisible){
             zoom_button.setVisibility(android.view.View.GONE);
             comment_button.setVisibility(android.view.View.GONE);
+            photo_card_options.setVisibility(android.view.View.GONE);
             mVisible = false;
         }
         else {
             zoom_button.setVisibility(android.view.View.VISIBLE);
             comment_button.setVisibility(android.view.View.VISIBLE);
+            photo_card_options.setVisibility(android.view.View.VISIBLE);
+
             mVisible = true;
         }
     }

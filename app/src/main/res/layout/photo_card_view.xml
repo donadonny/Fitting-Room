@@ -39,6 +39,13 @@
             android:src="@drawable/comments_button"
             android:background="@color/semi_transparent_background"
             android:id="@+id/comment_button"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/more_options"
+            android:layout_gravity="top|end"
+            android:background="@color/semi_transparent_background"
+            android:id="@+id/photo_card_options"/>
 
         <LinearLayout
             android:layout_width="match_parent"
