@@ -81,6 +81,7 @@ public class PhotoCard {
     static boolean isAd = false;
     private int width;
     private int height;
+    private boolean mVisible = true;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
@@ -175,6 +176,7 @@ public class PhotoCard {
     private void onClick() {
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
+        togglePhotoAddOns();
 
     }
 
@@ -354,6 +356,17 @@ public class PhotoCard {
             }
         }
         return rotation;
+    }
+
+    private void togglePhotoAddOns(){
+        if(mVisible){
+            zoom_button.setVisibility(android.view.View.GONE);
+            mVisible = false;
+        }
+        else {
+            zoom_button.setVisibility(android.view.View.VISIBLE);
+            mVisible = true;
+        }
     }
 
 }
