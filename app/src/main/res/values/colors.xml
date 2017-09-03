@@ -11,6 +11,8 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <color name="menu_item_color">#D9000000</color>
+
     <!-- Following colors are for the help screen. -->
 
     <!-- Screens background color-->

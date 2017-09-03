@@ -2,14 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_logout"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_picture"
         android:orderInCategory="100"
         android:icon="@drawable/add_photo_fab"
-        android:title="@string/action_sign_out"
+        android:title="@string/action_take_photo"
         app:showAsAction="ifRoom" />
 </menu>

@@ -203,16 +203,9 @@ public class PhotoUploadActivityFragment extends Fragment {
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    
-                    int prog;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    }
-                    else{
-                        prog = (int)(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-
-                    }
-                    progressBar.setProgress(prog);
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) /
+                            taskSnapshot.getTotalByteCount();
+                    progressBar.setProgress((int) progress);
 
                 }
             });

@@ -84,7 +84,7 @@ public class MainActivityFragment extends Fragment {
 
         initializeSwipePlaceHolderView();
 
-        initializeAd();
+        //initializeAd();
 
 
         return rootView;
@@ -132,9 +132,9 @@ public class MainActivityFragment extends Fragment {
         photoList = new ArrayList<Photo>();
 
         //Native banner ad
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
 
         //Fab buttons
         likeButton = rootView.findViewById(R.id.thumbs_up_fab);
@@ -193,9 +193,9 @@ public class MainActivityFragment extends Fragment {
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
                 if (count < 1) {
-                    if (mInterstitialAd.isLoaded()) {
+                    /*if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
-                    }
+                    }*/
                     getPhotos();
                 }
             }
@@ -225,14 +225,16 @@ public class MainActivityFragment extends Fragment {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         if (len != 0 || firstTime) {
                             Photo photo = child.getValue(Photo.class);
+                            assert photo != null;
                             final DatabaseReference photoRef = photoReference.child(photo.getUrl().replace(".webp",""));
                             mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
                                     photoReference, reportRef));
                             oldestPostId = photo.getUrl();
                             firstTime = false;
-                        } else if(len == 0 && !firstTime) {
-                            mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId, photoReference,
-                                    reportRef));
+                        } else if(!firstTime) {
+                            mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                            //mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId,
+                                   // photoReference, reportRef));
                         }
                         len++;
                     }

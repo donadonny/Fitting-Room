@@ -2,6 +2,7 @@ package tk.talcharnes.unborify;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,12 +19,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private ImageView profileImage;
     private TextView nameText, emailText;
+    private ImageButton profileImageButton;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
 
@@ -85,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         nameText = (TextView) navHeader.findViewById(R.id.user_name);
         emailText = (TextView) navHeader.findViewById(R.id.user_email);
         profileImage = (ImageView) navHeader.findViewById(R.id.img_profile);
+        profileImageButton = (ImageButton) navHeader.findViewById(R.id.profile_image_button);
         loadHeaderData();
     }
 
@@ -96,16 +105,37 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if(user != null) {
             Log.d(TAG, "Loading user data to the navigation toolbar.");
-            nameText.setText(user.getDisplayName());
-            emailText.setText(user.getEmail());
-            Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                .crossFade()
-                .thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profileImage);
+            final String name = user.getDisplayName();
+            final String email = user.getEmail();
+            final String uid = user.getUid();
+            nameText.setText(name);
+            emailText.setText(email);
+            Uri uri = user.getPhotoUrl();
+            if(uri != null) {
+                try {
+                    URL url = new URL(uri.toString());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
+                        .crossFade()
+                        .thumbnail(.5f)
+                        .bitmapTransform(new CircleTransform(this))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(profileImage);
+            }
             // showing dot next to notifications label
             navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+            profileImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    intent.putExtra("name", name);
+                    intent.putExtra("email", email);
+                    intent.putExtra("uid", uid);
+                    startActivity(intent);
+                }
+            });
         } else {
             Log.d(TAG, "User does not exist.");
         }
@@ -149,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                     builder.show();
+                    menuItem.setChecked(false);
                 } else if(previous_fragment_id != fragment_id) {
                     loadFragment();
                 } else {
