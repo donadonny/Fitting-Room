@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:src="@drawable/ic_action_zoom"
+            android:background="@color/semi_transparent_background"
             android:id="@+id/zoom_button"/>
 
         <LinearLayout
