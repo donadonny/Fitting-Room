@@ -28,6 +28,7 @@
     <string name="title_activity_zoom_photo">ZoomPhoto</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_comment">CommentActivity</string>
 
     <!-- Dialog String -->
     <string name="sign_out_title">Are you sure you want sign out?</string>

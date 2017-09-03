@@ -26,6 +26,7 @@ public class ZoomPhoto extends AppCompatActivity {
      */
     private static final boolean AUTO_HIDE = true;
     private String url;
+    private int rotation;
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
@@ -43,17 +44,18 @@ public class ZoomPhoto extends AppCompatActivity {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
+            mContentView = getWindow().getDecorView().findViewById(android.R.id.content);
             // Delayed removal of status and navigation bar
 
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-//            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-//                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private View mControlsView;
@@ -63,16 +65,18 @@ public class ZoomPhoto extends AppCompatActivity {
             // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+//            mControlsView.setVisibility(View.VISIBLE);
         }
     };
     private boolean mVisible;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
-//            hide();
+            hide();
         }
     };
     /**
@@ -95,25 +99,36 @@ public class ZoomPhoto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.zoom_photo);
+
+
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
+        rotation = intent.getIntExtra("rotation", 0);
         mVisible = true;
+//        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mContentView = findViewById(R.id.photo_view);
+        mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
 
 
-        PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
+                PhotoView photoView = (PhotoView) mContentView;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images").child(url);
         Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
-                .load(storageReference)
+                .load(storageReference).transform(new MyTransformation(getApplicationContext(), rotation))
                 .into(photoView);
 
 
         // Set up the user interaction to manually show or hide the system UI.
-//        mContentView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                toggle();
-//            }
-//        });
+        getWindow().getDecorView().findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
@@ -144,7 +159,7 @@ public class ZoomPhoto extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+//        mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -154,10 +169,12 @@ public class ZoomPhoto extends AppCompatActivity {
 
     @SuppressLint("InlinedApi")
     private void show() {
-        // Show the system bar
-//        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-//        mVisible = true;
+        // Show the system bar);
+        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        mVisible = true;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
@@ -171,5 +188,10 @@ public class ZoomPhoto extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

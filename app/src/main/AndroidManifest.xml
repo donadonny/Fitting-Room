@@ -78,6 +78,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_zoom_photo"
             android:theme="@style/FullscreenTheme" />
+
+        <activity
+            android:name=".CommentActivity"
+            android:label="@string/title_activity_comment"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

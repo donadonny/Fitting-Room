@@ -3,7 +3,7 @@ package tk.talcharnes.unborify;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.res.Configuration;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -72,6 +72,9 @@ public class PhotoCard {
     @View(R.id.zoom_button)
     private ImageButton zoom_button;
 
+    @View(R.id.comment_button)
+    private ImageButton comment_button;
+
     private Photo mPhoto;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
@@ -81,6 +84,7 @@ public class PhotoCard {
     static boolean isAd = false;
     private int width;
     private int height;
+    private boolean mVisible = true;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      DatabaseReference photoReference, DatabaseReference reportsRef) {
@@ -104,11 +108,13 @@ public class PhotoCard {
         if (!itsAnAd) {
             final String url = mPhoto.getUrl();
             if (url != null && !url.isEmpty()) {
+                final int rotation = getRotation();
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                         .child("images").child(url);
+
                 Glide.with(mContext)
                         .using(new FirebaseImageLoader())
-                        .load(storageRef)
+                        .load(storageRef).transform(new MyTransformation(mContext, rotation))
                         .into(photoImageView);
                 String dislikes = "" + mPhoto.getDislikes();
                 dislikeTextView.setText(dislikes);
@@ -117,10 +123,20 @@ public class PhotoCard {
                 likeTextView.setText(likes);
 
                 ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
-                x.setOnClickListener(new android.view.View.OnClickListener() {
+                zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
                         Intent intent = new Intent(mContext, ZoomPhoto.class);
+                        intent.putExtra("url", mPhoto.getUrl());
+                        intent.putExtra("rotation", rotation);
+                        mContext.startActivity(intent);
+                    }
+                });
+
+                comment_button.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+                        Intent intent = new Intent(mContext, CommentActivity.class);
                         intent.putExtra("url", mPhoto.getUrl());
                         mContext.startActivity(intent);
                     }
@@ -128,6 +144,7 @@ public class PhotoCard {
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);
+            comment_button.setVisibility(android.view.View.GONE);
 
             ViewTreeObserver vto = photoImageView.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -172,6 +189,8 @@ public class PhotoCard {
     private void onClick() {
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
+        togglePhotoAddOns();
+
     }
 
     /**
@@ -337,4 +356,32 @@ public class PhotoCard {
         int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return dp;
     }
+
+    private int getRotation() {
+        int rotation = 0;
+        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mPhoto.getOrientation() != 0) {
+                rotation = 90;
+            }
+        } else if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (mPhoto.getOrientation() == 0) {
+                rotation = 90;
+            }
+        }
+        return rotation;
+    }
+
+    private void togglePhotoAddOns(){
+        if(mVisible){
+            zoom_button.setVisibility(android.view.View.GONE);
+            comment_button.setVisibility(android.view.View.GONE);
+            mVisible = false;
+        }
+        else {
+            zoom_button.setVisibility(android.view.View.VISIBLE);
+            comment_button.setVisibility(android.view.View.VISIBLE);
+            mVisible = true;
+        }
+    }
+
 }
