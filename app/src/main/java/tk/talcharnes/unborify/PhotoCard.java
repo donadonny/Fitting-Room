@@ -4,7 +4,6 @@ package tk.talcharnes.unborify;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -176,6 +175,7 @@ public class PhotoCard {
     private void onClick() {
         Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
+
     }
 
     /**

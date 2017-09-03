@@ -65,9 +65,11 @@ public class ZoomPhoto extends AppCompatActivity {
             // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+//            mControlsView.setVisibility(View.VISIBLE);
         }
     };
     private boolean mVisible;
@@ -97,13 +99,23 @@ public class ZoomPhoto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.zoom_photo);
+
+
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         rotation = intent.getIntExtra("rotation", 0);
         mVisible = true;
+//        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mContentView = findViewById(R.id.photo_view);
+        mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
 
 
-        PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
+                PhotoView photoView = (PhotoView) mContentView;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images").child(url);
         Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
                 .load(storageReference).transform(new MyTransformation(getApplicationContext(), rotation))
@@ -161,6 +173,8 @@ public class ZoomPhoto extends AppCompatActivity {
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
@@ -174,5 +188,10 @@ public class ZoomPhoto extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }
