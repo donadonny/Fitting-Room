@@ -20,6 +20,10 @@ import tk.talcharnes.unborify.CommentsData.FirebaseCommentViewHolder;
 
 /**
  * A placeholder fragment containing a simple view.
+ *
+ *
+ *  * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
+
  */
 public class CommentActivityFragment extends Fragment {
     private DatabaseReference mCommentReference;

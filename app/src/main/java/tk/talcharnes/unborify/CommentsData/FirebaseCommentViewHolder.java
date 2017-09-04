@@ -19,6 +19,8 @@ import tk.talcharnes.unborify.R;
 
 /**
  * Created by Tal on 9/3/2017.
+ *
+ * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 
 public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
