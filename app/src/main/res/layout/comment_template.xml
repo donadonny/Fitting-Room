@@ -9,7 +9,14 @@
         android:id="@+id/comment_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
         tools:text="This is a test comment"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        tools:text="username"
+        android:id="@+id/comment_username"/>
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

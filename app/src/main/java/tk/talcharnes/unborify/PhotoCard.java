@@ -142,6 +142,8 @@ public class PhotoCard {
                     public void onClick(android.view.View view) {
                         Intent intent = new Intent(mContext, CommentActivity.class);
                         intent.putExtra("url", mPhoto.getUrl());
+                        intent.putExtra("photoUserID", mPhoto.getUser());
+                        intent.putExtra("currentUser", mUserId);
                         mContext.startActivity(intent);
                     }
                 });
