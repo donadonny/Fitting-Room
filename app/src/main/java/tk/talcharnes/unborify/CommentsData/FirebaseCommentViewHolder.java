@@ -24,7 +24,7 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * Created by Tal on 9/3/2017.
- *
+ * <p>
  * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 
@@ -43,8 +43,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         itemView.setOnClickListener(this);
     }
 
-    public void bindComment(final Comment comment){
-        TextView usernameTextView = (TextView)mView.findViewById(R.id.comment_username);
+    public void bindComment(final Comment comment) {
+        TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
@@ -69,7 +69,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getValue() != null) {
+                        if (dataSnapshot.getValue() != null) {
                             usernameTextView.setText(dataSnapshot.getValue().toString());
 
                         }
@@ -111,7 +111,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    private void setUpMoreOptionsButton(View view, final Comment comment){
+    private void setUpMoreOptionsButton(View view, final Comment comment) {
         PopupMenu popup = new PopupMenu(mContext, view);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -121,15 +121,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                         Toast.makeText(mContext, "set up report function", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.action_delete_comment:
-//                        // TODO: 9/4/2017 have deletion occur in user database reference as well
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-                                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
-                        ref.removeValue();
-
-                        DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
-                                .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
-                                .child(comment.getComment_key());
-                        mOtherCommentReference.removeValue();
+                        deleteComment(comment);
                         return true;
                     case R.id.action_edit_comment:
                         editComment(comment);
@@ -146,7 +138,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 //        popup.getMenu().removeItem(R.id.action_edit_comment);
         popup.show();
     }
-    private void editComment(Comment comment){
+
+    private void editComment(Comment comment) {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key())
@@ -157,6 +150,17 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         String newComment = "EDITED";
         ref.setValue(newComment);
 
+    }
+
+    private void deleteComment(Comment comment) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
+        ref.removeValue();
+
+        DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+                .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
+                .child(comment.getComment_key());
+        mOtherCommentReference.removeValue();
     }
 
 }
