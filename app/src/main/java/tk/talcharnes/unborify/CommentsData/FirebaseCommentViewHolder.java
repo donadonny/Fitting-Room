@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +43,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         itemView.setOnClickListener(this);
     }
 
-    public void bindComment(Comment comment){
+    public void bindComment(final Comment comment){
         TextView usernameTextView = (TextView)mView.findViewById(R.id.comment_username);
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
@@ -59,7 +58,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setUpMoreOptionsButton(view);
+                setUpMoreOptionsButton(view, comment);
             }
         });
 
@@ -88,8 +87,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         final ArrayList<Comment> comments = new ArrayList<>();
 //      Reference correct section of database below
         Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Photos")
-                .child(mUrl).child("Comments");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -112,20 +111,28 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    private void setUpMoreOptionsButton(View view){
+    private void setUpMoreOptionsButton(View view, final Comment comment){
         PopupMenu popup = new PopupMenu(mContext, view);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_report:
+                    case R.id.action_report_comment:
                         Toast.makeText(mContext, "set up report function", Toast.LENGTH_SHORT).show();
                         return true;
-                    case R.id.action_delete:
-                        Toast.makeText(mContext, "set up delete function", Toast.LENGTH_SHORT).show();
+                    case R.id.action_delete_comment:
+//                        // TODO: 9/4/2017 have deletion occur in user database reference as well
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
+                        ref.removeValue();
+
+                        DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+                                .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
+                                .child(comment.getComment_key());
+                        mOtherCommentReference.removeValue();
                         return true;
-                    case R.id.action_edit:
-                        Toast.makeText(mContext, "set up edit function", Toast.LENGTH_SHORT).show();
+                    case R.id.action_edit_comment:
+                        editComment(comment);
                         return true;
                     default:
                         return false;
@@ -135,8 +142,21 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.comment_options, popup.getMenu());
 //      // TODO: 9/4/2017 ensure that only user that posted the comment has option to delete and edit it
-//        popup.getMenu().removeItem(R.id.action_delete);
+//        popup.getMenu().removeItem(R.id.action_delete_comment);
+//        popup.getMenu().removeItem(R.id.action_edit_comment);
         popup.show();
+    }
+    private void editComment(Comment comment){
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key())
+                .child(FirebaseConstants.COMMENT_STRING);
+
+//       // TODO: 9/4/2017 create dialogue box to get new comment and update both photo comments reference and users
+//        photo comments reference
+        String newComment = "EDITED";
+        ref.setValue(newComment);
+
     }
 
 }

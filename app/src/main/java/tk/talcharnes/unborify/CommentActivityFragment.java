@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,10 +24,9 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * A placeholder fragment containing a simple view.
- *
- *
- *  * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
-
+ * <p>
+ * <p>
+ * * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 public class CommentActivityFragment extends Fragment {
     private DatabaseReference mCommentReference;
@@ -37,7 +38,9 @@ public class CommentActivityFragment extends Fragment {
     private String mCurrentUser;
     private EditText mCommentEditText;
     private ImageButton mSubmitCommentImageButton;
-
+    private final String LOG_TAG = CommentActivityFragment.class.getSimpleName();
+    String mComment_key;
+    Comment comment;
     public CommentActivityFragment() {
     }
 
@@ -95,16 +98,26 @@ public class CommentActivityFragment extends Fragment {
                 } else if (mCommentEditText.getText().toString().length() < 5) {
                     mCommentEditText.setError("Comment must be longer than 5 characters");
                 } else {
-                    Comment comment = new Comment();
+                    comment = new Comment();
                     comment.setPhoto_url(mUrl);
                     comment.setCommenter(mCurrentUser);
                     comment.setCommentString(mCommentEditText.getText().toString());
                     comment.setPhoto_Uploader(mPhotoUploader);
 
 
-                    mCommentReference.push().setValue(comment);
-                    mOtherCommentReference.push().setValue(comment);
+                    mCommentReference.push().setValue(comment, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError,
+                                               DatabaseReference databaseReference) {
+                            mComment_key = databaseReference.getKey();
+                            comment.setComment_key(mComment_key);
+                            mCommentReference.child(mComment_key).child(FirebaseConstants.COMMENT_KEY)
+                                    .setValue(mComment_key);
+                            Log.d(LOG_TAG, "commentkey = " + mComment_key);
+                            mOtherCommentReference.child(mComment_key).setValue(comment);
 
+                        }
+                    });
                     mCommentEditText.setText("");
                 }
 

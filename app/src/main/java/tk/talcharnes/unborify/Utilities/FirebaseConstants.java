@@ -16,5 +16,7 @@ public class FirebaseConstants {
     public final static String NUM_REPORTS = "numReports";
     public final static String REPORTS = "reports";
     public final static String DATE_JOINED = "date_joined";
+    public final static String COMMENT_KEY = "comment_key";
+    public final static String COMMENT_STRING = "commentString";
 
 }
