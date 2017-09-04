@@ -9,10 +9,12 @@
 
 <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/add_comment"
     android:id="@+id/comments_recyclerView"/>
 
 <LinearLayout
+    android:id="@+id/add_comment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"

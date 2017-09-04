@@ -78,8 +78,9 @@ public class CommentActivityFragment extends Fragment {
             }
         };
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mFirebaseAdapter);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void setUpCommentSubmitting() {

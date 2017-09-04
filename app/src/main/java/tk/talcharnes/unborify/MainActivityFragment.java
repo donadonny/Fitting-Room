@@ -234,13 +234,13 @@ public class MainActivityFragment extends Fragment {
                                     photoReference, reportRef));
                             oldestPostId = photo.getUrl();
                             firstTime = false;
-                        } else if(!firstTime) {
-                            mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                        } /*else if(!firstTime) {
                             //mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId,
                                    // photoReference, reportRef));
-                        }
+                        }*/
                         len++;
                     }
+                    mSwipeView.addView(new AdCard(mContext, mSwipeView));
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
