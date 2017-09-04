@@ -225,7 +225,7 @@ public class MainActivityFragment extends Fragment {
                         if (len != 0 || firstTime) {
                             Photo photo = child.getValue(Photo.class);
                             assert photo != null;
-                            final DatabaseReference photoRef = photoReference.child(photo.getUrl().replace(".webp",""));
+                            final DatabaseReference photoRef = photoReference.child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()));
                             mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
                                     photoReference, reportRef));
                             oldestPostId = photo.getUrl();

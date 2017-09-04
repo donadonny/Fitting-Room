@@ -50,9 +50,9 @@ public class CommentActivityFragment extends Fragment {
         mCurrentUser = intent.getStringExtra("currentUser");
 //        Fix reference here
         mCommentReference = FirebaseDatabase.getInstance().getReference().child("Photos")
-                .child(mUrl.replace(".webp", "")).child("Comments");
+                .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child("Comments");
         mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child("users")
-                .child(mPhotoUploader).child(mUrl.replace(".webp", "")).child("Comments");
+                .child(mPhotoUploader).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child("Comments");
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);

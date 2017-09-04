@@ -106,4 +106,8 @@ public class PhotoUtilities {
         return Math.round((float)dp * density);
     }
 
+    static String removeWebPFromUrl(String url){
+        return url.replace(".webp", "");
+    }
+
 }

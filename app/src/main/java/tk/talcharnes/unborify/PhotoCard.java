@@ -277,7 +277,7 @@ public class PhotoCard {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             final String userID = mUserId;
-            final String name = mPhoto.getUrl().replace(".webp", "");
+            final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
             final DatabaseReference chosenPhoto = mPhotoReference.child(name);
             if (!mUserId.equals(mPhoto.getUser())) {
                 chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -331,7 +331,7 @@ public class PhotoCard {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             final String userID = mUserId;
-            final String name = mPhoto.getUrl().replace(".webp", "");
+            final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
             System.out.println("------------------------------" + userID + "----------------------------------");
             final Query query = mReportsRef.child(name);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
