@@ -1,7 +1,10 @@
 package tk.talcharnes.unborify.CommentsData;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * Created by Tal on 9/3/2017.
@@ -45,8 +49,9 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
+
         mphotoUserID = comment.getCommenter();
-        mUrl = comment.getPhoto_url().replace(".webp", "");
+        mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
         //usernameTextView.setText(comment.getCommenter());
         setCommentorsName(comment.getCommenter(), usernameTextView);
@@ -54,7 +59,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Set up more options", Toast.LENGTH_SHORT).show();
+                setUpMoreOptionsButton(view);
             }
         });
 
@@ -107,5 +112,31 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
+    private void setUpMoreOptionsButton(View view){
+        PopupMenu popup = new PopupMenu(mContext, view);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_report:
+                        Toast.makeText(mContext, "set up report function", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.action_delete:
+                        Toast.makeText(mContext, "set up delete function", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.action_edit:
+                        Toast.makeText(mContext, "set up edit function", Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.comment_options, popup.getMenu());
+//      // TODO: 9/4/2017 ensure that only user that posted the comment has option to delete and edit it
+//        popup.getMenu().removeItem(R.id.action_delete);
+        popup.show();
+    }
 
 }

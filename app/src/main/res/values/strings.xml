@@ -101,5 +101,8 @@
     <string name="about_title_3_desc_3">Ben Manes for the Dependency Updates library</string>
     <string name="about_title_3_desc_4">Ravi Tamada from androidhive</string>
     <string name="about_trademark">Something LLC. All rights reserved.</string>
+    <string name="report">report</string>
+    <string name="delete">delete</string>
+    <string name="edit">edit</string>
 
 </resources>
