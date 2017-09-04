@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
@@ -51,7 +53,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         mphotoUserID = comment.getCommenter();
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
-        usernameTextView.setText(comment.getCommenter());
+        //usernameTextView.setText(comment.getCommenter());
+        setCommentorsName(comment.getCommenter(), usernameTextView);
         comment_textview.setText(comment.getCommentString());
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +64,25 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         });
 
     }
+
+    public void setCommentorsName(String uid, final TextView usernameTextView) {
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue() != null) {
+                            usernameTextView.setText(dataSnapshot.getValue().toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        usernameTextView.setText("BOB");
+                    }
+                });
+    }
+
     @Override
     public void onClick(View view) {
         final ArrayList<Comment> comments = new ArrayList<>();
@@ -87,6 +109,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
     }
 
     private void setUpMoreOptionsButton(View view){
