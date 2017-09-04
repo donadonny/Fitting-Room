@@ -31,6 +31,10 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
+import tk.talcharnes.unborify.Utilities.Utils;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -47,9 +51,9 @@ public class MainActivityFragment extends Fragment {
     private String userId;
     private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
-    DatabaseReference reportRef = firebaseDatabase.getReference().child("Reports");
-    DatabaseReference userReference = firebaseDatabase.getReference().child("users");
+    final DatabaseReference photoReference = firebaseDatabase.getReference().child(FirebaseConstants.PHOTOS);
+    DatabaseReference reportRef = firebaseDatabase.getReference().child(FirebaseConstants.REPORTS);
+    DatabaseReference userReference = firebaseDatabase.getReference().child(FirebaseConstants.USERS);
 
     //        For Firebase Auth
     private FirebaseAuth mAuth;

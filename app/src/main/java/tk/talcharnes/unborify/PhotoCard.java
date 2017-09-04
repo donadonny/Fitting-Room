@@ -45,6 +45,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
+
 /**
  * Created by janisharali on 19/08/16.
  * Modified by Khuram Chaudhry on 08/28/2017.
@@ -114,7 +117,7 @@ public class PhotoCard {
             if (url != null && !url.isEmpty()) {
                 final int rotation = getRotation();
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference()
-                        .child("images").child(url);
+                        .child(FirebaseConstants.IMAGES).child(url);
 
                 Glide.with(mContext)
                         .using(new FirebaseImageLoader())
@@ -283,8 +286,8 @@ public class PhotoCard {
                 chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("votes").child(userID).exists()) {
-                            String uRating = (dataSnapshot.child("votes").child(userID).getValue() + "");
+                        if (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).exists()) {
+                            String uRating = (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).getValue() + "");
                             if (uRating.equals(rating)) {
                                 Log.d(LOG_TAG, "The already User " + rating + " the photo.");
                             } else {
@@ -293,12 +296,12 @@ public class PhotoCard {
                                 long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
                                 chosenPhoto.child(rating).setValue(ratingValue + 1);
                                 chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
-                                chosenPhoto.child("votes").child(userID).setValue(rating);
+                                chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
                             }
                         } else {
                             final long ratingValue = (long) dataSnapshot.child(rating).getValue();
                             chosenPhoto.child(rating).setValue(ratingValue + 1);
-                            chosenPhoto.child("votes").child(userID).setValue(rating);
+                            chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
                             Log.d(LOG_TAG, "The User " + rating + " the photo.");
                         }
                     }
@@ -338,14 +341,14 @@ public class PhotoCard {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        if (snapshot.child("reported_by").child(userID).exists()) {
+                        if (snapshot.child(FirebaseConstants.REPORTED_BY).child(userID).exists()) {
                             Log.d(LOG_TAG, "User already reported photo.");
                         } else {
-                            long numReports = (long) snapshot.child("numReports").getValue();
+                            long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS).getValue();
                             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                            mPhotoReference.child(name).child("reports").setValue(numReports + 1);
-                            mReportsRef.child(name).child("numReports").setValue(numReports + 1);
-                            mReportsRef.child(name).child("reported_by").child(userID).setValue(timeStamp);
+                            mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(numReports + 1);
+                            mReportsRef.child(name).child(FirebaseConstants.NUM_REPORTS).setValue(numReports + 1);
+                            mReportsRef.child(name).child(FirebaseConstants.REPORTED_BY).child(userID).setValue(timeStamp);
                             Log.d(LOG_TAG, "Another report add.");
                         }
                     } else {
@@ -354,7 +357,7 @@ public class PhotoCard {
                         reports.put(userID, timeStamp);
                         Report report = new Report(1, reports);
                         mReportsRef.child(name).setValue(report);
-                        mPhotoReference.child(name).child("reports").setValue(1);
+                        mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(1);
                         Log.d(LOG_TAG, "A new report.");
                     }
                 }

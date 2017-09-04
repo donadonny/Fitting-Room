@@ -32,14 +32,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 import static android.app.Activity.RESULT_OK;
-import static java.lang.Math.toIntExact;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
 /**
@@ -229,8 +229,10 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOrientation(photoOrientation);
                     photo.setAd(false);
 
-                    DatabaseReference photoReference = database.getReference("Photos").child(imageFileNameNoJPG);
-                    DatabaseReference userReference = database.getReference().child("users").child(user).child(imageFileNameNoJPG);
+                    DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
+                            .child(imageFileNameNoJPG);
+                    DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS)
+                            .child(user).child(imageFileNameNoJPG);
 
                     photoReference.setValue(photo);
                     userReference.setValue(photo);

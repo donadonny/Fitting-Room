@@ -15,6 +15,8 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -116,7 +118,8 @@ public class ZoomPhoto extends AppCompatActivity {
 
 
                 PhotoView photoView = (PhotoView) mContentView;
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images").child(url);
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                .child(FirebaseConstants.IMAGES).child(url);
         Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
                 .load(storageReference).transform(new MyTransformation(getApplicationContext(), rotation))
                 .into(photoView);

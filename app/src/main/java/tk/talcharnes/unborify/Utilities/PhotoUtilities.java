@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Utilities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -106,7 +106,7 @@ public class PhotoUtilities {
         return Math.round((float)dp * density);
     }
 
-    static String removeWebPFromUrl(String url){
+    public static String removeWebPFromUrl(String url){
         return url.replace(".webp", "");
     }
 

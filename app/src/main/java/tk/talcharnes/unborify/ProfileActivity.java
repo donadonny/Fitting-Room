@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -17,7 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Date;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/2/17.
@@ -66,7 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
             nameText.setText(name);
             emailText.setText(email);
 
-            FirebaseDatabase.getInstance().getReference("Users").child(uid).child("date_joined")
+           // TODO: 9/4/2017  
+            FirebaseDatabase.getInstance().getReference("Users").child(uid).child(FirebaseConstants.DATE_JOINED)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

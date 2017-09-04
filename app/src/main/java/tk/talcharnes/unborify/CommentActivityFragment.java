@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import tk.talcharnes.unborify.CommentsData.Comment;
 import tk.talcharnes.unborify.CommentsData.FirebaseCommentViewHolder;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -49,10 +51,10 @@ public class CommentActivityFragment extends Fragment {
         mUrl = intent.getStringExtra("url");
         mCurrentUser = intent.getStringExtra("currentUser");
 //        Fix reference here
-        mCommentReference = FirebaseDatabase.getInstance().getReference().child("Photos")
-                .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child("Comments");
-        mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child("users")
-                .child(mPhotoUploader).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child("Comments");
+        mCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
+        mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+                .child(mPhotoUploader).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);

@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Utilities;
 
 import android.content.res.Resources;
 import android.graphics.Point;
