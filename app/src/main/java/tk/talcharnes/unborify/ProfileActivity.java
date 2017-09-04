@@ -65,7 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
             nameText.setText(name);
             emailText.setText(email);
 
-           // TODO: 9/4/2017  
+           // TODO: 9/4/2017  should the following "Users" be "users" or no? If so, change to constant. If not, make new
+            // TODO constant
             FirebaseDatabase.getInstance().getReference("Users").child(uid).child(FirebaseConstants.DATE_JOINED)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
