@@ -1,7 +1,9 @@
 package tk.talcharnes.unborify.CommentsData;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
+
         mphotoUserID = comment.getCommenter();
         mUrl = comment.getPhoto_url().replace(".webp", "");
 
@@ -51,7 +54,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Set up more options", Toast.LENGTH_SHORT).show();
+                setUpMoreOptionsButton(view);
             }
         });
 
@@ -84,5 +87,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         });
     }
 
+    private void setUpMoreOptionsButton(View view){
+        PopupMenu popup = new PopupMenu(mContext, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.comment_options, popup.getMenu());
+        popup.show();
+    }
 
 }
