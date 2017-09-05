@@ -134,7 +134,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                         deleteComment(comment);
                         return true;
                     case R.id.action_edit_comment:
-                        editComment(comment);
+                        showEditCommentDialog(comment);
                         return true;
                     default:
                         return false;
@@ -149,21 +149,6 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         popup.getMenu().removeItem(R.id.action_edit_comment);
         }
         popup.show();
-    }
-
-    private void editComment(final Comment comment) {
-            showEditCommentDialog(comment);
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-//                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key())
-//                .child(FirebaseConstants.COMMENT_STRING);
-
-//       // TODO: 9/4/2017 create dialogue box to get new comment and update both photo comments reference and users
-//        photo comments reference
-
-
-//        String newComment = "EDITED";
-//        ref.setValue(newComment);
-
     }
 
     private void deleteComment(Comment comment) {
