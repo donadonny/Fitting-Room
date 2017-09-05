@@ -37,6 +37,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     private Context mContext;
     private String mCommenterID;
     private String mUrl;
+    boolean mOriginalCommenter;
     private String mCommentString;
 
 
@@ -56,7 +57,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
         mCommenterID = comment.getCommenter();
         mCommentString = comment.getCommentString();
-        final boolean originalCommenter = mCommenterID.equals(currentUser);
+        mOriginalCommenter = mCommenterID.equals(currentUser);
 
 
 
@@ -68,7 +69,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setUpMoreOptionsButton(view, comment, originalCommenter);
+                setUpMoreOptionsButton(view, comment, mOriginalCommenter);
             }
         });
 
@@ -96,7 +97,6 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     public void onClick(View view) {
         final ArrayList<Comment> comments = new ArrayList<>();
 //      Reference correct section of database below
-        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -105,6 +105,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                     comments.add(snapshot.getValue(Comment.class));
                 }
 
+                int itemPosition = getLayoutPosition();
+
+                if(mOriginalCommenter){
+                    showEditCommentDialog(comments.get(itemPosition));
+                }
 //                int itemPosition = getLayoutPosition();
 
 //                Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
@@ -173,7 +178,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
             edt.setText(mCommentString);
         }
         dialogBuilder.setTitle("Edit Comment");
-//        dialogBuilder.setMessage("Edit comment below");
+
         dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String newComment = edt.getText().toString();
