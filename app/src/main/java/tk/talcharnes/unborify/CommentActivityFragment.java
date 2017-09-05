@@ -77,7 +77,7 @@ public class CommentActivityFragment extends Fragment {
             @Override
             protected void populateViewHolder(FirebaseCommentViewHolder viewHolder,
                                               Comment model, int position) {
-                viewHolder.bindComment(model);
+                viewHolder.bindComment(model, mCurrentUser);
             }
         };
         mRecyclerView.setHasFixedSize(true);
