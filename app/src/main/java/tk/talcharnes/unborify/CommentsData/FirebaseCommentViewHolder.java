@@ -1,8 +1,11 @@
 package tk.talcharnes.unborify.CommentsData;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,15 +28,17 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * Created by Tal on 9/3/2017.
- *
+ * <p>
  * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 
 public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private View mView;
     private Context mContext;
-    private String mphotoUserID;
+    private String mCommenterID;
     private String mUrl;
+    boolean mOriginalCommenter;
+    private String mCommentString;
 
 
     public FirebaseCommentViewHolder(View itemView) {
@@ -43,22 +48,27 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         itemView.setOnClickListener(this);
     }
 
-    public void bindComment(Comment comment){
-        TextView usernameTextView = (TextView)mView.findViewById(R.id.comment_username);
+    public void bindComment(final Comment comment, String currentUser) {
+        TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
 
-        mphotoUserID = comment.getCommenter();
+        mCommenterID = comment.getCommenter();
+        mCommentString = comment.getCommentString();
+        mOriginalCommenter = mCommenterID.equals(currentUser);
+
+
+
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
         //usernameTextView.setText(comment.getCommenter());
-        setCommentorsName(comment.getCommenter(), usernameTextView);
-        comment_textview.setText(comment.getCommentString());
+        setCommentorsName(mCommenterID, usernameTextView);
+        comment_textview.setText(mCommentString);
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setUpMoreOptionsButton(view);
+                setUpMoreOptionsButton(view, comment, mOriginalCommenter);
             }
         });
 
@@ -70,7 +80,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getValue() != null) {
+                        if (dataSnapshot.getValue() != null) {
                             usernameTextView.setText(dataSnapshot.getValue().toString());
 
                         }
@@ -87,15 +97,19 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     public void onClick(View view) {
         final ArrayList<Comment> comments = new ArrayList<>();
 //      Reference correct section of database below
-        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Photos")
-                .child(mUrl).child("Comments");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     comments.add(snapshot.getValue(Comment.class));
                 }
 
+                int itemPosition = getLayoutPosition();
+
+                if(mOriginalCommenter){
+                    showEditCommentDialog(comments.get(itemPosition));
+                }
 //                int itemPosition = getLayoutPosition();
 
 //                Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
@@ -112,20 +126,20 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    private void setUpMoreOptionsButton(View view){
+    private void setUpMoreOptionsButton(View view, final Comment comment, boolean originalCommenter) {
         PopupMenu popup = new PopupMenu(mContext, view);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_report:
+                    case R.id.action_report_comment:
                         Toast.makeText(mContext, "set up report function", Toast.LENGTH_SHORT).show();
                         return true;
-                    case R.id.action_delete:
-                        Toast.makeText(mContext, "set up delete function", Toast.LENGTH_SHORT).show();
+                    case R.id.action_delete_comment:
+                        deleteComment(comment);
                         return true;
-                    case R.id.action_edit:
-                        Toast.makeText(mContext, "set up edit function", Toast.LENGTH_SHORT).show();
+                    case R.id.action_edit_comment:
+                        showEditCommentDialog(comment);
                         return true;
                     default:
                         return false;
@@ -135,8 +149,68 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.comment_options, popup.getMenu());
 //      // TODO: 9/4/2017 ensure that only user that posted the comment has option to delete and edit it
-//        popup.getMenu().removeItem(R.id.action_delete);
+        if(!originalCommenter) {
+        popup.getMenu().removeItem(R.id.action_delete_comment);
+        popup.getMenu().removeItem(R.id.action_edit_comment);
+        }
         popup.show();
     }
 
+    private void deleteComment(Comment comment) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
+        ref.removeValue();
+
+        DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+                .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
+                .child(comment.getComment_key());
+        mOtherCommentReference.removeValue();
+    }
+    private void showEditCommentDialog(final Comment comment) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        ;
+        final View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText edt = (EditText) dialogView.findViewById(R.id.comment_edit_dialog_box);
+        if(mCommentString != null && !mCommentString.isEmpty()) {
+            edt.setText(mCommentString);
+        }
+        dialogBuilder.setTitle("Edit Comment");
+
+        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String newComment = edt.getText().toString();
+                if (newComment.isEmpty() ||
+                        newComment.equals("")
+                        || newComment == null) {
+
+                    edt.setError("Comment can not be empty");
+                } else if (newComment.length() < 5) {
+                    edt.setError("Comment must be longer than 5 characters");
+                } else {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+                            .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key())
+                            .child(FirebaseConstants.COMMENT_STRING);
+
+                    DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.USERS)
+                            .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
+                            .child(comment.getComment_key()).child(FirebaseConstants.COMMENT_STRING);
+
+                    ref.setValue(newComment);
+                    mOtherCommentReference.setValue(newComment);
+
+                }
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //pass
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
+    }
 }

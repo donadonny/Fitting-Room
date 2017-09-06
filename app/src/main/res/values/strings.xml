@@ -104,5 +104,6 @@
     <string name="report">report</string>
     <string name="delete">delete</string>
     <string name="edit">edit</string>
+    <string name="edit_comment">Edit Comment</string>
 
 </resources>

@@ -62,7 +62,6 @@ public class MainActivityFragment extends Fragment {
     private InterstitialAd mInterstitialAd;
     private Boolean showAd = false;
     private View rootView;
-    private Boolean isReported = false;
     private SwipePlaceHolderView mSwipeView;
     private Context mContext;
     private int widthInDP;
@@ -142,7 +141,6 @@ public class MainActivityFragment extends Fragment {
         //Fab buttons
         likeButton = rootView.findViewById(R.id.thumbs_up_fab);
         dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
-        reportButton = rootView.findViewById(R.id.report_button_fab);
 
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,13 +156,6 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        reportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PhotoCard.setReported();
-                mSwipeView.doSwipe(false);
-            }
-        });
     }
 
     /**

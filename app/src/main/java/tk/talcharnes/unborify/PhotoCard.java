@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -91,7 +93,7 @@ public class PhotoCard {
     private SwipePlaceHolderView mSwipeView;
     private String mUserId, mUserName;
     private DatabaseReference mPhotoReference, mReportsRef;
-    static Boolean isReported = false;
+    private Boolean isReported = false;
     static boolean isAd = false;
     private int width;
     private int height;
@@ -161,7 +163,7 @@ public class PhotoCard {
                 photo_card_options.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
-                        Toast.makeText(mContext, "Create menu here that will allow reporting", Toast.LENGTH_SHORT).show();
+                        showPopup(view, 0);
                     }
                 });
 
@@ -327,7 +329,7 @@ public class PhotoCard {
     /**
      * This function changes the value of isReported.
      */
-    public static void setReported() {
+    public void setReported() {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             isReported = true;
@@ -352,7 +354,7 @@ public class PhotoCard {
                         } else {
                             long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS).getValue();
                             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                            mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(numReports + 1);
+                            mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(numReports + 1);
                             mReportsRef.child(name).child(FirebaseConstants.NUM_REPORTS).setValue(numReports + 1);
                             mReportsRef.child(name).child(FirebaseConstants.REPORTED_BY).child(userID).setValue(timeStamp);
                             Log.d(LOG_TAG, "Another report add.");
@@ -363,7 +365,7 @@ public class PhotoCard {
                         reports.put(userID, timeStamp);
                         Report report = new Report(1, reports);
                         mReportsRef.child(name).setValue(report);
-                        mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(1);
+                        mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
                         Log.d(LOG_TAG, "A new report.");
                     }
                 }
@@ -430,6 +432,29 @@ public class PhotoCard {
 
             mVisible = true;
         }
+    }
+
+    private void showPopup(android.view.View v, final int i) {
+        PopupMenu popup = new PopupMenu(mContext, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_photo_card, popup.getMenu());
+        popup.show();
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(
+                    android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_report_photo:
+                        setReported();
+                        mSwipeView.doSwipe(false);
+                        return true;
+                    default:
+                        return false;
+                }
+                //return false;
+            }
+        });
     }
 
 }
