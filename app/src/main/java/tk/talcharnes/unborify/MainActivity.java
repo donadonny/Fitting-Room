@@ -1,7 +1,12 @@
 package tk.talcharnes.unborify;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,16 +32,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
 import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
 import tk.talcharnes.unborify.NavigationFragments.NotificationFragment;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.my_photos.MyPhotosFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView nameText, emailText;
     private ImageButton profileImageButton;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private DatabaseReference notificationRef;
+    private ChildEventListener notificationListener;
     private Toolbar toolbar;
+    private String uid, userName;
 
     public static int fragment_id = R.id.nav_home;
     public static int previous_fragment_id = fragment_id;
@@ -95,6 +108,15 @@ public class MainActivity extends AppCompatActivity {
         profileImage = (ImageView) navHeader.findViewById(R.id.img_profile);
         profileImageButton = (ImageButton) navHeader.findViewById(R.id.profile_image_button);
         loadHeaderData();
+
+        // myNotifications Stuff
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            notificationRef = FirebaseDatabase.getInstance().getReference()
+                    .child(FirebaseConstants.USERDATA).child(user.getUid())
+                    .child(FirebaseConstants.NOTIFICATION);
+            setNotificationListener();
+        }
     }
 
     /**
@@ -105,10 +127,10 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if(user != null) {
             Log.d(TAG, "Loading user data to the navigation toolbar.");
-            final String name = user.getDisplayName();
+            userName = user.getDisplayName();
             final String email = user.getEmail();
-            final String uid = user.getUid();
-            nameText.setText(name);
+            uid = user.getUid();
+            nameText.setText(userName);
             emailText.setText(email);
             Uri uri = user.getPhotoUrl();
             if(uri != null) {
@@ -130,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    intent.putExtra("name", name);
+                    intent.putExtra("name", userName);
                     intent.putExtra("email", email);
                     intent.putExtra("uid", uid);
                     startActivity(intent);
@@ -337,6 +359,97 @@ public class MainActivity extends AppCompatActivity {
     public void takePic(){
         Intent intent = new Intent(this, PhotoUploadActivity.class);
         startActivity(intent);
+    }
+
+    public void setNotificationListener(){
+        notificationListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                myNotifications myNotificationsSnapshot = dataSnapshot
+                        .getValue(myNotifications.class);
+
+                if(myNotificationsSnapshot != null) {
+
+                    System.out.println(myNotificationsSnapshot.getRead()+"------------"+
+                            myNotificationsSnapshot.getPhotoUrl() + "------------"+
+                            myNotificationsSnapshot.getMessage() +"------------"+
+                            myNotificationsSnapshot.getSenderID() +"------------"+
+                            myNotificationsSnapshot.getSenderName());
+
+                    String title = "user: " + myNotificationsSnapshot.getSenderName() +
+                            " commented on your picture.";
+
+                    String message = myNotificationsSnapshot.getMessage();
+
+                    SharedPreferences sharedPref = MainActivity.this
+                            .getSharedPreferences("saved_notification_key", Context.MODE_PRIVATE);
+
+                    String pastKey = sharedPref.getString(FirebaseConstants.Notification_KEY,
+                            FirebaseConstants.Notification_KEY);
+
+                    String currentNotificationKey = dataSnapshot.getKey();
+
+                    if(!currentNotificationKey.equals(pastKey)) {
+
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                        Intent intent = new Intent(MainActivity.this, CommentActivity.class);
+                        intent.putExtra("url", myNotificationsSnapshot.getPhotoUrl());
+                        intent.putExtra("photoUserID", uid);
+                        intent.putExtra("currentUser", uid);
+                        intent.putExtra("notified", currentNotificationKey);
+                        PendingIntent resultPendingIntent = PendingIntent
+                                .getActivity(MainActivity.this, 0, intent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        android.app.Notification notification = new NotificationCompat
+                                .Builder(MainActivity.this, "comment_notification")
+                                .setContentTitle(title)
+                                .setContentText(message)
+                                .setContentIntent(resultPendingIntent)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .build();
+                        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE |
+                                Notification.FLAG_AUTO_CANCEL;
+
+                        int SERVER_DATA_RECEIVED = 1;
+                        notificationManager.notify(SERVER_DATA_RECEIVED, notification);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        notificationRef.addChildEventListener(notificationListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(notificationListener != null) {
+            notificationRef.removeEventListener(notificationListener);
+        }
     }
 
 }

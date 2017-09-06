@@ -22,6 +22,7 @@ import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,6 +71,9 @@ public class PhotoCard {
     @View(R.id.nameText)
     private TextView nameTextView;
 
+    @View(R.id.uploadederNameTxt)
+    private TextView usernameTextView;
+
     @View(R.id.dislikesText)
     private TextView dislikeTextView;
 
@@ -85,7 +89,7 @@ public class PhotoCard {
     private Photo mPhoto;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
-    private String mUserId;
+    private String mUserId, mUserName;
     private DatabaseReference mPhotoReference, mReportsRef;
     static Boolean isReported = false;
     static boolean isAd = false;
@@ -94,11 +98,13 @@ public class PhotoCard {
     private boolean mVisible = true;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
-                     DatabaseReference photoReference, DatabaseReference reportsRef) {
+                     String userName, DatabaseReference photoReference,
+                     DatabaseReference reportsRef) {
         mContext = context;
         mPhoto = photo;
         mSwipeView = swipeView;
         mUserId = userId;
+        mUserName = userName;
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
         isAd = photo.isAd();
@@ -147,6 +153,7 @@ public class PhotoCard {
                         intent.putExtra("url", mPhoto.getUrl());
                         intent.putExtra("photoUserID", mPhoto.getUser());
                         intent.putExtra("currentUser", mUserId);
+                        intent.putExtra("name", mUserName);
                         mContext.startActivity(intent);
                     }
                 });
@@ -158,7 +165,7 @@ public class PhotoCard {
                     }
                 });
 
-
+                setUploaderName(mPhoto.getUser(), usernameTextView);
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);
@@ -335,7 +342,6 @@ public class PhotoCard {
         if (!itsAnAd) {
             final String userID = mUserId;
             final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
-            System.out.println("------------------------------" + userID + "----------------------------------");
             final Query query = mReportsRef.child(name);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -369,6 +375,26 @@ public class PhotoCard {
             });
         }
     }
+
+    public void setUploaderName(String uid, final TextView usernameTextView) {
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue() != null) {
+                            String name = "By: " + dataSnapshot.getValue().toString();
+                            usernameTextView.setText(name);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        usernameTextView.setText("BOB");
+                    }
+                });
+    }
+
 
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();

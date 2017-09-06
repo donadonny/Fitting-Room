@@ -48,7 +48,7 @@ public class MainActivityFragment extends Fragment {
     ArrayList<Photo> photoList;
     private int i = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private String userId;
+    private String userId, userName;
     private String oldestPostId = "";
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference photoReference = firebaseDatabase.getReference().child(FirebaseConstants.PHOTOS);
@@ -65,7 +65,6 @@ public class MainActivityFragment extends Fragment {
     private Boolean isReported = false;
     private SwipePlaceHolderView mSwipeView;
     private Context mContext;
-    private Boolean firstTime = true;
     private int widthInDP;
     private int heightInDP;
 
@@ -108,6 +107,7 @@ public class MainActivityFragment extends Fragment {
                 if (user != null) {
                     // User is signed in
                     userId = user.getUid();
+                    userName = user.getDisplayName();
 
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + userId);
                 } else {
@@ -213,32 +213,48 @@ public class MainActivityFragment extends Fragment {
 
         final long startTime = System.currentTimeMillis();
 
+        final boolean firstTime;
+        Query query;
+
         final Photo adViewPhoto = new Photo();
         adViewPhoto.setAd(true);
 
-        Query query = (oldestPostId.isEmpty()) ?
-                photoReference.orderByChild(Photo.URL_KEY).limitToFirst(8) :
-                photoReference.orderByChild(Photo.URL_KEY).startAt(oldestPostId).limitToFirst(8);
+        if(oldestPostId.isEmpty()) {
+            firstTime = true;
+            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(7);
+        } else {
+            firstTime = false;
+            query = photoReference.orderByChild(Photo.URL_KEY).endAt(oldestPostId).limitToLast(8);
+        }
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     int len = 0;
+                    ArrayList<PhotoCard> list = new ArrayList<PhotoCard>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        if (len != 0 || firstTime) {
-                            Photo photo = child.getValue(Photo.class);
-                            assert photo != null;
-                            final DatabaseReference photoRef = photoReference.child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()));
-                            mSwipeView.addView(new PhotoCard(mContext, photo, mSwipeView, userId,
-                                    photoReference, reportRef));
+
+                        Photo photo = child.getValue(Photo.class);
+
+                        assert photo != null;
+                        /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
+                                .removeWebPFromUrl(photo.getUrl()));*/
+                        list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName, photoReference,
+                                reportRef));
+                        if(len == 0) {
                             oldestPostId = photo.getUrl();
-                            firstTime = false;
-                        } /*else if(!firstTime) {
-                            //mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId,
-                                   // photoReference, reportRef));
-                        }*/
-                        len++;
+                            len++;
+                        }
+                        /* mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId,
+                                photoReference, reportRef));*/
+                    }
+
+                    if(!firstTime) {
+                        list.remove(0);
+                    }
+                    for(int i = list.size()-1; i > -1; i--) {
+                        mSwipeView.addView(list.get(i));
                     }
                     mSwipeView.addView(new AdCard(mContext, mSwipeView));
                     System.out.println("Got data.");
