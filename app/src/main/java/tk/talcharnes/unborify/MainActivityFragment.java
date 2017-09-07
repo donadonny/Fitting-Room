@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
@@ -43,7 +42,7 @@ public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     FloatingActionButton fab;
-    FloatingActionButton likeButton, dislikeButton, reportButton;
+    FloatingActionButton likeButton, dislikeButton;
 
     ArrayList<Photo> photoList;
     private int i = 0;
@@ -145,6 +144,7 @@ public class MainActivityFragment extends Fragment {
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Analytics.registerSwipe(getActivity(), "left");
                 mSwipeView.doSwipe(false);
             }
         });
@@ -152,6 +152,7 @@ public class MainActivityFragment extends Fragment {
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Analytics.registerSwipe(getActivity(), "right");
                 mSwipeView.doSwipe(true);
             }
         });

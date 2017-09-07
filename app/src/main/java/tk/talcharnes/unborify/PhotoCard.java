@@ -230,6 +230,7 @@ public class PhotoCard {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             setVote("likes");
+            Analytics.registerSwipe(mContext, "right");
         }
     }
 
@@ -246,6 +247,7 @@ public class PhotoCard {
                 setReport();
             } else {
                 setVote("dislikes");
+                Analytics.registerSwipe(mContext, "left");
             }
         }
     }

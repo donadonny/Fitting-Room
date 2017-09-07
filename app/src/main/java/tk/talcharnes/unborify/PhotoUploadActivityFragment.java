@@ -240,6 +240,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     if(getContext() != null) {
                         NavUtils.navigateUpFromSameTask(getActivity());
                     }
+                    Analytics.registerUpload(getActivity(), user);
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
