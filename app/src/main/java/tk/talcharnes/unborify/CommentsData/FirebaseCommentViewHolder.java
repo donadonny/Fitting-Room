@@ -45,7 +45,6 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         super(itemView);
         mView = itemView;
         mContext = itemView.getContext();
-
         itemView.setOnClickListener(this);
     }
 
@@ -76,7 +75,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid)
+                .child(FirebaseConstants.USERNAME)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

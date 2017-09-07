@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,6 +73,9 @@ public class PhotoCard {
     @View(R.id.nameText)
     private TextView nameTextView;
 
+    @View(R.id.uploadederNameTxt)
+    private TextView usernameTextView;
+
     @View(R.id.dislikesText)
     private TextView dislikeTextView;
 
@@ -85,20 +91,22 @@ public class PhotoCard {
     private Photo mPhoto;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
-    private String mUserId;
+    private String mUserId, mUserName;
     private DatabaseReference mPhotoReference, mReportsRef;
-    static Boolean isReported = false;
+    private Boolean isReported = false;
     static boolean isAd = false;
     private int width;
     private int height;
     private boolean mVisible = true;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
-                     DatabaseReference photoReference, DatabaseReference reportsRef) {
+                     String userName, DatabaseReference photoReference,
+                     DatabaseReference reportsRef) {
         mContext = context;
         mPhoto = photo;
         mSwipeView = swipeView;
         mUserId = userId;
+        mUserName = userName;
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
         isAd = photo.isAd();
@@ -147,6 +155,7 @@ public class PhotoCard {
                         intent.putExtra("url", mPhoto.getUrl());
                         intent.putExtra("photoUserID", mPhoto.getUser());
                         intent.putExtra("currentUser", mUserId);
+                        intent.putExtra("name", mUserName);
                         mContext.startActivity(intent);
                     }
                 });
@@ -154,11 +163,11 @@ public class PhotoCard {
                 photo_card_options.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
-                        Toast.makeText(mContext, "Create menu here that will allow reporting", Toast.LENGTH_SHORT).show();
+                        showPopup(view, 0);
                     }
                 });
 
-
+                setUploaderName(mPhoto.getUser(), usernameTextView);
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);
@@ -221,6 +230,7 @@ public class PhotoCard {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             setVote("likes");
+            Analytics.registerSwipe(mContext, "right");
         }
     }
 
@@ -237,6 +247,7 @@ public class PhotoCard {
                 setReport();
             } else {
                 setVote("dislikes");
+                Analytics.registerSwipe(mContext, "left");
             }
         }
     }
@@ -320,7 +331,7 @@ public class PhotoCard {
     /**
      * This function changes the value of isReported.
      */
-    public static void setReported() {
+    public void setReported() {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
             isReported = true;
@@ -335,7 +346,6 @@ public class PhotoCard {
         if (!itsAnAd) {
             final String userID = mUserId;
             final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
-            System.out.println("------------------------------" + userID + "----------------------------------");
             final Query query = mReportsRef.child(name);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -346,7 +356,7 @@ public class PhotoCard {
                         } else {
                             long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS).getValue();
                             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                            mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(numReports + 1);
+                            mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(numReports + 1);
                             mReportsRef.child(name).child(FirebaseConstants.NUM_REPORTS).setValue(numReports + 1);
                             mReportsRef.child(name).child(FirebaseConstants.REPORTED_BY).child(userID).setValue(timeStamp);
                             Log.d(LOG_TAG, "Another report add.");
@@ -357,7 +367,7 @@ public class PhotoCard {
                         reports.put(userID, timeStamp);
                         Report report = new Report(1, reports);
                         mReportsRef.child(name).setValue(report);
-                        mPhotoReference.child(name).child(FirebaseConstants.REPORTS).setValue(1);
+                        mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
                         Log.d(LOG_TAG, "A new report.");
                     }
                 }
@@ -369,6 +379,26 @@ public class PhotoCard {
             });
         }
     }
+
+    public void setUploaderName(String uid, final TextView usernameTextView) {
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue() != null) {
+                            String name = "By: " + dataSnapshot.getValue().toString();
+                            usernameTextView.setText(name);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        usernameTextView.setText("BOB");
+                    }
+                });
+    }
+
 
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
@@ -404,6 +434,29 @@ public class PhotoCard {
 
             mVisible = true;
         }
+    }
+
+    private void showPopup(android.view.View v, final int i) {
+        PopupMenu popup = new PopupMenu(mContext, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_photo_card, popup.getMenu());
+        popup.show();
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(
+                    android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_report_photo:
+                        setReported();
+                        mSwipeView.doSwipe(false);
+                        return true;
+                    default:
+                        return false;
+                }
+                //return false;
+            }
+        });
     }
 
 }

@@ -11,12 +11,16 @@ public class FirebaseConstants {
     public final static String USERDATA = "users/data";
     public final static String USERNAME = "name";
     public final static String IMAGES = "images";
+    public final static String REPORTS = "Reports";
+    public final static String NOTIFICATION = "notifications";
     public final static String VOTES = "votes";
+    public final static String PHOTO_REPORTS = "reports";
     public final static String REPORTED_BY = "reported_by";
     public final static String NUM_REPORTS = "numReports";
-    public final static String REPORTS = "reports";
     public final static String DATE_JOINED = "date_joined";
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
+
+    public final static String Notification_KEY = "Notification_KEY";
 
 }

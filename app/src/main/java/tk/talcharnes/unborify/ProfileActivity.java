@@ -57,7 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         /* Set up the user's name, email, and the register date */
         Intent intent = getIntent();
-        if(intent != null) {
+        if(intent.getExtras() != null) {
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
             String uid = intent.getStringExtra("uid");
