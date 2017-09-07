@@ -1,6 +1,8 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
@@ -107,7 +110,13 @@ public class MainActivityFragment extends Fragment {
                     userId = user.getUid();
                     userName = user.getDisplayName();
 
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + userId);
+                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in: " + userId);
+
+
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    FirebaseConstants.setToken(token);
+                    Log.d(LOG_TAG, "Token: " + token);
+
                 } else {
                     // User is signed out
                     startActivityForResult(

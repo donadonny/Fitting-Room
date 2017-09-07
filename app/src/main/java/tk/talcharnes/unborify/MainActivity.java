@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             notificationRef = FirebaseDatabase.getInstance().getReference()
                     .child(FirebaseConstants.USERDATA).child(user.getUid())
                     .child(FirebaseConstants.NOTIFICATION);
-            setNotificationListener();
+           // setNotificationListener();
         }
     }
 
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                myNotifications myNotificationsSnapshot = dataSnapshot
+                /*myNotifications myNotificationsSnapshot = dataSnapshot
                         .getValue(myNotifications.class);
 
                 if(myNotificationsSnapshot != null) {
@@ -375,7 +375,6 @@ public class MainActivity extends AppCompatActivity {
                             myNotificationsSnapshot.getPhotoUrl() + "------------"+
                             myNotificationsSnapshot.getMessage() +"------------"+
                             myNotificationsSnapshot.getSenderID() +"------------"+
-                            myNotificationsSnapshot.getSenderName());
 
                     String title = "user: " + myNotificationsSnapshot.getSenderName() +
                             " commented on your picture.";
@@ -417,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
                         int SERVER_DATA_RECEIVED = 1;
                         notificationManager.notify(SERVER_DATA_RECEIVED, notification);
                     }
-                }
+                }*/
             }
 
             @Override
@@ -447,9 +446,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(notificationListener != null) {
+        /*if(notificationListener != null) {
             notificationRef.removeEventListener(notificationListener);
-        }
+        }*/
     }
 
 }

@@ -37,7 +37,6 @@ public class CommentActivityFragment extends Fragment {
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     private RecyclerView mRecyclerView;
     private String mPhotoUploader, mUrl, mCurrentUser;
-    private String name;
     private EditText mCommentEditText;
     private ImageButton mSubmitCommentImageButton;
     private final String LOG_TAG = CommentActivityFragment.class.getSimpleName();
@@ -55,20 +54,13 @@ public class CommentActivityFragment extends Fragment {
         mPhotoUploader = intent.getStringExtra("photoUserID");
         mUrl = intent.getStringExtra("url");
         mCurrentUser = intent.getStringExtra("currentUser");
-        name = intent.getStringExtra("name");
-
-        if(intent.getStringExtra("notified") != null) {
-            String notikey = intent.getStringExtra("notified");
-            SharedPreferences sharedPref = getActivity().getSharedPreferences("saved_notification_key", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(FirebaseConstants.Notification_KEY, notikey).apply();
-        }
 
 //        Fix reference here
         mCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
                 .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
-                .child(mPhotoUploader).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
+                .child(mPhotoUploader).child(PhotoUtilities
+                        .removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);
@@ -128,15 +120,15 @@ public class CommentActivityFragment extends Fragment {
                             mOtherCommentReference.child(mComment_key).setValue(comment);
 
                     if(!mPhotoUploader.equals(mCurrentUser)) {
-                        DatabaseReference notificationRef = FirebaseDatabase.getInstance()
+
+                        DatabaseReference userNotificationRef = FirebaseDatabase.getInstance()
                                 .getReference().child(FirebaseConstants.USERDATA)
                                 .child(mPhotoUploader).child(FirebaseConstants.NOTIFICATION);
 
-                        String key = notificationRef.push().getKey();
+                        myNotifications myNotification = new myNotifications(false, mUrl,
+                                comment.getCommentString(), mCurrentUser);
 
-                        notificationRef.child(key)
-                                .setValue(new myNotifications(true, mUrl,
-                                        comment.getCommentString(), mCurrentUser, name));
+                        userNotificationRef.push().setValue(myNotification);
                     }
 
                         }

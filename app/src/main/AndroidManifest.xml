@@ -83,6 +83,70 @@
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- [START firebase_iid_service] -->
+        <service
+            android:name=".Services.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- [END firebase_iid_service] -->
+
+        <service
+            android:name=".Services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+
+        Receive Messages in an Android App
+
+        Firebase notifications behave differently depending on the foreground/background state of the receiving app. If you want foregrounded apps to receive notification messages or data messages, you’ll need to write code to handle the onMessageReceived callback. For an explanation of the difference between notification and data messages, see Message types.
+
+        Handling messages
+
+        To receive messages, use a service that extends FirebaseMessagingService. Your service should override the onMessageReceived and onDeletedMessages callbacks. It should handle any message within 10 seconds of receipt. After that, Android does not guarantee execution, and could terminate your process at any time. If your app needs more time to process a message, use the Firebase Job Dispatcher.
+
+        onMessageReceived is provided for most message types, with the following exceptions:
+
+        Notification messages delivered when your app is in the background. In this case, the notification is delivered to the device’s system tray. A user tap on a notification opens the app launcher by default.
+        Messages with both notification and data payload, both background and foreground. In this case, the notification is delivered to the device’s system tray, and the data payload is delivered in the extras of the intent of your launcher Activity.
+        In summary:
+
+        App state	Notification	Data	Both
+        Foreground	onMessageReceived	onMessageReceived	onMessageReceived
+        Background	System tray	onMessageReceived	Notification: system tray
+        Data: in extras of the intent.
+        For more information about message types, see Notifications and data messages.
+        For all messages where onMessageReceived is provided, your service should handle any message within 10 seconds of receipt. If your app needs more time to process a message, use the Firebase Job Dispatcher.
+        Edit the app manifest
+
+        To use FirebaseMessagingService, you need to add the following in your app manifest:
+
+        <service
+            android:name=".Services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        AndroidManifest.xml
+        Also, you're recommended to set default values to customize the appearance of notifications. You can specify a custom default icon and a custom default color that are applied whenever equivalent values are not set in the notification payload.
+
+        Add these lines inside the application tag to set the custom default icon and custom color:
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
     </application>
 
 </manifest>
