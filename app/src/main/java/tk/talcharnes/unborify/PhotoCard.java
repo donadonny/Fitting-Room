@@ -16,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -64,8 +66,8 @@ public class PhotoCard {
     @View(R.id.photoImageView)
     private ImageView photoImageView;
 
-    @View(R.id.likesText)
-    private TextView likeTextView;
+    @View(R.id.userImage)
+    private ImageView userImageView;
 
     @View(R.id.realPhotoSwipeCard)
     private CardView realPhotoSwipeCard;
@@ -73,11 +75,11 @@ public class PhotoCard {
     @View(R.id.nameText)
     private TextView nameTextView;
 
+    @View(R.id.rating)
+    private IconRoundCornerProgressBar ratingBar;
+
     @View(R.id.uploadederNameTxt)
     private TextView usernameTextView;
-
-    @View(R.id.dislikesText)
-    private TextView dislikeTextView;
 
     @View(R.id.zoom_button)
     private ImageButton zoom_button;
@@ -131,11 +133,17 @@ public class PhotoCard {
                         .using(new FirebaseImageLoader())
                         .load(storageRef).transform(new MyTransformation(mContext, rotation))
                         .into(photoImageView);
-                String dislikes = "" + mPhoto.getDislikes();
-                dislikeTextView.setText(dislikes);
+                float dislikes = Float.parseFloat(""+mPhoto.getDislikes());
                 nameTextView.setText(mPhoto.getOccasion_subtitle());
-                String likes = "" + mPhoto.getLikes();
-                likeTextView.setText(likes);
+                float likes = Float.parseFloat(""+mPhoto.getLikes());
+                dislikes = (dislikes < 1) ? 1: dislikes;
+                likes = (likes < 1) ? 1: likes;
+                float totalVotes = likes + dislikes;
+                float rating = (likes / totalVotes) * 100f;
+                System.out.println("Likes: "+likes+"---------------- Dislikes: "
+                        +dislikes+"----------- TotalVotes: "+totalVotes+"----------- Rating: "+
+                        rating);
+                ratingBar.setProgress(rating);
 
                 ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
                 zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
@@ -168,6 +176,13 @@ public class PhotoCard {
                 });
 
                 setUploaderName(mPhoto.getUser(), usernameTextView);
+
+                Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
+                        .crossFade()
+                        .thumbnail(.5f)
+                        .bitmapTransform(new CircleTransform(mContext))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(userImageView);
             }
         } else {
             zoom_button.setVisibility(android.view.View.GONE);

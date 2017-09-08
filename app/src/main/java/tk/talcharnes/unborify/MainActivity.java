@@ -133,19 +133,12 @@ public class MainActivity extends AppCompatActivity {
             nameText.setText(userName);
             emailText.setText(email);
             Uri uri = user.getPhotoUrl();
-            if(uri != null) {
-                try {
-                    URL url = new URL(uri.toString());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                        .crossFade()
-                        .thumbnail(.5f)
-                        .bitmapTransform(new CircleTransform(this))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(profileImage);
-            }
+            Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
+                    .crossFade()
+                    .thumbnail(.5f)
+                    .bitmapTransform(new CircleTransform(this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profileImage);
             // showing dot next to notifications label
             navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
             profileImageButton.setOnClickListener(new View.OnClickListener() {

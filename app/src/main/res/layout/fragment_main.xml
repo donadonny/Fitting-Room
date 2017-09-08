@@ -9,11 +9,32 @@
     tools:showIn="@layout/activity_main">
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/thumbs_down_fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginStart="@dimen/fab_radius"
+        android:layout_alignStart="@+id/swipeView"
+        android:layout_centerVertical="true"
+        app:backgroundTint="#F44336"
+        android:src="@drawable/ic_thumb_down_white_24dp" />
+
     <com.mindorks.placeholderview.SwipePlaceHolderView
         android:id="@+id/swipeView"
         android:layout_width="match_parent"
-        android:background="@color/cardview_dark_background"
-        android:layout_height="match_parent"/>
+        android:background="#FDFDFD"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/thumbs_up_fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginEnd="@dimen/fab_radius"
+        android:layout_alignEnd="@+id/swipeView"
+        android:layout_centerVertical="true"
+        app:backgroundTint="#4CAF50"
+        android:src="@drawable/ic_thumb_up_white_24dp" />
 
     <!--com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -27,39 +48,5 @@
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
     </com.google.android.gms.ads.AdView-->
-
-    <LinearLayout
-        android:id="@+id/action_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/thumbs_down_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_thumb_down_white_24dp" />
-
-        <android.support.v4.widget.Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-
-        <android.support.v4.widget.Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/thumbs_up_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_thumb_up_white_24dp" />
-    </LinearLayout>
 
 </RelativeLayout>

@@ -174,7 +174,7 @@ public class MainActivityFragment extends Fragment {
     private void initializeSwipePlaceHolderView() {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
-        int bottomMargin = Utils.dpToPx(140);
+        int bottomMargin = Utils.dpToPx(50);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
@@ -182,8 +182,8 @@ public class MainActivityFragment extends Fragment {
                 .setHeightSwipeDistFactor(10)
                 .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
-                        .setViewWidth((int) (windowSize.x * .9))
-                        .setViewHeight(((int) (windowSize.y * .9)) - bottomMargin)
+                        .setViewWidth((int) (windowSize.x * .99))
+                        .setViewHeight(((int) (windowSize.y * .92)) - bottomMargin)
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
@@ -257,7 +257,16 @@ public class MainActivityFragment extends Fragment {
                     for(int i = list.size()-1; i > -1; i--) {
                         mSwipeView.addView(list.get(i));
                     }
-                    mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                    if(list.size() < 7) {
+                        int diff = 7 - list.size();
+                        while(diff > 0) {
+                            mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                            diff--;
+                        }
+                        oldestPostId = "";
+                    } else {
+                        mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                    }
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
