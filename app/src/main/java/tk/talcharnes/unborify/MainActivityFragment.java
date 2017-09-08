@@ -13,6 +13,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdListener;
@@ -65,9 +68,12 @@ public class MainActivityFragment extends Fragment {
     private Boolean showAd = false;
     private View rootView;
     private SwipePlaceHolderView mSwipeView;
+    private Button refreshButton;
+    private TextView refresh_textview;
     private Context mContext;
     private int widthInDP;
     private int heightInDP;
+    private boolean refresh;
 
     /**
      * Constructor.
@@ -149,6 +155,9 @@ public class MainActivityFragment extends Fragment {
         //Fab buttons
         likeButton = rootView.findViewById(R.id.thumbs_up_fab);
         dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
+        refreshButton = rootView.findViewById(R.id.refreshBtn);
+
+        refresh_textview = rootView.findViewById(R.id.refreshTitle);
 
         dislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +172,19 @@ public class MainActivityFragment extends Fragment {
             public void onClick(View view) {
                 Analytics.registerSwipe(getActivity(), "right");
                 mSwipeView.doSwipe(true);
+            }
+        });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                oldestPostId = "";
+                refresh = false;
+                refreshButton.setVisibility(View.GONE);
+                refresh_textview.setVisibility(View.GONE);
+                likeButton.setVisibility(View.VISIBLE);
+                dislikeButton.setVisibility(View.VISIBLE);
+                getPhotos();
             }
         });
 
@@ -200,7 +222,14 @@ public class MainActivityFragment extends Fragment {
                     /*if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
                     }*/
-                    getPhotos();
+                    if(refresh) {
+                        refreshButton.setVisibility(View.VISIBLE);
+                        refresh_textview.setVisibility(View.VISIBLE);
+                        likeButton.setVisibility(View.GONE);
+                        dislikeButton.setVisibility(View.GONE);
+                    } else {
+                        getPhotos();
+                    }
                 }
             }
         });
@@ -264,6 +293,7 @@ public class MainActivityFragment extends Fragment {
                             diff--;
                         }
                         oldestPostId = "";
+                        refresh = true;
                     } else {
                         mSwipeView.addView(new AdCard(mContext, mSwipeView));
                     }
