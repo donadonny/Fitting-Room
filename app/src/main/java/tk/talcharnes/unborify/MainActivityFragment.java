@@ -1,6 +1,8 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
@@ -107,7 +110,13 @@ public class MainActivityFragment extends Fragment {
                     userId = user.getUid();
                     userName = user.getDisplayName();
 
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + userId);
+                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in: " + userId);
+
+
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    FirebaseConstants.setToken(token);
+                    Log.d(LOG_TAG, "Token: " + token);
+
                 } else {
                     // User is signed out
                     startActivityForResult(
@@ -165,7 +174,7 @@ public class MainActivityFragment extends Fragment {
     private void initializeSwipePlaceHolderView() {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
-        int bottomMargin = Utils.dpToPx(140);
+        int bottomMargin = Utils.dpToPx(50);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
@@ -173,8 +182,8 @@ public class MainActivityFragment extends Fragment {
                 .setHeightSwipeDistFactor(10)
                 .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
-                        .setViewWidth((int) (windowSize.x * .9))
-                        .setViewHeight(((int) (windowSize.y * .9)) - bottomMargin)
+                        .setViewWidth((int) (windowSize.x * .99))
+                        .setViewHeight(((int) (windowSize.y * .92)) - bottomMargin)
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
@@ -248,7 +257,16 @@ public class MainActivityFragment extends Fragment {
                     for(int i = list.size()-1; i > -1; i--) {
                         mSwipeView.addView(list.get(i));
                     }
-                    mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                    if(list.size() < 7) {
+                        int diff = 7 - list.size();
+                        while(diff > 0) {
+                            mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                            diff--;
+                        }
+                        oldestPostId = "";
+                    } else {
+                        mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                    }
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();

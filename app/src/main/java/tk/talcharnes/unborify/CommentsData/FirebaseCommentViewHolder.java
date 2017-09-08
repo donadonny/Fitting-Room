@@ -2,6 +2,7 @@ package tk.talcharnes.unborify.CommentsData;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -33,12 +34,16 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
  */
 
 public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    private final String TAG = FirebaseCommentViewHolder.class.getSimpleName();
+
     private View mView;
     private Context mContext;
     private String mCommenterID;
     private String mUrl;
-    boolean mOriginalCommenter;
+    private boolean mOriginalCommenter;
     private String mCommentString;
+    private String photoUploader, mCurrentUser;
 
 
     public FirebaseCommentViewHolder(View itemView) {
@@ -53,12 +58,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
-
+        mCurrentUser = currentUser;
         mCommenterID = comment.getCommenter();
         mCommentString = comment.getCommentString();
         mOriginalCommenter = mCommenterID.equals(currentUser);
-
-
+        photoUploader = comment.getPhoto_Uploader();
 
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
@@ -81,7 +85,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
-                            usernameTextView.setText(dataSnapshot.getValue().toString());
+                            String userName = dataSnapshot.getValue().toString();
+                            usernameTextView.setText(userName);
+                            if(mCommenterID.equals(photoUploader)) {
+                                usernameTextView.setTextColor(Color.BLUE);
+                            }
 
                         }
                     }
@@ -133,7 +141,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_report_comment:
-                        Toast.makeText(mContext, "set up report function", Toast.LENGTH_SHORT).show();
+                        FirebaseConstants.setReport(TAG, mView.getContext(),
+                                comment.getComment_key(), mCurrentUser);
                         return true;
                     case R.id.action_delete_comment:
                         deleteComment(comment);

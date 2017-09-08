@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
         nameText = (TextView) findViewById(R.id.user_profile_name);
         emailText = (TextView) findViewById(R.id.user_profile_email);
         joinedText = (TextView) findViewById(R.id.user_date_joined);
+        ImageView imageView = (ImageView) findViewById(R.id.user_profile_photo);
 
         /* Set up Toolbar to return back to the MainActivity */
         setSupportActionBar(toolbar);
@@ -84,6 +88,13 @@ public class ProfileActivity extends AppCompatActivity {
             emailText.setText("bobbybob@bob.com");
             joinedText.setText("Jan 1, 2000");
         }
+
+        Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
+                .crossFade()
+                .thumbnail(.5f)
+                .bitmapTransform(new CircleTransform(this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
     }
 
     /**
