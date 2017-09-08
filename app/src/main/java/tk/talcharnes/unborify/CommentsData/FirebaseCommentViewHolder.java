@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -157,7 +156,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         });
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.comment_options, popup.getMenu());
-//      // TODO: 9/4/2017 ensure that only user that posted the comment has option to delete and edit it
+
         if(!originalCommenter) {
         popup.getMenu().removeItem(R.id.action_delete_comment);
         popup.getMenu().removeItem(R.id.action_edit_comment);
