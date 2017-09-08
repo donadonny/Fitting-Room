@@ -106,4 +106,12 @@
     <string name="edit">edit</string>
     <string name="edit_comment">Edit Comment</string>
 
+    <!--ADMOB / Firebase AD Info:
+    AD Unit Name (without quotes: "fitting_room_native_express_ad_large"
+    Native ad template: L001
+    Width: 280–1200 dp
+    Height: 250–1200 dp-->
+    <string name="admob_app_id">ca-app-pub-9373264602198577~6784941722</string>
+    <string name="admob_native_ad_unit_id">ca-app-pub-9373264602198577/8323408198</string>
+
 </resources>
