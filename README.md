@@ -8,16 +8,15 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create Terms of Service
  * Refactor code
      * Take deep look and delete ALL non-necessary code (including things that are not commented out and/or listed as unused by Android Studio)
-* Add comments section to each photo
-     * make comments viewable by original poster
-     * Perhaps make a my activity section in user profile section of app
 * Add badges
      * x amount of photos uploaded
      * x amount of photos rated
      * x amount positive rated photos (both sent and received)
      * x amount negative rated photos (both sent and received)
      * Surpassed x% positive and negative rating on a photo.
- * Add analytics
+* Make tablet layout
+* Improve looks of native ads
+* Localize all strings
 
 ### Done
  * Set up swipe card layout
@@ -41,25 +40,14 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Server bandwidth usage
      * User upload time
      * Time it takes user to view photos
+ * Add ability for users to zoom into photo
+ * Add option for commenting on photos
+ * Created notifications for when user gets a comment on their photo
+  * Add Firebase analytics
 
 ### Known bugs/ to fix:
-* Improve layout
-   * Make it nice
-   * Decide what to do with add photo fab
-   * Make tablet layout
-* Improve looks of native ads
-* Localize all strings
-* The following line crashed a Samsung s8+ (API 24) with a can not divide by 0 error (only once after dozens of photos were uploaded)
-    * BIG CHANCE IT WAS DUE TO A FAULTY UPLOAD. 
-```java
- if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        prog = toIntExact(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    }
-                    else{
-                        prog = (int)(100* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+   * None
 
-                    }
-```
 
 
 ### Possible features:
