@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,6 +26,8 @@ import java.util.List;
 import tk.talcharnes.unborify.CommentActivity;
 import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.ZoomPhoto;
 
 /**
@@ -81,12 +85,12 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final int  pos = position;
+        final int pos = position;
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Photo photo = mDataset.get(pos);
-        String likes = ""+photo.getLikes();
-        String dislikes = ""+photo.getDislikes();
+        String likes = "" + photo.getLikes();
+        String dislikes = "" + photo.getDislikes();
         holder.likesCountView.setText(likes);
         holder.dislikesCountView.setText(dislikes);
         holder.occastionTextView.setText(photo.getOccasion_subtitle());
@@ -107,7 +111,8 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
                 intent.putExtra("photoUserID", photo.getUser());
                 intent.putExtra("currentUser", mUserId);
                 intent.putExtra("name", mUserName);
-                mContext.startActivity(intent);            }
+                mContext.startActivity(intent);
+            }
         });
 
         holder.zoomButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +157,8 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
                     android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_delete_photo:
-                        Toast.makeText(mContext, "This feature is not available", Toast.LENGTH_SHORT).show();
+                        Photo photo = mDataset.get(i);
+                        deletePhoto(photo);
                         return true;
                     case R.id.action_edit_photo:
                         Toast.makeText(mContext, "This feature is not available", Toast.LENGTH_SHORT).show();
@@ -168,7 +174,7 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     private int getRotation(int orientation) {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (orientation!= 0) {
+            if (orientation != 0) {
                 rotation = 90;
             }
         } else if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -177,6 +183,26 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
             }
         }
         return rotation;
+    }
+
+    private void deletePhoto(Photo photo) {
+        DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.USERS).child(photo.getUser())
+                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()));
+
+        DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.PHOTOS)
+                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()));
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images")
+                .child(photo.getUrl());
+
+        userDBReference.removeValue();
+        photoDBReference.removeValue();
+        storageReference.delete();
+
+//        // TODO: 9/10/2017 remove photo view once photo is deleted 
+        //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
     }
 }
 
