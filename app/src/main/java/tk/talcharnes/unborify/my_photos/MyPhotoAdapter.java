@@ -1,14 +1,17 @@
 package tk.talcharnes.unborify.my_photos;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -160,7 +163,7 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
                         deletePhoto(photo);
                         return true;
                     case R.id.action_edit_photo:
-                        editPhoto(photo);
+                        showEditStringDialog(photo);
                         return true;
                     default:
                         return false;
@@ -204,20 +207,55 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
     }
 
-    private void editPhoto(Photo photo) {
-        DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.USERS).child(photo.getUser())
-                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
 
-        DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.PHOTOS)
-                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+    private void showEditStringDialog(final Photo photo) {
+//        // TODO: 9/10/2017 refresh view with new occasion when done
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        ;
+        final View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
+        final EditText edt = dialogView.findViewById(R.id.comment_edit_dialog_box);
+        edt.setHint("Edit Occasion");
+        dialogBuilder.setView(dialogView);
 
-        String editedOccasionString = "EDITED OCCASION";
-        photoDBReference.setValue(editedOccasionString);
-        userDBReference.setValue(editedOccasionString);
+        String occasionString = photo.getOccasion_subtitle();
+        if(occasionString != null && !occasionString.isEmpty()) {
+            edt.setText(occasionString);
+        }
+        dialogBuilder.setTitle("Edit Photo Occasion");
 
+        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String newOccasion = edt.getText().toString();
+                if (newOccasion.isEmpty() ||
+                        newOccasion.equals("")
+                        || newOccasion == null) {
 
+                    edt.setError("Occasion can not be blank");
+                } else if (newOccasion.length() < 5) {
+                    edt.setError("Occasion must be longer than 5 characters");
+                } else {
+                    DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.USERS).child(photo.getUser())
+                            .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+
+                    DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.PHOTOS)
+                            .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+
+                    photoDBReference.setValue(newOccasion);
+                    userDBReference.setValue(newOccasion);
+
+                }
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //pass
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 }
 
