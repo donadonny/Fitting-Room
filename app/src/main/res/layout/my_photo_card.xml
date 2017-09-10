@@ -1,70 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content" android:layout_width="wrap_content">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black">
-    <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="#FFF"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        tools:src="@drawable/smiley"
-        android:id="@+id/card_image_view" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_image_view"
-        android:src="@drawable/ic_thumb_up_white_24dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:id="@+id/likes_cardview_icon"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_image_view"
-        android:layout_toRightOf="@id/likes_cardview_icon"
-        android:id="@+id/likes"
+        android:layout_height="match_parent">
 
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        tools:text="1"/>
+        <ImageView
+            android:id="@+id/card_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            tools:src="@drawable/smiley" />
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/card_image_view"
+            android:src="@drawable/ic_action_zoom"
+            android:background="@color/semi_transparent_background"
+            android:id="@+id/zoom_button"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_image_view"
-        android:layout_alignParentRight="true"
-        android:id="@+id/dislikes"
-        android:textStyle="bold"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        tools:text="6"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_image_view"
-        android:layout_toLeftOf="@id/dislikes"
-        android:src="@drawable/ic_thumb_down_white_24dp"
-        android:id="@+id/dislikes_cardview_icon"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/occasion_cardview_textview"
-        android:layout_toRightOf="@id/likes"
-        android:textColor="@android:color/white"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textSize="20sp"
-        tools:text="Occasion"
-        android:layout_below="@id/card_image_view"
-        android:layout_toLeftOf="@id/dislikes_cardview_icon"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/comments_button"
+            android:layout_alignEnd="@+id/card_image_view"
+            android:background="@color/semi_transparent_background"
+            android:id="@+id/comments_button"/>
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/card_info"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_alignBottom="@+id/card_image_view"
+            android:background="@color/colorPrimary">
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:background="@color/semi_transparent_background"
+                android:src="@drawable/more_options" />
+
+            <TextView
+                android:id="@+id/occasion_cardview_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                tools:text="Occasion" />
+
+            <ImageView
+                android:id="@+id/likes_cardview_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_thumb_up_white_24dp" />
+
+            <TextView
+                android:id="@+id/likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_margin="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="0" />
+
+            <ImageView
+                android:id="@+id/dislikes_cardview_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_thumb_down_white_24dp" />
+
+            <TextView
+                android:id="@+id/dislikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_margin="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="0" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </android.support.v7.widget.CardView>

@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="tk.talcharnes.unborify.my_photos.MyPhotos">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_delete_photo"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_delete_photo"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_edit_photo"
+        android:orderInCategory="100"
+        android:title="@string/action_edit_photo"
         app:showAsAction="never" />
 </menu>

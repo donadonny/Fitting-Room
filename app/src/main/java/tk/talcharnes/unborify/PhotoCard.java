@@ -4,6 +4,8 @@ package tk.talcharnes.unborify;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
@@ -72,6 +74,12 @@ public class PhotoCard {
     @View(R.id.realPhotoSwipeCard)
     private CardView realPhotoSwipeCard;
 
+    @View(R.id.thumbs_up_fab)
+    private FloatingActionButton likeButton;
+
+    @View(R.id.thumbs_down_fab)
+    private FloatingActionButton dislikeButton;
+
     @View(R.id.nameText)
     private TextView nameTextView;
 
@@ -121,105 +129,83 @@ public class PhotoCard {
      */
     @Resolve
     private void onResolved() {
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            final String url = mPhoto.getUrl();
-            if (url != null && !url.isEmpty()) {
-                final int rotation = getRotation();
-                StorageReference storageRef = FirebaseStorage.getInstance().getReference()
-                        .child(FirebaseConstants.IMAGES).child(url);
+        final String url = mPhoto.getUrl();
+        if (url != null && !url.isEmpty()) {
+            final int rotation = getRotation();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                    .child(FirebaseConstants.IMAGES).child(url);
 
-                Glide.with(mContext)
-                        .using(new FirebaseImageLoader())
-                        .load(storageRef).transform(new MyTransformation(mContext, rotation))
-                        .into(photoImageView);
-                float dislikes = Float.parseFloat(""+mPhoto.getDislikes());
-                nameTextView.setText(mPhoto.getOccasion_subtitle());
-                float likes = Float.parseFloat(""+mPhoto.getLikes());
-                dislikes = (dislikes < 1) ? 1: dislikes;
-                likes = (likes < 1) ? 1: likes;
-                float totalVotes = likes + dislikes;
-                float rating = (likes / totalVotes) * 100f;
-                System.out.println("Likes: "+likes+"---------------- Dislikes: "
-                        +dislikes+"----------- TotalVotes: "+totalVotes+"----------- Rating: "+
-                        rating);
-                ratingBar.setProgress(rating);
+            Glide.with(mContext)
+                    .using(new FirebaseImageLoader())
+                    .load(storageRef).transform(new MyTransformation(mContext, rotation))
+                    .into(photoImageView);
+            float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
+            nameTextView.setText(mPhoto.getOccasion_subtitle());
+            float likes = Float.parseFloat("" + mPhoto.getLikes());
+            dislikes = (dislikes < 1) ? 1 : dislikes;
+            likes = (likes < 1) ? 1 : likes;
+            float totalVotes = likes + dislikes;
+            float rating = (likes / totalVotes) * 100f;
+            System.out.println("Likes: " + likes + "---------------- Dislikes: "
+                    + dislikes + "----------- TotalVotes: " + totalVotes + "----------- Rating: " +
+                    rating);
+            ratingBar.setProgress(rating);
+            ratingBar.setProgressColor((rating > 60.0) ? Color.rgb(255, 64, 129) :
+                    Color.rgb(3, 169, 244));
 
-                ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
-                zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
-                    @Override
-                    public void onClick(android.view.View view) {
-                        Intent intent = new Intent(mContext, ZoomPhoto.class);
-                        intent.putExtra("url", mPhoto.getUrl());
-                        intent.putExtra("rotation", rotation);
-                        mContext.startActivity(intent);
-                    }
-                });
 
-                comment_button.setOnClickListener(new android.view.View.OnClickListener() {
-                    @Override
-                    public void onClick(android.view.View view) {
-                        Intent intent = new Intent(mContext, CommentActivity.class);
-                        intent.putExtra("url", mPhoto.getUrl());
-                        intent.putExtra("photoUserID", mPhoto.getUser());
-                        intent.putExtra("currentUser", mUserId);
-                        intent.putExtra("name", mUserName);
-                        mContext.startActivity(intent);
-                    }
-                });
-
-                photo_card_options.setOnClickListener(new android.view.View.OnClickListener() {
-                    @Override
-                    public void onClick(android.view.View view) {
-                        showPopup(view, 0);
-                    }
-                });
-
-                setUploaderName(mPhoto.getUser(), usernameTextView);
-
-                Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                        .crossFade()
-                        .thumbnail(.5f)
-                        .bitmapTransform(new CircleTransform(mContext))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(userImageView);
-            }
-        } else {
-            zoom_button.setVisibility(android.view.View.GONE);
-            comment_button.setVisibility(android.view.View.GONE);
-            photo_card_options.setVisibility(android.view.View.GONE);
-
-            ViewTreeObserver vto = photoImageView.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
+            zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
-                public void onGlobalLayout() {
-                    photoImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                public void onClick(android.view.View view) {
+                    Intent intent = new Intent(mContext, ZoomPhoto.class);
+                    intent.putExtra("url", mPhoto.getUrl());
+                    intent.putExtra("rotation", rotation);
+                    mContext.startActivity(intent);
+                }
+            });
 
-                    width = pxToDp(photoImageView.getMeasuredWidth());
-                    height = pxToDp(photoImageView.getMeasuredHeight());
+            comment_button.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    Intent intent = new Intent(mContext, CommentActivity.class);
+                    intent.putExtra("url", mPhoto.getUrl());
+                    intent.putExtra("photoUserID", mPhoto.getUser());
+                    intent.putExtra("currentUser", mUserId);
+                    intent.putExtra("name", mUserName);
+                    mContext.startActivity(intent);
+                }
+            });
 
-                    Log.d(LOG_TAG, "Initial Width = " + width +
-                            " ----------------------------------- Initial Height = " + height);
+            photo_card_options.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    showPopup(view, 0);
+                }
+            });
 
-                    width = (width < 80) ? 80 : (width > 1200) ? 1200: (int)(width * .9);
-                    height = (height < 80) ? 80 : (height > 1200) ? 1200: (int) (height * .9);
+            setUploaderName(mPhoto.getUser(), usernameTextView);
 
-                    Log.d(LOG_TAG, "Final Width = " + width +
-                            " ----------------------------------- Final Height = " + height);
+            Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
+                    .crossFade()
+                    .thumbnail(.5f)
+                    .bitmapTransform(new CircleTransform(mContext))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(userImageView);
 
-                    photoImageView.setVisibility(android.view.View.GONE);
-                    CardView.LayoutParams params = new CardView.LayoutParams(
-                            CardView.LayoutParams.MATCH_PARENT,
-                            CardView.LayoutParams.MATCH_PARENT - 75, Gravity.TOP);
+            likeButton.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    Analytics.registerSwipe(mContext, "right");
+                    mSwipeView.doSwipe(true);
+                }
+            });
 
-                    NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
-                    mAdView.setAdSize(new AdSize(width, height));
-                    mAdView.setAdUnitId("ca-app-pub-6667404740993831/9531692095");
-                    realPhotoSwipeCard.addView(mAdView, params);
-
-                    AdRequest request = new AdRequest.Builder().build();
-                    mAdView.loadAd(request);
-
+            dislikeButton.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    Analytics.registerSwipe(mContext, "left");
+                    mSwipeView.doSwipe(false);
                 }
             });
         }
@@ -315,7 +301,7 @@ public class PhotoCard {
                         if (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).exists()) {
                             String uRating = (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).getValue() + "");
                             if (uRating.equals(rating)) {
-                                Log.d(LOG_TAG, "The already User " + rating + " the photo.");
+                                Log.d(LOG_TAG, "The User already " + rating + " the photo.");
                             } else {
                                 String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
                                 long ratingValue = (long) dataSnapshot.child(rating).getValue();
@@ -400,7 +386,7 @@ public class PhotoCard {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getValue() != null) {
+                        if (dataSnapshot.getValue() != null) {
                             String name = "By: " + dataSnapshot.getValue().toString();
                             usernameTextView.setText(name);
 
@@ -435,14 +421,13 @@ public class PhotoCard {
         return rotation;
     }
 
-    private void togglePhotoAddOns(){
-        if(mVisible){
+    private void togglePhotoAddOns() {
+        if (mVisible) {
             zoom_button.setVisibility(android.view.View.GONE);
             comment_button.setVisibility(android.view.View.GONE);
             photo_card_options.setVisibility(android.view.View.GONE);
             mVisible = false;
-        }
-        else {
+        } else {
             zoom_button.setVisibility(android.view.View.VISIBLE);
             comment_button.setVisibility(android.view.View.VISIBLE);
             photo_card_options.setVisibility(android.view.View.VISIBLE);

@@ -48,7 +48,6 @@ public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     FloatingActionButton fab;
-    FloatingActionButton likeButton, dislikeButton;
 
     ArrayList<Photo> photoList;
     private int i = 0;
@@ -152,28 +151,10 @@ public class MainActivityFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);*/
 
-        //Fab buttons
-        likeButton = rootView.findViewById(R.id.thumbs_up_fab);
-        dislikeButton = rootView.findViewById(R.id.thumbs_down_fab);
+        // Report Fab button
         refreshButton = rootView.findViewById(R.id.refreshBtn);
 
         refresh_textview = rootView.findViewById(R.id.refreshTitle);
-
-        dislikeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Analytics.registerSwipe(getActivity(), "left");
-                mSwipeView.doSwipe(false);
-            }
-        });
-
-        likeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Analytics.registerSwipe(getActivity(), "right");
-                mSwipeView.doSwipe(true);
-            }
-        });
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,8 +163,6 @@ public class MainActivityFragment extends Fragment {
                 refresh = false;
                 refreshButton.setVisibility(View.GONE);
                 refresh_textview.setVisibility(View.GONE);
-                likeButton.setVisibility(View.VISIBLE);
-                dislikeButton.setVisibility(View.VISIBLE);
                 getPhotos();
             }
         });
@@ -225,8 +204,6 @@ public class MainActivityFragment extends Fragment {
                     if(refresh) {
                         refreshButton.setVisibility(View.VISIBLE);
                         refresh_textview.setVisibility(View.VISIBLE);
-                        likeButton.setVisibility(View.GONE);
-                        dislikeButton.setVisibility(View.GONE);
                     } else {
                         getPhotos();
                     }
@@ -251,7 +228,7 @@ public class MainActivityFragment extends Fragment {
 
         if(oldestPostId.isEmpty()) {
             firstTime = true;
-            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(7);
+            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(8);
         } else {
             firstTime = false;
             query = photoReference.orderByChild(Photo.URL_KEY).endAt(oldestPostId).limitToLast(8);
@@ -280,10 +257,8 @@ public class MainActivityFragment extends Fragment {
                                 photoReference, reportRef));*/
                     }
 
-                    if(!firstTime) {
-                        list.remove(0);
-                    }
-                    for(int i = list.size()-1; i > -1; i--) {
+                    int stopAt = (list.size() < 8) ? -1 : 0;
+                    for(int i = list.size()-1; i > stopAt; i--) {
                         mSwipeView.addView(list.get(i));
                     }
                     if(list.size() < 7) {
