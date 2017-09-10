@@ -17,6 +17,14 @@
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false">
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/thumbs_down_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_marginStart="@dimen/fab_radius"
+            android:layout_gravity="center_vertical|start"
+            app:backgroundTint="#F44336"
+            android:src="@drawable/ic_thumb_down_white_24dp" />
 
         <ImageView
             android:id="@+id/photoImageView"
@@ -26,6 +34,18 @@
             android:layout_marginBottom="55dp"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/thumbs_up_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_marginEnd="@dimen/fab_radius"
+            android:layout_gravity="center_vertical|end"
+            app:backgroundTint="#4CAF50"
+            android:src="@drawable/ic_thumb_up_white_24dp" />
+
+
+
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +134,6 @@
             app:rcIconSrc="@drawable/ic_thumb_up_white_24dp"
             app:rcMax="100"
             app:rcProgress="90"
-            app:rcProgressColor="@color/colorPrimary"
             app:rcRadius="5dp" />
 
     </android.support.v7.widget.CardView>

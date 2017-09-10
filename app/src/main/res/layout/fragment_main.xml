@@ -8,33 +8,12 @@
     tools:context="tk.talcharnes.unborify.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/thumbs_down_fab"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:layout_marginStart="@dimen/fab_radius"
-        android:layout_alignStart="@+id/swipeView"
-        android:layout_centerVertical="true"
-        app:backgroundTint="#F44336"
-        android:src="@drawable/ic_thumb_down_white_24dp" />
-
     <com.mindorks.placeholderview.SwipePlaceHolderView
         android:id="@+id/swipeView"
         android:layout_width="match_parent"
         android:background="#FDFDFD"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/thumbs_up_fab"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:layout_marginEnd="@dimen/fab_radius"
-        android:layout_alignEnd="@+id/swipeView"
-        android:layout_centerVertical="true"
-        app:backgroundTint="#4CAF50"
-        android:src="@drawable/ic_thumb_up_white_24dp" />
 
     <TextView
         android:id="@+id/refreshTitle"

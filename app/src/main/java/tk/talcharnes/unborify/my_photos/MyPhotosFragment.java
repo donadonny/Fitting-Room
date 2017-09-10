@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +31,7 @@ public class MyPhotosFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ArrayList<Photo> photoList;
-    String user;
+    String userId, userName;
 
     public MyPhotosFragment() {
     }
@@ -43,20 +44,23 @@ public class MyPhotosFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            userId = user.getUid();
+            userName = user.getDisplayName();
+        }
 
         photoList = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
         final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
         DatabaseReference userReference = firebaseDatabase.getReference().child("users");
-        DatabaseReference userPhotos = firebaseDatabase.getReference().child("users").child(user);
+        DatabaseReference userPhotos = firebaseDatabase.getReference().child("users").child(userId);
 
         // Read from the database
         userPhotos.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                 @Override
-                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
 //                                                     Map<String, Object> objectMap = (HashMap<String, Object>)
 //                                                             dataSnapshot.getValue();
 //                                                     if (objectMap != null) {
@@ -70,14 +74,15 @@ public class MyPhotosFragment extends Fragment {
 //                                                                 photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
 //                                                                 photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
 //                                                                 photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
-                                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                                         Photo photo = child.getValue(Photo.class);
-                                                         photoList.add(photo);
+                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+                     Photo photo = child.getValue(Photo.class);
+                     photoList.add(photo);
+                     System.out.println(photo.getUrl());
 //                                                             }
 //                                                         }
-                                                     }
-                                                         mAdapter.notifyDataSetChanged();
-                                                     }
+                 }
+                     mAdapter.notifyDataSetChanged();
+                 }
 //                                                 }
 
             @Override
@@ -88,7 +93,7 @@ public class MyPhotosFragment extends Fragment {
 
 
 
-        mAdapter = new MyPhotoAdapter(photoList, getContext());
+        mAdapter = new MyPhotoAdapter(photoList, getContext(), userId, userName);
         mRecyclerView.setAdapter(mAdapter);
 
 

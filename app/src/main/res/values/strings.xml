@@ -66,6 +66,8 @@
     <string name="action_sign_out">Sign Out</string>
     <string name="action_take_photo">Take Photo</string>
     <string name="action_edit">Edit</string>
+    <string name="action_delete_photo">Delete Photo</string>
+    <string name="action_edit_photo">Edit Photo</string>
 
     <!-- Strings for the help screen -->
     <string name="next">NEXT</string>
@@ -95,13 +97,13 @@
     <string name="about_title_1_desc">We are independent developers who love fashion and seek
         to bring the love of fashion to everyone.</string>
     <string name="about_title_2">Developers</string>
-    <string name="about_title_2_desc_1">Tal C</string>
-    <string name="about_title_2_desc_2">Khuram C</string>
+    <string name="about_title_2_desc">Tal Charnes and Khuram Chaudhry</string>
     <string name="about_title_3">Credits</string>
     <string name="about_title_3_desc_1">Janishar for Placeholderview Library</string>
     <string name="about_title_3_desc_2">Google for the Google Libraries used</string>
     <string name="about_title_3_desc_3">Ben Manes for the Dependency Updates library</string>
     <string name="about_title_3_desc_4">Ravi Tamada from androidhive</string>
+    <string name="about_title_3_desc_5">Icons from https://icons8.com/</string>
     <string name="about_trademark">Something LLC. All rights reserved.</string>
     <string name="report">report</string>
     <string name="delete">delete</string>
