@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -146,6 +145,7 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     }
 
     private void showPopup(android.view.View v, final int i) {
+        final Photo photo = mDataset.get(i);
         PopupMenu popup = new PopupMenu(mContext, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_my_photos, popup.getMenu());
@@ -157,11 +157,10 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
                     android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_delete_photo:
-                        Photo photo = mDataset.get(i);
                         deletePhoto(photo);
                         return true;
                     case R.id.action_edit_photo:
-                        Toast.makeText(mContext, "This feature is not available", Toast.LENGTH_SHORT).show();
+                        editPhoto(photo);
                         return true;
                     default:
                         return false;
@@ -201,8 +200,24 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         photoDBReference.removeValue();
         storageReference.delete();
 
-//        // TODO: 9/10/2017 remove photo view once photo is deleted 
+//        // TODO: 9/10/2017 remove photo view once photo is deleted
         //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
+    }
+
+    private void editPhoto(Photo photo) {
+        DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.USERS).child(photo.getUser())
+                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+
+        DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.PHOTOS)
+                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+
+        String editedOccasionString = "EDITED OCCASION";
+        photoDBReference.setValue(editedOccasionString);
+        userDBReference.setValue(editedOccasionString);
+
+
     }
 }
 

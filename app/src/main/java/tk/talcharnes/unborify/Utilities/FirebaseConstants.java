@@ -40,6 +40,7 @@ public class FirebaseConstants {
     public final static String DATE_JOINED = "date_joined";
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
+    public final static String OCCASION_SUBTITLE = "occasion_subtitle";
 
 
     public static void setToken(String token) {
