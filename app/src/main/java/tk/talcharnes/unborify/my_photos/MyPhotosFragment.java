@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -53,37 +54,21 @@ public class MyPhotosFragment extends Fragment {
         photoList = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        final DatabaseReference photoReference = firebaseDatabase.getReference().child("Photos");
-        DatabaseReference userReference = firebaseDatabase.getReference().child("users");
-        DatabaseReference userPhotos = firebaseDatabase.getReference().child("users").child(userId);
+        Query query = firebaseDatabase.getReference().child("Photos").orderByChild(Photo.USER_KEY).equalTo(userId);
 
         // Read from the database
-        userPhotos.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                     Map<String, Object> objectMap = (HashMap<String, Object>)
-//                                                             dataSnapshot.getValue();
-//                                                     if (objectMap != null) {
-//                                                         for (Object obj : objectMap.values()) {
-//                                                             if (obj instanceof Map) {
-//                                                                 Map<String, Object> mapObj = (Map<String, Object>) obj;
-//                                                                 Photo photo = new Photo();
-//                                                                 photo.setOccasion_subtitle((String) mapObj.get(Photo.OCCASION_SUBTITLE_KEY));
-//                                                                 photo.setUrl((String) mapObj.get(Photo.URL_KEY));
-//                                                                 photo.setUser((String) mapObj.get(Photo.USER_KEY));
-//                                                                 photo.setLikes((Long) mapObj.get(Photo.LIKES_KEY));
-//                                                                 photo.setDislikes((Long) mapObj.get(Photo.DISLIKES_KEY));
-//                                                                 photo.setReports((Long) mapObj.get(Photo.REPORTS_KEY));
-                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                     Photo photo = child.getValue(Photo.class);
-                     photoList.add(photo);
-                     System.out.println(photo.getUrl());
-//                                                             }
-//                                                         }
-                 }
+                 if(dataSnapshot.exists()) {
+                     for(DataSnapshot child : dataSnapshot.getChildren()) {
+                         Photo photo = child.getValue(Photo.class);
+                         photoList.add(photo);
+                         System.out.println(photo.getUrl());
+                     }
                      mAdapter.notifyDataSetChanged();
                  }
-//                                                 }
+             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

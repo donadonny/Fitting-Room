@@ -1,6 +1,8 @@
 package tk.talcharnes.unborify;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Utilities.Constants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -316,5 +319,21 @@ public class PhotoUploadActivityFragment extends Fragment {
         Log.d(LOG_TAG, "COMPRESSED PHOTO URI = " + compressedPhotoUri.toString());
 
     }
+
+    /*private void loadAd() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        boolean hasUploadedBefore = sharedPref.getBoolean("showAd", false);
+        if(hasUploadedBefore) {
+
+        }
+    }
+
+    private void editShowAd() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.saved_high_score), newHighScore);
+        editor.commit();
+
+    }*/
 
 }

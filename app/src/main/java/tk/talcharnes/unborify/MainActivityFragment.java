@@ -247,6 +247,11 @@ public class MainActivityFragment extends Fragment {
                         assert photo != null;
                         /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
                                 .removeWebPFromUrl(photo.getUrl()));*/
+
+                        /* Randomizing votes for photos
+                        photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
+                        photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
+
                         list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName, photoReference,
                                 reportRef));
                         if(len == 0) {
