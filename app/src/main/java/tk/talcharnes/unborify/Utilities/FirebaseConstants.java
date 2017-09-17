@@ -43,12 +43,12 @@ public class FirebaseConstants {
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
     public final static String CONTACT_US = "Contact_us";
     public final static String CONTACT_TYPE_TIP = "Tip";
-    public final static String CONTACT_TYPE = "Contact_type";
+    public final static String CONTACT_TYPE = "contact_type";
     public final static String CONTACT_TYPE_BUG = "Bug";
     public final static String CONTACT_TYPE_OTHER = "Other";
-    public final static String CONTACT_US_MESSAGE = "Message";
+    public final static String CONTACT_US_MESSAGE = "message";
     public final static String EMAIL = "email";
-
+    public final static String URL = "url";
 
 
 

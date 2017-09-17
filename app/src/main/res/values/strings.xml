@@ -123,5 +123,7 @@
     <string name="select">Select</string>
     <string name="subject">Subject</string>
     <string name="message">Message</string>
+    <string name="comment_empty_error">Comment can not be empty</string>
+    <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
 
 </resources>

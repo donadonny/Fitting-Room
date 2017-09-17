@@ -1,8 +1,6 @@
 package tk.talcharnes.unborify;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +16,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 
 import tk.talcharnes.unborify.CommentsData.Comment;
 import tk.talcharnes.unborify.CommentsData.FirebaseCommentViewHolder;
@@ -97,9 +94,9 @@ public class CommentActivityFragment extends Fragment {
                         mCommentEditText.getText().toString().equals("")
                         || mCommentEditText.getText().toString() == null) {
 
-                    mCommentEditText.setError("Comment can not be empty");
+                    mCommentEditText.setError(getString(R.string.comment_empty_error));
                 } else if (mCommentEditText.getText().toString().length() < 5) {
-                    mCommentEditText.setError("Comment must be longer than 5 characters");
+                    mCommentEditText.setError(getString(R.string.comment_too_short_error));
                 } else {
                     comment = new Comment();
                     comment.setPhoto_url(mUrl);
