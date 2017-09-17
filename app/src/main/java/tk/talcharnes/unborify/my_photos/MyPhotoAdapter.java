@@ -217,7 +217,6 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
 
 
     private void showEditStringDialog(final Photo photo) {
-//        // TODO: 9/10/2017 refresh view with new occasion when done
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ;
