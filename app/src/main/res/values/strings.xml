@@ -117,5 +117,6 @@
     Height: 250–1200 dp-->
     <string name="admob_app_id">ca-app-pub-9373264602198577~6784941722</string>
     <string name="admob_native_ad_unit_id">ca-app-pub-9373264602198577/8323408198</string>
+    <string name="you_have_no_new_notifications">You have no new notifications</string>
 
 </resources>
