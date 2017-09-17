@@ -22,8 +22,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import id.zelory.compressor.Compressor;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
+import tk.talcharnes.unborify.Utilities.Utils;
 
 import static android.app.Activity.RESULT_OK;
 import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
@@ -67,7 +70,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private File compressedImage;
     File photoFile;
     private AdView mAdView;
-
+    private InterstitialAd mInterstitialAd;
 
     public PhotoUploadActivityFragment() {
     }
@@ -87,6 +90,11 @@ public class PhotoUploadActivityFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
         setImageOnClick();
 
@@ -95,7 +103,7 @@ public class PhotoUploadActivityFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean editTextNotNull = checkEditTextNotNull();
-                if(canUpload && editTextNotNull) {
+                if (canUpload && editTextNotNull) {
                     uploadPhoto();
                 }
             }
@@ -104,12 +112,11 @@ public class PhotoUploadActivityFragment extends Fragment {
         return rootView;
     }
 
-    private void takePhoto()throws IOException
-    {
+    private void takePhoto() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Create the File where the photo should go
-         photoFile = null;
+        photoFile = null;
         try {
             photoFile = getFile();
 
@@ -127,6 +134,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
         }
     }
+
     private File getFile() throws IOException {
         askForPermission();
         Long timeStamp = System.currentTimeMillis();
@@ -183,7 +191,7 @@ public class PhotoUploadActivityFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-           photoOrientation = PhotoUtilities.getCameraPhotoOrientation(getContext(), photoURI, mCurrentPhotoPath);
+            photoOrientation = PhotoUtilities.getCameraPhotoOrientation(getContext(), photoURI, mCurrentPhotoPath);
 
             userImageToUploadView.setImageBitmap(bitmap);
 //          Ensure image is set the right way
@@ -192,8 +200,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
 
 
-
-    private void uploadPhoto(){
+    private void uploadPhoto() {
         submitButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         photo_description_edit_text.setVisibility(View.GONE);
@@ -201,7 +208,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
         final String compressedImageFileName = imageFileNameNoJPG + ".webp";
         StorageReference riversRef = mStorageRef.child("images/" + compressedImageFileName);
-        if(mCurrentPhotoPath != null) {
+        if (mCurrentPhotoPath != null) {
             final UploadTask uploadTask =
 //                    The following line makes app upload original photo
 //                    riversRef.putFile(photoURI);
@@ -222,7 +229,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
-                    if(getContext() != null) {
+                    if (getContext() != null) {
                         Toast.makeText(getContext(), R.string.upload_success, Toast.LENGTH_SHORT).show();
                     }
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
@@ -244,9 +251,56 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photoReference.setValue(photo);
                     userReference.setValue(photo);
 
-                    if(getContext() != null) {
-                        NavUtils.navigateUpFromSameTask(getActivity());
+                    Utils.photosUploadedCounter++;
+                    if (Utils.photosUploadedCounter % 2 == 0) {
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
+                    } else {
+                        if (getContext() != null) {
+                            NavUtils.navigateUpFromSameTask(getActivity());
+                        }
                     }
+                    mInterstitialAd.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            // Code to be executed when an ad finishes loading.
+                            Log.i("Ads", "onAdLoaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(int errorCode) {
+                            // Code to be executed when an ad request fails.
+                            Log.i("Ads", "onAdFailedToLoad");
+                            if (getContext() != null) {
+                                NavUtils.navigateUpFromSameTask(getActivity());
+                            }
+                        }
+
+                        @Override
+                        public void onAdOpened() {
+                            // Code to be executed when the ad is displayed.
+                            Log.i("Ads", "onAdOpened");
+                        }
+
+                        @Override
+                        public void onAdLeftApplication() {
+                            // Code to be executed when the user has left the app.
+                            Log.i("Ads", "onAdLeftApplication");
+                        }
+
+                        @Override
+                        public void onAdClosed() {
+                            // Code to be executed when when the interstitial ad is closed.
+                            Log.i("Ads", "onAdClosed");
+                            if (getContext() != null) {
+                                NavUtils.navigateUpFromSameTask(getActivity());
+                            }
+                        }
+                    });
+
                     Analytics.registerUpload(getActivity(), user);
                 }
             })
@@ -254,7 +308,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
                             // Handle unsuccessful uploads
-                            if(getContext() != null) {
+                            if (getContext() != null) {
                                 Toast.makeText(getContext(), R.string.sending_failed, Toast.LENGTH_SHORT).show();
                             }
                             submitButton.setVisibility(View.VISIBLE);
@@ -263,36 +317,34 @@ public class PhotoUploadActivityFragment extends Fragment {
                             setImageOnClick();
                         }
                     });
-        }
-        else{
+        } else {
             Log.d(LOG_TAG, "mCurrentPhotoPath was null");
-            if(getContext() != null) {
+            if (getContext() != null) {
                 Toast.makeText(getContext(), R.string.upload_failed_error_string, Toast.LENGTH_SHORT).show();
             }
         }
 
     }
-    private boolean checkEditTextNotNull(){
-         photoDescription =  photo_description_edit_text.getText().toString();
+
+    private boolean checkEditTextNotNull() {
+        photoDescription = photo_description_edit_text.getText().toString();
 
         int photoDescriptionLength = photoDescription.length();
         boolean editTextVerifiedForUpload;
-        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescriptionLength <= 40){
+        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescriptionLength <= 40) {
             editTextVerifiedForUpload = true;
-        }
-        else if (photoDescriptionLength > 40){
+        } else if (photoDescriptionLength > 40) {
             int tooLongByThisManyCharacters = photoDescriptionLength - 40;
             photo_description_edit_text.setError("Please remove " + tooLongByThisManyCharacters + " characters");
             editTextVerifiedForUpload = false;
-        }
-        else{
+        } else {
             photo_description_edit_text.setError(getString(R.string.occasion_cannot_be_empty_string));
             editTextVerifiedForUpload = false;
         }
-            return  editTextVerifiedForUpload;
+        return editTextVerifiedForUpload;
     }
-  
-    private void removeImageOnClick(){
+
+    private void removeImageOnClick() {
         userImageToUploadView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -300,7 +352,8 @@ public class PhotoUploadActivityFragment extends Fragment {
             }
         });
     }
-    private void setImageOnClick(){
+
+    private void setImageOnClick() {
         userImageToUploadView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -312,7 +365,8 @@ public class PhotoUploadActivityFragment extends Fragment {
             }
         });
     }
-    private void compressPhotoFactory(File photoFile){
+
+    private void compressPhotoFactory(File photoFile) {
         try {
             compressedImage = new Compressor(getContext()).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(photoFile);
         } catch (IOException e) {

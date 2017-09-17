@@ -2,7 +2,6 @@ package tk.talcharnes.unborify.Utilities;
 
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -14,6 +13,7 @@ import android.view.WindowManager;
 public class Utils {
 
     private static final String TAG = "Utils";
+    public static int photosUploadedCounter = 0;
 
     public static Point getDisplaySize(WindowManager windowManager) {
         try {
