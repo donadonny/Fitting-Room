@@ -1,8 +1,6 @@
 package tk.talcharnes.unborify;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
-import tk.talcharnes.unborify.Utilities.Constants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -67,6 +66,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private Uri compressedPhotoUri;
     private File compressedImage;
     File photoFile;
+    private AdView mAdView;
 
 
     public PhotoUploadActivityFragment() {
@@ -82,6 +82,10 @@ public class PhotoUploadActivityFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        mAdView = (AdView) rootView.findViewById(R.id.photo_upload_adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
         setImageOnClick();

@@ -36,5 +36,13 @@
         android:layout_margin="8dp"
         android:visibility="gone"
         android:id="@+id/progressBar"/>
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/smart_ad_banner"
+        android:id="@+id/photo_upload_adview"
+        />
 
 </LinearLayout>
