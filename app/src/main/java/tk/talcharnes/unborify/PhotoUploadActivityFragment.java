@@ -242,6 +242,8 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOccasion_subtitle(photoDescription);
                     photo.setOrientation(photoOrientation);
                     photo.setAd(false);
+//                    // TODO change the following when expanding app to have more categories
+                    photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
 
                     DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
                             .child(imageFileNameNoJPG);
