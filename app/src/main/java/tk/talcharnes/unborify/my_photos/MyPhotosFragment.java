@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -57,10 +56,11 @@ public class MyPhotosFragment extends Fragment {
         Query query = firebaseDatabase.getReference().child("Photos").orderByChild(Photo.USER_KEY).equalTo(userId);
 
         // Read from the database
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                  if(dataSnapshot.exists()) {
+                     photoList.clear();
                      for(DataSnapshot child : dataSnapshot.getChildren()) {
                          Photo photo = child.getValue(Photo.class);
                          photoList.add(photo);

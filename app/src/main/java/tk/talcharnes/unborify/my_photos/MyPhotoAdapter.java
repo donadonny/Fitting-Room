@@ -212,7 +212,6 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         photoDBReference.removeValue();
         storageReference.delete();
 
-//        // TODO: 9/10/2017 remove photo view once photo is deleted
         //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
     }
 
