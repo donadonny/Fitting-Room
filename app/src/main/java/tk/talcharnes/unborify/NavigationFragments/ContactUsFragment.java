@@ -83,6 +83,9 @@ public class ContactUsFragment extends Fragment {
                     contactUsObject.setContact_type(messageTypes[spinnerPosition]);
 
                     mDatabaseReference.push().setValue(contactUsObject);
+                // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
+                    spinner.setSelection(0);
+                    contact_us_message_editText.setText("");
                 }
             }
         });
