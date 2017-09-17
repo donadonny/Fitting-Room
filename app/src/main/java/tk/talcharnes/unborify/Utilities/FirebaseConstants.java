@@ -41,6 +41,15 @@ public class FirebaseConstants {
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
+    public final static String CONTACT_US = "Contact_us";
+    public final static String CONTACT_TYPE_TIP = "Tip";
+    public final static String CONTACT_TYPE = "Contact_type";
+    public final static String CONTACT_TYPE_BUG = "Bug";
+    public final static String CONTACT_TYPE_OTHER = "Other";
+    public final static String CONTACT_US_MESSAGE = "Message";
+    public final static String EMAIL = "email";
+
+
 
 
     public static void setToken(String token) {

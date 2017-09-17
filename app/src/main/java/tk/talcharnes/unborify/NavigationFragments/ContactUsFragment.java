@@ -1,26 +1,37 @@
 package tk.talcharnes.unborify.NavigationFragments;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import tk.talcharnes.unborify.ContactUsObject;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
- *
  */
 
 public class ContactUsFragment extends Fragment {
 
-    private ImageButton emailButton, phoneButton;
+    private DatabaseReference mDatabaseReference;
+    private EditText contact_us_message_editText;
+    private Button submit_contact_us_button;
+    private Spinner spinner;
+    private String[] messageTypes;
+    private int spinnerPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,46 +39,74 @@ public class ContactUsFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View rootview = inflater.inflate(R.layout.fragment_contact_us, container, false);
+        contact_us_message_editText = rootview.findViewById(R.id.contact_us_message_editText);
+        submit_contact_us_button = rootview.findViewById(R.id.submit_contact_us_button);
+        spinner = rootview.findViewById(R.id.contact_type_spinner);
+        spinnerPosition = 0;
 
-        emailButton = (ImageButton) rootview.findViewById(R.id.companyEmail);
-        phoneButton = (ImageButton) rootview.findViewById(R.id.companyPhone);
+        messageTypes = new String[]{getString(R.string.select), FirebaseConstants.CONTACT_TYPE_TIP,
+                FirebaseConstants.CONTACT_TYPE_BUG, FirebaseConstants.CONTACT_TYPE_OTHER};
 
-        emailButton.setOnClickListener(new View.OnClickListener() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item, messageTypes);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                spinnerPosition = i;
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                spinnerPosition = 0;
+            }
+        });
+
+
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.CONTACT_US);
+
+
+        submit_contact_us_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String subject = "Feedback";
-                String mailto = "mailto:something@gmail.com" + "?subject=" + Uri.encode(subject);
+                String message = contact_us_message_editText.getText().toString();
+                if (messageGood(message) && spinnerNotEmpty()) {
+                    ContactUsObject contactUsObject = new ContactUsObject();
 
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse(mailto));
+                    contactUsObject.setMessage(message);
+                    String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    contactUsObject.setEmail(email);
+                    contactUsObject.setContact_type(messageTypes[spinnerPosition]);
 
-                try {
-                    startActivity(emailIntent);
-                } catch (ActivityNotFoundException e) {
-                    //TODO: Handle case where no email app is available
-                    Toast.makeText(getActivity(), "No email app is available",
-                            Toast.LENGTH_SHORT).show();
+                    mDatabaseReference.push().setValue(contactUsObject);
                 }
             }
         });
 
-        phoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String phoneNumber = "9999999999";
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
-                        "tel", phoneNumber, null));
-
-                try {
-                    startActivity(phoneIntent);
-                } catch (ActivityNotFoundException e) {
-                    //TODO: Handle case where no phone app is available
-                    Toast.makeText(getActivity(), "Unable to dial. Check if your device has" +
-                            " calling capabilities.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         return rootview;
+    }
+
+    private boolean messageGood(String message) {
+        if (message.equals("") || message.isEmpty() || message == null) {
+            contact_us_message_editText.setError(getString(R.string.message_empty_error));
+            return false;
+        } else if (message.length() < 10) {
+            contact_us_message_editText.setError("Message too short, please add more details");
+            return false;
+        } else return true;
+    }
+
+    private boolean spinnerNotEmpty() {
+        if (spinnerPosition != 0) {
+            return true;
+        } else{
+            Toast.makeText(getContext(), "Please choose a subject", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

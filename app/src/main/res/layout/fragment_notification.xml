@@ -11,7 +11,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         android:text="@string/you_have_no_new_notifications"/>
-    
+
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
