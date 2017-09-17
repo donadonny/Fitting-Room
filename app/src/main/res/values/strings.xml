@@ -74,22 +74,21 @@
     <!--string name="skip">SKIP</string>
     <string name="start">GOT IT</string-->
 
-    <string name="help_slide_1_title">Swiping left Or Right</string>
+    <string name="help_slide_1_title">Swiping Left or Right</string>
     <string name="help_slide_1_desc">Swiping right allows you to like the photo. Likewise,
-        swiping left allows you to dislike the photo. Note, you can not like or dislike your
+        swiping left allows you to dislike the photo. Note, you can not like or dislike your own
         photos.</string>
 
     <string name="help_slide_2_title">Reporting</string>
     <string name="help_slide_2_desc">If you happen to find a photo that offends or violates our
-        terms of services. Click the report button and the photo is reported. The photo is also
-        skip so you can continue voting other photos.</string>
+        terms of services: Click the report button and the photo will be reported and skipped so you can continue voting on other photos.</string>
 
     <string name="help_slide_3_title">Add Your Own Photo</string>
     <string name="help_slide_3_desc">Don\'t just like or dislike photos from others. Add your own
-        to be voted on. Remember that each time you vote on picture is equals more photos you can
+        to be voted on. Remember that each time you vote on a picture equals more photos you can
         upload.</string>
 
-    <string name="help_slide_4_title">Remember To Fun!</string>
+    <string name="help_slide_4_title">Remember To Have Fun!</string>
     <string name="help_slide_4_desc">Just don\'t think of this app as a competition app. </string>
 
     <!-- Strings for the about screen -->
