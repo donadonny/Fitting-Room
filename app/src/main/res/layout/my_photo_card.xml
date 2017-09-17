@@ -15,8 +15,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/card_title"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/occasion_cardview_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:textAlignment="center"
+                android:layout_weight="9"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                tools:text="Occasion" />
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:background="@color/semi_transparent_background"
+                android:src="@drawable/more_options" />
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/card_image_view"
+            android:layout_below="@+id/card_title"
+            android:layout_marginBottom="35dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
@@ -25,6 +55,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
             android:layout_alignStart="@+id/card_image_view"
             android:src="@drawable/ic_action_zoom"
             android:background="@color/semi_transparent_background"
@@ -33,79 +64,24 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
             android:src="@drawable/comments_button"
             android:layout_alignEnd="@+id/card_image_view"
             android:background="@color/semi_transparent_background"
             android:id="@+id/comments_button"/>
 
-        <LinearLayout
-            android:id="@+id/card_info"
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingbar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:layout_alignBottom="@+id/card_image_view"
-            android:background="@color/colorPrimary">
-
-            <ImageButton
-                android:id="@+id/menu_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:background="@color/semi_transparent_background"
-                android:src="@drawable/more_options" />
-
-            <TextView
-                android:id="@+id/occasion_cardview_textview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|start"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                tools:text="Occasion" />
-
-            <ImageView
-                android:id="@+id/likes_cardview_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_thumb_up_white_24dp" />
-
-            <TextView
-                android:id="@+id/likes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_margin="10dp"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="0" />
-
-            <ImageView
-                android:id="@+id/dislikes_cardview_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_thumb_down_white_24dp" />
-
-            <TextView
-                android:id="@+id/dislikes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_margin="10dp"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="0" />
-
-        </LinearLayout>
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            app:srb_starSize="25dp"
+            app:srb_numberOfStars="10"
+            app:srb_rating="0"
+            app:srb_stepSize="0.1"
+            app:srb_isIndicator="true"
+            app:srb_borderColor="#000"
+            app:srb_fillColor="@color/colorPrimary" />
 
     </RelativeLayout>
 

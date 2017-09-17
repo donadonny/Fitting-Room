@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 
 import java.util.List;
 
@@ -48,18 +49,18 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         ImageView mImageView;
-        TextView likesCountView, dislikesCountView, occastionTextView;
+        TextView occastionTextView;
+        SimpleRatingBar ratingBar;
         ImageButton commentsButton, zoomButton, menuButton;
 
         public ViewHolder(View v) {
             super(v);
             mImageView = v.findViewById(R.id.card_image_view);
-            likesCountView = v.findViewById(R.id.likes);
-            dislikesCountView = v.findViewById(R.id.dislikes);
             occastionTextView = v.findViewById(R.id.occasion_cardview_textview);
             commentsButton = v.findViewById(R.id.comments_button);
             zoomButton = v.findViewById(R.id.zoom_button);
             menuButton = v.findViewById(R.id.menu_button);
+            ratingBar = v.findViewById(R.id.ratingbar);
 
         }
     }
@@ -91,10 +92,18 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Photo photo = mDataset.get(pos);
-        String likes = "" + photo.getLikes();
-        String dislikes = "" + photo.getDislikes();
-        holder.likesCountView.setText(likes);
-        holder.dislikesCountView.setText(dislikes);
+        long likes = photo.getLikes();
+        long dislikes = photo.getDislikes();
+        dislikes = (dislikes < 1) ? 1 : dislikes;
+        likes = (likes < 1) ? 1 : likes;
+        float totalVotes = likes + dislikes;
+        float rating = (likes / totalVotes) * 100f;
+        int index = ((int) Math.ceil(rating/10))-1;
+        int[] colorsActive = mContext.getResources().getIntArray(R.array.array_rate_colors);
+
+        holder.ratingBar.setFillColor(colorsActive[index]);
+        holder.ratingBar.setRating(index);
+
         holder.occastionTextView.setText(photo.getOccasion_subtitle());
         String urlString = photo.getUrl();
         if (urlString != null && !urlString.isEmpty()) {

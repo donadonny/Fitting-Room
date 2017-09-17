@@ -47,4 +47,30 @@
         <item>@color/dot_dark_screen4</item>
     </array>
 
+    <!-- Rating colors -->
+    <color name="rating_color_1">#F44336</color>
+    <color name="rating_color_2">#FF5722</color>
+    <color name="rating_color_3">#FF9800</color>
+    <color name="rating_color_4">#FFC107</color>
+    <color name="rating_color_5">#FFEB3B</color>
+    <color name="rating_color_6">#8BC34A</color>
+    <color name="rating_color_7">#4CAF50</color>
+    <color name="rating_color_8">#03A9F4</color>
+    <color name="rating_color_9">#E91E63</color>
+    <color name="rating_color_10">#9C27B0</color>
+
+    <!-- Array of Colors for the 'rate' bar -->
+    <array name="array_rate_colors">
+        <item>@color/rating_color_1</item>
+        <item>@color/rating_color_2</item>
+        <item>@color/rating_color_3</item>
+        <item>@color/rating_color_4</item>
+        <item>@color/rating_color_5</item>
+        <item>@color/rating_color_6</item>
+        <item>@color/rating_color_7</item>
+        <item>@color/rating_color_8</item>
+        <item>@color/rating_color_9</item>
+        <item>@color/rating_color_10</item>
+    </array>
+
 </resources>

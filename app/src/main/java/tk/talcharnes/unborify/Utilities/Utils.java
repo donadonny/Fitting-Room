@@ -17,14 +17,10 @@ public class Utils {
 
     public static Point getDisplaySize(WindowManager windowManager) {
         try {
-            if (Build.VERSION.SDK_INT > 16) {
-                Display display = windowManager.getDefaultDisplay();
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                display.getMetrics(displayMetrics);
-                return new Point(displayMetrics.widthPixels, displayMetrics.heightPixels);
-            } else {
-                return new Point(0, 0);
-            }
+            Display display = windowManager.getDefaultDisplay();
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            display.getMetrics(displayMetrics);
+            return new Point(displayMetrics.widthPixels, displayMetrics.heightPixels);
         } catch (Exception e) {
             e.printStackTrace();
             return new Point(0, 0);
