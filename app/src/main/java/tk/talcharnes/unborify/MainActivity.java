@@ -1,12 +1,7 @@
 package tk.talcharnes.unborify;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +9,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -38,13 +32,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
 import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
-import tk.talcharnes.unborify.NavigationFragments.NotificationFragment;
+import tk.talcharnes.unborify.NavigationFragments.Notifications.NotificationFragment;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.my_photos.MyPhotosFragment;
 
@@ -123,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
      * This function loads user's data: image, name, and email.
      * */
     private void loadHeaderData() {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = FirebaseConstants.getUser();
         if(user != null) {
             Log.d(TAG, "Loading user data to the navigation toolbar.");
             userName = user.getDisplayName();

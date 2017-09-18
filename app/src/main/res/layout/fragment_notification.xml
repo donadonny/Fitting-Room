@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:background="#ddbb99"
-    android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ddbb99">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/notification_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/adview"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:id="@+id/indeterminateBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:text="@string/you_have_no_new_notifications"/>
+        android:visibility="invisible"
+        android:layout_centerVertical="true" />
 
-    <android.support.v4.widget.Space
+    <LinearLayout
+        android:id="@+id/adview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-    <include layout="@layout/smart_ad_banner"
-        android:id="@+id/notification_adView"
-        />
-</LinearLayout>
+        <include
+            layout="@layout/smart_ad_banner"
+            android:id="@+id/notification_adView" />
+
+    </LinearLayout>
+
+</RelativeLayout>
