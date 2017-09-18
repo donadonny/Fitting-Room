@@ -2,6 +2,7 @@ package tk.talcharnes.unborify.CommentsData;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -82,6 +83,9 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         if (userName != null && !userName.isEmpty() && !userName.equals("")) {
             String name = "By: " + userName;
             usernameTextView.setText(name);
+            if(mCommenterID.equals(photoUploader)) {
+                usernameTextView.setTextColor(Color.BLUE);
+            }
         } else usernameTextView.setText("By: Anonymous User");
     }
 
