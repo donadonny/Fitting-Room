@@ -17,6 +17,7 @@ public class Photo {
     private int orientation;
     private boolean isAd;
     private String category;
+    private String userName;
     public final static String OCCASION_SUBTITLE_KEY = "occasion_subtitle";
     public final static String USER_KEY = "user";
     public final static String REPORTS_KEY = "reports";
@@ -104,5 +105,13 @@ public class Photo {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

@@ -242,6 +242,9 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOccasion_subtitle(photoDescription);
                     photo.setOrientation(photoOrientation);
                     photo.setAd(false);
+                    if(FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
+                        photo.setUserName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                    }
 //                    // TODO change the following when expanding app to have more categories
                     photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
 
