@@ -153,11 +153,13 @@ public class PhotoCard {
             System.out.println("Likes: " + likes + "---------------- Dislikes: "
                     + dislikes + "----------- TotalVotes: " + totalVotes + "----------- Rating: " +
                     rating);
-            int index = ((int) Math.ceil(rating/10))-1;
-            int[] colorsActive = mContext.getResources().getIntArray(R.array.array_rate_colors);
+            int index = ((int) Math.ceil(rating/10))/2;
+            int[] ratingColors = mContext.getResources().getIntArray(R.array.array_rate_colors);
+            int[] ratingShadowColors = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
 
-            ratingBar.setFillColor(colorsActive[index]);
-            ratingBar.setRating(index);
+            ratingBar.setFillColor(ratingColors[index]);
+            ratingBar.setBorderColor(ratingShadowColors[index]);
+            ratingBar.setRating(((float) Math.ceil(rating/10))/2);
 
             ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {

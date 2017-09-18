@@ -18,15 +18,20 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MyPhotosFragment extends Fragment {
+
     private static final String LOG_TAG = MyPhotosFragment.class.getSimpleName();
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -51,9 +56,9 @@ public class MyPhotosFragment extends Fragment {
         }
 
         photoList = new ArrayList<>();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        Query query = firebaseDatabase.getReference().child("Photos").orderByChild(Photo.USER_KEY).equalTo(userId);
+        Query query = FirebaseConstants.getRef().child("Photos").orderByChild(Photo.USER_KEY)
+                .equalTo(userId);
 
         // Read from the database
         query.addValueEventListener(new ValueEventListener() {
@@ -66,6 +71,7 @@ public class MyPhotosFragment extends Fragment {
                          photoList.add(photo);
                          System.out.println(photo.getUrl());
                      }
+                     Collections.reverse(photoList);
                      mAdapter.notifyDataSetChanged();
                  }
              }

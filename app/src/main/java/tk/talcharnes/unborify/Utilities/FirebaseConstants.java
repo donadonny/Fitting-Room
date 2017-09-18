@@ -55,14 +55,20 @@ public class FirebaseConstants {
 //    Categories of photos
     public final static String CATEGORY_FASHION = "Fashion";
 
-
-
     public static void setToken(String token) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null) {
             FirebaseDatabase.getInstance().getReference().child(USERDATA).
                     child(user.getUid()).child(INSTANCEID).setValue(token);
         }
+    }
+
+    public static DatabaseReference getRef() {
+        return FirebaseDatabase.getInstance().getReference();
+    }
+
+    public static FirebaseUser getUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public static void setReport(final String TAG, final Context context, final String reportID,
