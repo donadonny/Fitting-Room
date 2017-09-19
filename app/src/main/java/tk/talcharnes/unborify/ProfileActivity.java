@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -35,8 +36,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -251,15 +256,52 @@ public class ProfileActivity extends AppCompatActivity {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             thumbnail.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
-            Glide.with(this)
-                    .load(outputStream.toByteArray())
-                    .crossFade()
-                    .thumbnail(.5f)
-                    .bitmapTransform(new CircleTransform(this))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
-            uploadImage(outputStream.toByteArray());
+            try {
+                byte[] filedata = saveImage(outputStream.toByteArray());
+                Glide.with(this)
+                        .load(filedata)
+                        .crossFade()
+                        .thumbnail(.5f)
+                        .bitmapTransform(new CircleTransform(this))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(imageView);
+                uploadImage(filedata);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private byte[] saveImage(byte[] filedata) throws IOException {
+        File mainDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                + "/FittingRoom_Data");
+        if(!mainDirectory.exists()) {
+            if (!mainDirectory.mkdirs()) {
+                Toast.makeText(ProfileActivity.this, "Please allow Fitting to save data to device."
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
+        File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                +"/FittingRoom_Data/", "profileImage.webp");
+        FileOutputStream fo;
+        try {
+            fo = new FileOutputStream(destination);
+            fo.write(filedata);
+            fo.close();
+            Toast.makeText(ProfileActivity.this, "Image Successfully Saved!!", Toast.LENGTH_LONG)
+                    .show();
+        } catch (FileNotFoundException e) {
+            Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        File compressedImageFile = new Compressor(this).compressToFile(destination);
+        int size = (int) compressedImageFile.length();
+        byte[] bytes = new byte[size];
+        BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedImageFile));
+        int i = buf.read(bytes, 0, bytes.length);
+        buf.close();
+        return bytes;
     }
 
     private void uploadImage(byte[] data) {
