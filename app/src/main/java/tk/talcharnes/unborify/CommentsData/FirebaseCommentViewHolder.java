@@ -66,7 +66,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
         //usernameTextView.setText(comment.getCommenter());
-        setCommentorsName(comment, usernameTextView);
+        setCommentorsName(mCommenterID, usernameTextView);
         comment_textview.setText(mCommentString);
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,19 +74,28 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 setUpMoreOptionsButton(view, comment, mOriginalCommenter);
             }
         });
-
     }
 
-    public void setCommentorsName(Comment comment, final TextView usernameTextView) {
+    public void setCommentorsName(String uid, final TextView usernameTextView) {
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid)
+                .child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            String userName = dataSnapshot.getValue().toString();
+                            usernameTextView.setText(userName);
+                            if (mCommenterID.equals(photoUploader)) {
+                                usernameTextView.setTextColor(Color.BLUE);
+                            }
+                        }
+                    }
 
-        String userName = comment.getCommenter_userName();
-        if (userName != null && !userName.isEmpty() && !userName.equals("")) {
-            String name = "By: " + userName;
-            usernameTextView.setText(name);
-            if(mCommenterID.equals(photoUploader)) {
-                usernameTextView.setTextColor(Color.BLUE);
-            }
-        } else usernameTextView.setText("By: Anonymous User");
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        usernameTextView.setText("Anonymous User");
+                    }
+                });
     }
 
     @Override
@@ -103,7 +112,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
                 int itemPosition = getLayoutPosition();
 
-                if(mOriginalCommenter){
+                if (mOriginalCommenter) {
                     showEditCommentDialog(comments.get(itemPosition));
                 }
 //                int itemPosition = getLayoutPosition();
@@ -146,9 +155,9 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.comment_options, popup.getMenu());
 
-        if(!originalCommenter) {
-        popup.getMenu().removeItem(R.id.action_delete_comment);
-        popup.getMenu().removeItem(R.id.action_edit_comment);
+        if (!originalCommenter) {
+            popup.getMenu().removeItem(R.id.action_delete_comment);
+            popup.getMenu().removeItem(R.id.action_edit_comment);
         }
         popup.show();
     }
@@ -163,6 +172,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 .child(comment.getComment_key());
         mOtherCommentReference.removeValue();
     }
+
     private void showEditCommentDialog(final Comment comment) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -171,7 +181,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         dialogBuilder.setView(dialogView);
 
         final EditText edt = (EditText) dialogView.findViewById(R.id.comment_edit_dialog_box);
-        if(mCommentString != null && !mCommentString.isEmpty()) {
+        if (mCommentString != null && !mCommentString.isEmpty()) {
             edt.setText(mCommentString);
         }
         dialogBuilder.setTitle("Edit Comment");

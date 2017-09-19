@@ -42,8 +42,6 @@ public class FirebaseConstants {
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
-    public final static String USERNAME_KEY = "userName";
-    public final static String COMMENTER_USERNAME = "commenter_userName";
 
 //    Strings for contact us section
     public final static String CONTACT_US = "Contact_us";

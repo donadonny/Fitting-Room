@@ -20,6 +20,7 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -179,7 +180,7 @@ public class PhotoCard {
                 }
             });
 
-            setUploaderName(mPhoto, usernameTextView);
+            setUploaderName(mPhoto.getUser(), usernameTextView);
 
             Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
                     .crossFade()
@@ -376,13 +377,23 @@ public class PhotoCard {
         }
     }
 
-    public void setUploaderName(Photo photo, final TextView usernameTextView) {
-        String userName = photo.getUserName();
-        if (userName != null && !userName.isEmpty() && !userName.equals("")) {
-            String name = "By: " + userName;
-            usernameTextView.setText(name);
-        }
-        else usernameTextView.setText("By: Anonymous User");
+    public void setUploaderName(String uid, final TextView usernameTextView) {
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            String name = "By: " + dataSnapshot.getValue().toString();
+                            usernameTextView.setText(name);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        usernameTextView.setText("BOB");
+                    }
+                });
     }
 
 
