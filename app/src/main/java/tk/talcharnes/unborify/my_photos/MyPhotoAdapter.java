@@ -98,11 +98,14 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         likes = (likes < 1) ? 1 : likes;
         float totalVotes = likes + dislikes;
         float rating = (likes / totalVotes) * 100f;
-        int index = ((int) Math.ceil(rating/10))/2;
-        int[] colorsActive = mContext.getResources().getIntArray(R.array.array_rate_colors);
+        int index = (int) Math.floor(rating/20f);
+        int[] fillColor = mContext.getResources().getIntArray(R.array.array_rate_colors);
+        int[] shadowColor = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
 
-        holder.ratingBar.setFillColor(colorsActive[index]);
-        holder.ratingBar.setRating(index);
+        holder.ratingBar.setFillColor(fillColor[index]);
+        holder.ratingBar.setBorderColor(shadowColor[index]);
+
+        holder.ratingBar.setRating(rating/20f);
 
         holder.occastionTextView.setText(photo.getOccasion_subtitle());
         String urlString = photo.getUrl();

@@ -35,6 +35,7 @@ public class FirebaseConstants {
     public final static String NOTIFICATION = "notifications";
     public final static String VOTES = "votes";
     public final static String PHOTO_REPORTS = "reports";
+    public final static String PHOTO_LIST = "photo_list";
     public final static String REPORTED_BY = "reported_by";
     public final static String NUM_REPORTS = "numReports";
     public final static String DATE_JOINED = "date_joined";

@@ -247,11 +247,10 @@ public class PhotoUploadActivityFragment extends Fragment {
 
                     DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
                             .child(imageFileNameNoJPG);
-                    DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS)
-                            .child(user).child(imageFileNameNoJPG);
+                    //DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS).child(user).child(imageFileNameNoJPG);
 
                     photoReference.setValue(photo);
-                    userReference.setValue(photo);
+                    //userReference.setValue(photo);
 
                     Utils.photosUploadedCounter++;
                     if (Utils.photosUploadedCounter % 2 == 0) {

@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -18,13 +22,25 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
+import id.zelory.compressor.Compressor;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
@@ -98,12 +114,15 @@ public class ProfileActivity extends AppCompatActivity {
             joinedText.setText("Jan 1, 2000");
         }
 
-        Glide.with(this).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                .crossFade()
-                .thumbnail(.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
+        Uri profileUri = FirebaseConstants.getUser().getPhotoUrl();
+        if(profileUri != null) {
+            Glide.with(this).load(profileUri)
+                    .crossFade()
+                    .thumbnail(.5f)
+                    .bitmapTransform(new CircleTransform(this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+        }
     }
 
     /**
@@ -157,12 +176,12 @@ public class ProfileActivity extends AppCompatActivity {
                                         "not available.", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-                                Toast.makeText(ProfileActivity.this, "This feature is " +
-                                        "not available.", Toast.LENGTH_SHORT).show();
+                                showChoosePictureDialog();
                                 break;
                             default:
                                 break;
                         }
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -221,16 +240,59 @@ public class ProfileActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_FILE) {
                 try {
-                    thumbnail = MediaStore.Images.Media.getBitmap(
-                            getApplicationContext().getContentResolver(), data.getData());
-                    imageView.setBackground(new BitmapDrawable(getResources(), thumbnail));
+                    thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext()
+                            .getContentResolver(), data.getData());
                 } catch (IOException e) {
-                    e.printStackTrace(); }
+                    e.printStackTrace();
+                }
             } else if (requestCode == REQUEST_CAMERA) {
                 thumbnail = (Bitmap) data.getExtras().get("data");
-                imageView.setBackground(new BitmapDrawable(getResources(), thumbnail));
             }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
+            Glide.with(this)
+                    .load(outputStream.toByteArray())
+                    .crossFade()
+                    .thumbnail(.5f)
+                    .bitmapTransform(new CircleTransform(this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+            uploadImage(outputStream.toByteArray());
         }
+    }
+
+    private void uploadImage(byte[] data) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference profileImageRef = storageRef.child("profileImages/" + FirebaseConstants.getUser().getUid() + ".webp");
+        UploadTask uploadTask = profileImageRef.putBytes(data);;
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(downloadUrl)
+                        .build();
+
+                FirebaseConstants.getUser().updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User profile updated.");
+                                }
+                            }
+                        });
+            }
+        });
     }
 
 }

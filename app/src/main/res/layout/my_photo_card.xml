@@ -29,7 +29,7 @@
                 android:textAlignment="center"
                 android:layout_weight="9"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 tools:text="Occasion" />
 
             <ImageButton
@@ -76,7 +76,7 @@
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
             app:srb_starSize="25dp"
-            app:srb_numberOfStars="10"
+            app:srb_numberOfStars="5"
             app:srb_rating="0"
             app:srb_stepSize="0.1"
             app:srb_isIndicator="true"

@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -74,16 +77,23 @@ public class NotificationFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<myNotifications> notifications = new ArrayList<myNotifications>();
                 if(dataSnapshot.exists()) {
+                    List<myNotifications> notifications = new ArrayList<myNotifications>();
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         notifications.add(snapshot.getValue(myNotifications.class));
                     }
+                    NotificationAdapter adapter = new NotificationAdapter(getActivity(), notifications);
+                    notification_recycle_view.setAdapter(adapter);
                 } else {
-                    notifications.add(new myNotifications(false, "", "You have no notifications.", ""));
+                    RelativeLayout relativeLayout = (RelativeLayout) rootView.findViewById(R.id.main_view);
+                    TextView textView = new TextView(getActivity());
+                    textView.setText("You have no notifications. :(");
+                    textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    textView.setLayoutParams(new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT));
+                    relativeLayout.addView(textView);
                 }
-                NotificationAdapter adapter = new NotificationAdapter(getActivity(), notifications);
-                notification_recycle_view.setAdapter(adapter);
             }
 
             @Override
