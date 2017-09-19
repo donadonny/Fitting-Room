@@ -54,9 +54,9 @@ public class CommentActivityFragment extends Fragment {
         mCurrentUser = intent.getStringExtra("currentUser");
 
 //        Fix reference here
-        mCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+        mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
-        mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+        mOtherCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                 .child(mPhotoUploader).child(PhotoUtilities
                         .removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);

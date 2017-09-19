@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -36,7 +37,10 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import tk.talcharnes.unborify.Utilities.Constants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -57,7 +61,6 @@ public class MainActivityFragment extends Fragment {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference photoReference = firebaseDatabase.getReference().child(FirebaseConstants.PHOTOS);
     DatabaseReference reportRef = firebaseDatabase.getReference().child(FirebaseConstants.REPORTS);
-    DatabaseReference userReference = firebaseDatabase.getReference().child(FirebaseConstants.USERS);
 
     //        For Firebase Auth
     private FirebaseAuth mAuth;
@@ -73,6 +76,7 @@ public class MainActivityFragment extends Fragment {
     private int widthInDP;
     private int heightInDP;
     private boolean refresh;
+    private ArrayList<Photo> photos;
 
     /**
      * Constructor.
@@ -85,7 +89,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        
+        photos = new ArrayList<>();
         isUserLoggedIn();
 
         initializeBasicSetup();
