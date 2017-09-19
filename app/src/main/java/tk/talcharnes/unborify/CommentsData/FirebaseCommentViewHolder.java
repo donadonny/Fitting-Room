@@ -66,7 +66,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
 
         //usernameTextView.setText(comment.getCommenter());
-        setCommentorsName(mCommenterID, usernameTextView);
+        setCommentorsName(comment, usernameTextView);
         comment_textview.setText(mCommentString);
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,27 +77,16 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    public void setCommentorsName(String uid, final TextView usernameTextView) {
-        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid)
-                .child(FirebaseConstants.USERNAME)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            String userName = dataSnapshot.getValue().toString();
-                            usernameTextView.setText(userName);
-                            if(mCommenterID.equals(photoUploader)) {
-                                usernameTextView.setTextColor(Color.BLUE);
-                            }
+    public void setCommentorsName(Comment comment, final TextView usernameTextView) {
 
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        usernameTextView.setText("BOB");
-                    }
-                });
+        String userName = comment.getCommenter_userName();
+        if (userName != null && !userName.isEmpty() && !userName.equals("")) {
+            String name = "By: " + userName;
+            usernameTextView.setText(name);
+            if(mCommenterID.equals(photoUploader)) {
+                usernameTextView.setTextColor(Color.BLUE);
+            }
+        } else usernameTextView.setText("By: Anonymous User");
     }
 
     @Override

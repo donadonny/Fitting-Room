@@ -11,6 +11,7 @@ public class Comment {
     private String photo_url;
     private String comment_key;
     private String photo_Uploader;
+    private String commenter_userName;
 
 
     public String getCommenter() {
@@ -59,5 +60,13 @@ public class Comment {
 
     public void setPhoto_Uploader(String photo_Uploader) {
         this.photo_Uploader = photo_Uploader;
+    }
+
+    public String getCommenter_userName() {
+        return commenter_userName;
+    }
+
+    public void setCommenter_userName(String commenter_userName) {
+        this.commenter_userName = commenter_userName;
     }
 }
