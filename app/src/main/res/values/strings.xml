@@ -119,6 +119,9 @@
     Height: 250–1200 dp-->
     <string name="admob_app_id">ca-app-pub-9373264602198577~6784941722</string>
     <string name="admob_native_ad_unit_id">ca-app-pub-9373264602198577/8323408198</string>
+    <string name="admob_Interstitial_Ad_Unit_ID">ca-app-pub-9373264602198577/1263889831</string>
+    <string name="admob_banner_Ad_Unit_ID">ca-app-pub-9373264602198577/5056451729</string>
+
     <string name="you_have_no_new_notifications">You have no new notifications</string>
     <string name="enter_your_message_here_we_are_excited_to_receive_it">Enter your message here. We are excited to receive it!</string>
     <string name="message_empty_error">Message can not be empty</string>
