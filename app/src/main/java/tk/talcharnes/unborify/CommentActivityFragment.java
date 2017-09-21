@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,9 +53,9 @@ public class CommentActivityFragment extends Fragment {
         mCurrentUser = intent.getStringExtra("currentUser");
 
 //        Fix reference here
-        mCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+        mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
-        mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
+        mOtherCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                 .child(mPhotoUploader).child(PhotoUtilities
                         .removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
@@ -104,9 +103,6 @@ public class CommentActivityFragment extends Fragment {
                     comment.setCommenter(mCurrentUser);
                     comment.setCommentString(mCommentEditText.getText().toString());
                     comment.setPhoto_Uploader(mPhotoUploader);
-                    if(FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
-                        comment.setCommenter_userName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                    }
 
                     mCommentReference.push().setValue(comment, new DatabaseReference.CompletionListener() {
                         @Override

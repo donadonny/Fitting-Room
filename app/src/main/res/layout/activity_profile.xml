@@ -43,7 +43,7 @@
             android:clickable="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_profile"
-            android:padding="12dp"
+            android:padding="3dp"
             tools:targetApi="lollipop" />
 
         <RelativeLayout

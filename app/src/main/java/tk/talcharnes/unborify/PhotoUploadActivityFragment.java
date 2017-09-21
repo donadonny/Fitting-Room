@@ -242,19 +242,16 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOccasion_subtitle(photoDescription);
                     photo.setOrientation(photoOrientation);
                     photo.setAd(false);
-                    if(FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
-                        photo.setUserName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                    }
+
 //                    // TODO change the following when expanding app to have more categories
                     photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
 
                     DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
                             .child(imageFileNameNoJPG);
-                    DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS)
-                            .child(user).child(imageFileNameNoJPG);
+                    //DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS).child(user).child(imageFileNameNoJPG);
 
                     photoReference.setValue(photo);
-                    userReference.setValue(photo);
+                    //userReference.setValue(photo);
 
                     Utils.photosUploadedCounter++;
                     if (Utils.photosUploadedCounter % 2 == 0) {

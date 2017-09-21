@@ -35,14 +35,13 @@ public class FirebaseConstants {
     public final static String NOTIFICATION = "notifications";
     public final static String VOTES = "votes";
     public final static String PHOTO_REPORTS = "reports";
+    public final static String PHOTO_LIST = "photo_list";
     public final static String REPORTED_BY = "reported_by";
     public final static String NUM_REPORTS = "numReports";
     public final static String DATE_JOINED = "date_joined";
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
-    public final static String USERNAME_KEY = "userName";
-    public final static String COMMENTER_USERNAME = "commenter_userName";
 
 //    Strings for contact us section
     public final static String CONTACT_US = "Contact_us";
