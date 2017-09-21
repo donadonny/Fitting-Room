@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.my_photos;
+package tk.talcharnes.unborify.OldFiles;
 
 import android.content.Context;
 import android.content.DialogInterface;

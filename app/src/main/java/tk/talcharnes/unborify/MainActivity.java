@@ -35,9 +35,10 @@ import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
 import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
 import tk.talcharnes.unborify.NavigationFragments.Notifications.NotificationFragment;
+import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.my_photos.MyPhotosFragment;
+import tk.talcharnes.unborify.NavigationFragments.MyPhotos.MyPhotosFragment;
 
 public class MainActivity extends AppCompatActivity {
 

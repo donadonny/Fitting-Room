@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Profile;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -42,6 +42,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.User;
 import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 

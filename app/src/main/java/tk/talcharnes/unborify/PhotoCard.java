@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
