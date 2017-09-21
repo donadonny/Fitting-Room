@@ -7,9 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.myNotifications;
 
 /**
@@ -36,10 +41,24 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     @Override
-    public void onBindViewHolder(NotificationAdapter.ItemRowHolder holder, int position) {
+    public void onBindViewHolder(final NotificationAdapter.ItemRowHolder holder, int position) {
         myNotifications notification = dataList.get(position);
         holder.message.setText(notification.getMessage());
-        holder.senderID.setText(notification.getSenderID());
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
+                .child(FirebaseConstants.USERNAME)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    holder.senderID.setText(dataSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

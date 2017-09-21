@@ -200,9 +200,6 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     }
 
     private void deletePhoto(Photo photo) {
-        DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.USERS).child(photo.getUser())
-                .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()));
 
         DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.PHOTOS)
@@ -211,7 +208,6 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images")
                 .child(photo.getUrl());
 
-        userDBReference.removeValue();
         photoDBReference.removeValue();
         storageReference.delete();
 
@@ -245,16 +241,12 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
                 } else if (newOccasion.length() < 5) {
                     edt.setError("Occasion must be longer than 5 characters");
                 } else {
-                    DatabaseReference userDBReference = FirebaseDatabase.getInstance().getReference()
-                            .child(FirebaseConstants.USERS).child(photo.getUser())
-                            .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
-
-                    DatabaseReference photoDBReference = FirebaseDatabase.getInstance().getReference()
+                    DatabaseReference photoDBReference = FirebaseConstants.getRef()
                             .child(FirebaseConstants.PHOTOS)
-                            .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl())).child(FirebaseConstants.OCCASION_SUBTITLE);
+                            .child(PhotoUtilities.removeWebPFromUrl(photo.getUrl()))
+                            .child(FirebaseConstants.OCCASION_SUBTITLE);
 
                     photoDBReference.setValue(newOccasion);
-                    userDBReference.setValue(newOccasion);
 
                 }
             }

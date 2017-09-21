@@ -44,6 +44,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Utilities.Analytics;
+import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -61,7 +63,7 @@ public class PhotoCard {
     private ImageView photoImageView;
 
     @View(R.id.userImage)
-    private ImageView userImageView;
+    private ImageButton userImage;
 
     @View(R.id.realPhotoSwipeCard)
     private CardView realPhotoSwipeCard;
@@ -179,14 +181,16 @@ public class PhotoCard {
                 }
             });
 
-            setUploaderName(mPhoto, usernameTextView);
+            setUploader(mPhoto.getUser());
 
-            Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                    .crossFade()
-                    .thumbnail(.5f)
-                    .bitmapTransform(new CircleTransform(mContext))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(userImageView);
+            userImage.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra("uid", mPhoto.getUser());
+                    mContext.startActivity(intent);
+                }
+            });
 
             likeButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
@@ -376,13 +380,32 @@ public class PhotoCard {
         }
     }
 
-    public void setUploaderName(Photo photo, final TextView usernameTextView) {
-        String userName = photo.getUserName();
-        if (userName != null && !userName.isEmpty() && !userName.equals("")) {
-            String name = "By: " + userName;
-            usernameTextView.setText(name);
-        }
-        else usernameTextView.setText("By: Anonymous User");
+    private void setUploader(String uid) {
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if(user != null) {
+                                usernameTextView.setText(user.getName());
+                                String uri = user.getUri();
+                                if(uri != null) {
+                                    Glide.with(mContext).load(uri)
+                                            .crossFade()
+                                            .thumbnail(.5f)
+                                            .bitmapTransform(new CircleTransform(mContext))
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .into(userImage);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
     }
 
 

@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +21,8 @@ public class Analytics {
     public static void registerUpload(Context context, String userID) {
         Bundle params = new Bundle();
         params.putString("uid", userID);
-        FirebaseAnalytics.getInstance(context).logEvent("photo_uploads", params);
+        if(context != null) {
+            FirebaseAnalytics.getInstance(context).logEvent("photo_uploads", params);
+        }
     }
 }

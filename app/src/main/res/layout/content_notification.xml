@@ -24,7 +24,6 @@
             android:layout_margin="2dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:background="#80ffffff"
             android:layout_gravity="start|top"/>
 
         <TextView
@@ -37,7 +36,6 @@
             android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_margin="2dp"
-            android:background="#80E0F7FA"
             android:layout_gravity="bottom"/>
     </FrameLayout>
 

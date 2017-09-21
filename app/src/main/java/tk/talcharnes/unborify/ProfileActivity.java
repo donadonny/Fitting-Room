@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,7 +28,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -43,9 +40,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
@@ -53,7 +50,7 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
  *
  */
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements changeNameDialogFragment.onNameChangeListener {
 
     private final static String TAG = ProfileActivity.class.getSimpleName();
 
@@ -62,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private ImageView imageView;
     private Bitmap thumbnail;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,19 +90,28 @@ public class ProfileActivity extends AppCompatActivity {
         /* Set up the user's name, email, and the register date */
         Intent intent = getIntent();
         if(intent.getExtras() != null) {
-            String name = intent.getStringExtra("name");
-            String email = intent.getStringExtra("email");
-            String uid = intent.getStringExtra("uid");
+            uid = intent.getStringExtra("uid");
 
-            nameText.setText(name);
-            emailText.setText(email);
-
-            FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.DATE_JOINED)
+            FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.getValue() != null) {
-                                joinedText.setText(dataSnapshot.getValue().toString());
+                            if(dataSnapshot.exists()) {
+                                User user = dataSnapshot.getValue(User.class);
+                                if(user != null) {
+                                    nameText.setText(user.getName());
+                                    emailText.setText(user.getEmail());
+                                    joinedText.setText(user.getDate_joined());
+                                    String profileUri = user.getUri();
+                                    if(profileUri != null) {
+                                        Glide.with(ProfileActivity.this).load(profileUri)
+                                                .crossFade()
+                                                .thumbnail(.5f)
+                                                .bitmapTransform(new CircleTransform(ProfileActivity.this))
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .into(imageView);
+                                    }
+                                }
                             }
                         }
 
@@ -113,20 +120,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                     });
-        } else {
-            nameText.setText("Bobby Bob");
-            emailText.setText("bobbybob@bob.com");
-            joinedText.setText("Jan 1, 2000");
-        }
-
-        Uri profileUri = FirebaseConstants.getUser().getPhotoUrl();
-        if(profileUri != null) {
-            Glide.with(this).load(profileUri)
-                    .crossFade()
-                    .thumbnail(.5f)
-                    .bitmapTransform(new CircleTransform(this))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
         }
     }
 
@@ -137,7 +130,9 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        if(FirebaseConstants.getUser().getUid().equals(uid)) {
+            getMenuInflater().inflate(R.menu.menu_profile, menu);
+        }
         return true;
     }
 
@@ -148,11 +143,8 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here.
         int id = item.getItemId();
-
         if(id == R.id.action_edit) {
-
             showEditDialog();
-
         } else if(id == R.id.action_settings) {
             Toast.makeText(ProfileActivity.this, "This feature is not available.",
                     Toast.LENGTH_SHORT).show();
@@ -173,12 +165,16 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                Toast.makeText(ProfileActivity.this, "This feature is" +
-                                        " not available.", Toast.LENGTH_SHORT).show();
+                                changeNameDialogFragment fragment1
+                                        = new changeNameDialogFragment();
+                                fragment1.show(getSupportFragmentManager(),
+                                        "changeNameDialogFragment");
                                 break;
                             case 1:
-                                Toast.makeText(ProfileActivity.this, "This feature is " +
-                                        "not available.", Toast.LENGTH_SHORT).show();
+                                changePasswordDialogFragment fragment2
+                                        = new changePasswordDialogFragment();
+                                fragment2.show(getSupportFragmentManager(),
+                                        "changePasswordDialogFragment");
                                 break;
                             case 2:
                                 showChoosePictureDialog();
@@ -333,8 +329,15 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                        .child(FirebaseConstants.getUser().getUid())
+                        .child(FirebaseConstants.URI).setValue(downloadUrl.toString());
             }
         });
     }
 
+    @Override
+    public void onChange(String name) {
+        nameText.setText(name);
+    }
 }

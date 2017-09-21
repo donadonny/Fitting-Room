@@ -30,12 +30,12 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
 import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
 import tk.talcharnes.unborify.NavigationFragments.Notifications.NotificationFragment;
+import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.my_photos.MyPhotosFragment;
 
@@ -101,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
         loadHeaderData();
 
         // myNotifications Stuff
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseConstants.getUser();
         if(user != null) {
-            notificationRef = FirebaseDatabase.getInstance().getReference()
-                    .child(FirebaseConstants.USERDATA).child(user.getUid())
-                    .child(FirebaseConstants.NOTIFICATION);
+            notificationRef = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                    .child(user.getUid()).child(FirebaseConstants.NOTIFICATION);
            // setNotificationListener();
         }
     }
@@ -133,13 +132,11 @@ public class MainActivity extends AppCompatActivity {
                         .into(profileImage);
             }
             // showing dot next to notifications label
-            navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+            //navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
             profileImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    intent.putExtra("name", userName);
-                    intent.putExtra("email", email);
                     intent.putExtra("uid", uid);
                     startActivity(intent);
                 }
@@ -311,9 +308,9 @@ public class MainActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.main, menu);
         } else {
             //item.setVisible(false);
-            if(fragment_id == R.id.nav_notifications) {
+            /*if(fragment_id == R.id.nav_notifications) {
                 getMenuInflater().inflate(R.menu.notifications, menu);
-            }
+            }*/
         }
 
         return true;

@@ -58,9 +58,8 @@ public class MainActivityFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String userId, userName;
     private String oldestPostId = "";
-    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    final DatabaseReference photoReference = firebaseDatabase.getReference().child(FirebaseConstants.PHOTOS);
-    DatabaseReference reportRef = firebaseDatabase.getReference().child(FirebaseConstants.REPORTS);
+    final DatabaseReference photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
+    DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
     //        For Firebase Auth
     private FirebaseAuth mAuth;
@@ -132,7 +131,8 @@ public class MainActivityFragment extends Fragment {
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)
                                     .setIsSmartLockEnabled(false)
-                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                                     .build(),
                             RC_SIGN_IN);

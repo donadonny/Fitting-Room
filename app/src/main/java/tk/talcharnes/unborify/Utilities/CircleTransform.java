@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -2,6 +2,7 @@ package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,13 +27,13 @@ import tk.talcharnes.unborify.Report;
 public class FirebaseConstants {
     public final static String COMMENTS = "Comments";
     public final static String PHOTOS = "Photos";
-    public final static String USERS = "users";
+    public final static String USERS = "Users";
     public final static String INSTANCEID = "instanceId";
-    public final static String USERDATA = "users/data";
     public final static String USERNAME = "name";
+    public final static String URI = "uri";
     public final static String IMAGES = "images";
     public final static String REPORTS = "Reports";
-    public final static String NOTIFICATION = "notifications";
+    public final static String NOTIFICATION = "Notifications";
     public final static String VOTES = "votes";
     public final static String PHOTO_REPORTS = "reports";
     public final static String PHOTO_LIST = "photo_list";
@@ -42,8 +43,6 @@ public class FirebaseConstants {
     public final static String COMMENT_KEY = "comment_key";
     public final static String COMMENT_STRING = "commentString";
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
-    public final static String USERNAME_KEY = "userName";
-    public final static String COMMENTER_USERNAME = "commenter_userName";
 
 //    Strings for contact us section
     public final static String CONTACT_US = "Contact_us";
@@ -62,7 +61,7 @@ public class FirebaseConstants {
     public static void setToken(String token) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null) {
-            FirebaseDatabase.getInstance().getReference().child(USERDATA).
+            FirebaseDatabase.getInstance().getReference().child(USERS).
                     child(user.getUid()).child(INSTANCEID).setValue(token);
         }
     }

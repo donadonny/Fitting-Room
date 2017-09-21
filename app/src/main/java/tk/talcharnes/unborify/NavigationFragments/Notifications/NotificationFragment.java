@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -71,7 +72,7 @@ public class NotificationFragment extends Fragment {
         notification_recycle_view.setHasFixedSize(false);
         notification_recycle_view.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
 
-        final Query query = FirebaseConstants.getRef().child(FirebaseConstants.USERDATA)
+        final Query query = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                 .child(FirebaseConstants.getUser().getUid()).child(FirebaseConstants.NOTIFICATION);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
