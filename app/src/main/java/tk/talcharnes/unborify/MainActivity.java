@@ -203,12 +203,14 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerClosed(View drawerView) {
                 // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
                 super.onDrawerClosed(drawerView);
+                drawerView.setContentDescription(getString(R.string.navigation_drawer_close));
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
                 super.onDrawerOpened(drawerView);
+                drawerView.setContentDescription(getString(R.string.navigation_drawer_open));
             }
         };
 

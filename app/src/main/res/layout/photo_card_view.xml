@@ -25,6 +25,7 @@
             android:layout_marginStart="@dimen/fab_radius"
             android:layout_gravity="center_vertical|start"
             app:backgroundTint="#F44336"
+            android:contentDescription="@string/dislike"
             android:src="@drawable/ic_thumb_down_white_24dp" />
 
         <ImageView
@@ -33,6 +34,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="55dp"
             android:layout_marginBottom="55dp"
+            android:contentDescription="@string/picture"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
 
@@ -42,6 +44,7 @@
             android:layout_height="@dimen/fab_size"
             android:layout_marginEnd="@dimen/fab_radius"
             android:layout_gravity="center_vertical|end"
+            android:contentDescription="@string/approve"
             app:backgroundTint="#4CAF50"
             android:src="@drawable/ic_thumb_up_white_24dp" />
 
@@ -51,6 +54,7 @@
             android:layout_gravity="bottom|start"
             android:layout_marginBottom="64dp"
             android:src="@drawable/ic_action_zoom"
+            android:contentDescription="@string/expand_picture"
             android:background="@color/semi_transparent_background"
             android:id="@+id/zoom_button"/>
 
@@ -60,6 +64,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="64dp"
             android:src="@drawable/comments_button"
+            android:contentDescription="@string/comments"
             android:background="@color/semi_transparent_background"
             android:id="@+id/comment_button"/>
 
@@ -110,12 +115,13 @@
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/photo_card_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/more_options"
                 android:layout_gravity="center|end"
                 android:background="@color/semi_transparent_background"
-                android:id="@+id/photo_card_options"/>
+                android:contentDescription="@string/picture_options"
+                android:src="@drawable/more_options" />
 
         </LinearLayout>
 

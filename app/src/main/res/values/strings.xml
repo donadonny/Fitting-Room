@@ -71,6 +71,13 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
+    <string name="dislike">Dislike</string>
+    <string name="approve">approve</string>
+    <string name="expand_picture">Expand Picture</string>
+    <string name="picture">Picture</string>
+    <string name="comments">Comments</string>
+    <string name="picture_options">Picture Options</string>
+
 
     <!-- Strings for the help screen -->
     <string name="next">NEXT</string>
