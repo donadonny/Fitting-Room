@@ -20,7 +20,6 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,6 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Profile.ProfileActivity;
+import tk.talcharnes.unborify.Utilities.Analytics;
+import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -62,7 +64,7 @@ public class PhotoCard {
     private ImageView photoImageView;
 
     @View(R.id.userImage)
-    private ImageView userImageView;
+    private ImageButton userImage;
 
     @View(R.id.realPhotoSwipeCard)
     private CardView realPhotoSwipeCard;
@@ -180,14 +182,16 @@ public class PhotoCard {
                 }
             });
 
-            setUploaderName(mPhoto.getUser(), usernameTextView);
+            setUploader(mPhoto.getUser());
 
-            Glide.with(mContext).load("http://www.womenshealthmag.com/sites/womenshealthmag.com/files/images/power-of-smile_0.jpg")
-                    .crossFade()
-                    .thumbnail(.5f)
-                    .bitmapTransform(new CircleTransform(mContext))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(userImageView);
+            userImage.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra("uid", mPhoto.getUser());
+                    mContext.startActivity(intent);
+                }
+            });
 
             likeButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
@@ -377,21 +381,30 @@ public class PhotoCard {
         }
     }
 
-    public void setUploaderName(String uid, final TextView usernameTextView) {
-        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid).child(FirebaseConstants.USERNAME)
+    private void setUploader(String uid) {
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            String name = "By: " + dataSnapshot.getValue().toString();
-                            usernameTextView.setText(name);
-
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if(user != null) {
+                                usernameTextView.setText(user.getName());
+                                String uri = user.getUri();
+                                if(uri != null) {
+                                    Glide.with(mContext).load(uri)
+                                            .crossFade()
+                                            .thumbnail(.5f)
+                                            .bitmapTransform(new CircleTransform(mContext))
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .into(userImage);
+                                }
+                            }
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        usernameTextView.setText("BOB");
                     }
                 });
     }

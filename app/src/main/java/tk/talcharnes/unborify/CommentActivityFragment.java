@@ -30,7 +30,6 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
  */
 public class CommentActivityFragment extends Fragment {
     private DatabaseReference mCommentReference;
-    private DatabaseReference mOtherCommentReference;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     private RecyclerView mRecyclerView;
     private String mPhotoUploader, mUrl, mCurrentUser;
@@ -55,9 +54,6 @@ public class CommentActivityFragment extends Fragment {
 //        Fix reference here
         mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
-        mOtherCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                .child(mPhotoUploader).child(PhotoUtilities
-                        .removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);
@@ -113,13 +109,12 @@ public class CommentActivityFragment extends Fragment {
                             mCommentReference.child(mComment_key).child(FirebaseConstants.COMMENT_KEY)
                                     .setValue(mComment_key);
                             Log.d(LOG_TAG, "commentkey = " + mComment_key);
-                            mOtherCommentReference.child(mComment_key).setValue(comment);
 
                     if(!mPhotoUploader.equals(mCurrentUser)) {
 
-                        DatabaseReference userNotificationRef = FirebaseDatabase.getInstance()
-                                .getReference().child(FirebaseConstants.USERDATA)
-                                .child(mPhotoUploader).child(FirebaseConstants.NOTIFICATION);
+                        DatabaseReference userNotificationRef = FirebaseConstants.getRef()
+                                .child(FirebaseConstants.USERS).child(mPhotoUploader)
+                                .child(FirebaseConstants.NOTIFICATION);
 
                         myNotifications myNotification = new myNotifications(false, mUrl,
                                 comment.getCommentString(), mCurrentUser);

@@ -64,7 +64,7 @@
                 android:layout_marginTop="76dp"
                 android:textColor="#fff"
                 android:textSize="24sp"
-                android:text="Name"
+                android:text="@string/placeholder"
                 android:textStyle="bold" />
 
             <TextView
@@ -96,21 +96,7 @@
                 android:elevation="4dp"
                 android:padding="20dp"
                 android:textSize="14sp"
-                android:text="E-mail: "
-                tools:targetApi="lollipop" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:clickable="true"
-                android:background="#fff"
-                android:elevation="4dp"
-                android:padding="20dp"
-                android:textSize="14sp"
-                android:text="Password: ********"
+                android:text="@string/placeholder"
                 tools:targetApi="lollipop" />
 
             <TextView
@@ -124,7 +110,7 @@
                 android:elevation="4dp"
                 android:padding="20dp"
                 android:textSize="14sp"
-                android:text="Date user joined: "
+                android:text="@string/placeholder"
                 tools:targetApi="lollipop" />
 
             <TextView

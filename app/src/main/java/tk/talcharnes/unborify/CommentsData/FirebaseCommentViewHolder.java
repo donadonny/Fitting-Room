@@ -77,7 +77,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        FirebaseDatabase.getInstance().getReference(FirebaseConstants.USERDATA).child(uid)
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                 .child(FirebaseConstants.USERNAME)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -166,11 +166,6 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
         ref.removeValue();
-
-        DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.USERS)
-                .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
-                .child(comment.getComment_key());
-        mOtherCommentReference.removeValue();
     }
 
     private void showEditCommentDialog(final Comment comment) {
@@ -201,13 +196,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                             .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key())
                             .child(FirebaseConstants.COMMENT_STRING);
 
-                    DatabaseReference mOtherCommentReference = FirebaseDatabase.getInstance().getReference()
-                            .child(FirebaseConstants.USERS)
-                            .child(comment.getPhoto_Uploader()).child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS)
-                            .child(comment.getComment_key()).child(FirebaseConstants.COMMENT_STRING);
-
                     ref.setValue(newComment);
-                    mOtherCommentReference.setValue(newComment);
 
                 }
             }

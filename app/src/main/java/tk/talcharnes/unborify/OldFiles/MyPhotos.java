@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.my_photos;
+package tk.talcharnes.unborify.OldFiles;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

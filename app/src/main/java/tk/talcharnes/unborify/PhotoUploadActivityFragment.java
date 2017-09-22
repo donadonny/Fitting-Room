@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
@@ -243,7 +244,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setOrientation(photoOrientation);
                     photo.setAd(false);
 
-//                    // TODO change the following when expanding app to have more categories
+                    // TODO change the following when expanding app to have more categories
                     photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
 
                     DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
