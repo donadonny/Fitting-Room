@@ -137,21 +137,23 @@ public class PhotoCard {
             float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
             nameTextView.setText(mPhoto.getOccasion_subtitle());
             float likes = Float.parseFloat("" + mPhoto.getLikes());
-            dislikes = (dislikes < 1) ? 1 : dislikes;
-            likes = (likes < 1) ? 1 : likes;
+//            dislikes = (dislikes < 1) ? 1 : dislikes;
+//            likes = (likes < 1) ? 1 : likes;
             float totalVotes = likes + dislikes;
-            float rating = (likes / totalVotes) * 100f;
-            System.out.println("Likes: " + likes + "---------------- Dislikes: "
-                    + dislikes + "----------- TotalVotes: " + totalVotes + "----------- Rating: " +
-                    rating);
-            int index = (int) Math.floor(rating/20f);
-            int[] ratingColors = mContext.getResources().getIntArray(R.array.array_rate_colors);
-            int[] ratingShadowColors = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
+            if (totalVotes != 0) {
+                float rating = (likes / totalVotes) * 100f;
+                System.out.println("Likes: " + likes + "---------------- Dislikes: "
+                        + dislikes + "----------- TotalVotes: " + totalVotes + "----------- Rating: " +
+                        rating);
 
-            ratingBar.setFillColor(ratingColors[index]);
-            ratingBar.setBorderColor(ratingShadowColors[index]);
-            ratingBar.setRating(rating/20f);
+                int index = (int) Math.floor(rating / 20f);
+                int[] ratingColors = mContext.getResources().getIntArray(R.array.array_rate_colors);
+                int[] ratingShadowColors = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
 
+                ratingBar.setFillColor(ratingColors[index]);
+                ratingBar.setBorderColor(ratingShadowColors[index]);
+                ratingBar.setRating(rating / 20f);
+            }
             ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
@@ -398,6 +400,7 @@ public class PhotoCard {
                                             .bitmapTransform(new CircleTransform(mContext))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .into(userImage);
+
                                 }
                             }
                         }
