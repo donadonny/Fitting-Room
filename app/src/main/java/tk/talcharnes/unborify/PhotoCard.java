@@ -116,7 +116,6 @@ public class PhotoCard {
         mReportsRef = reportsRef;
         isAd = photo.isAd();
         Log.d(LOG_TAG, "isAd = " + isAd);
-
     }
 
     /**
@@ -142,9 +141,10 @@ public class PhotoCard {
             float totalVotes = likes + dislikes;
             if (totalVotes != 0) {
                 float rating = (likes / totalVotes) * 100f;
-                System.out.println("Likes: " + likes + "---------------- Dislikes: "
-                        + dislikes + "----------- TotalVotes: " + totalVotes + "----------- Rating: " +
-                        rating);
+                Log.d(LOG_TAG, "likes: " + likes);
+                Log.d(LOG_TAG, "dislikes: " + dislikes);
+                Log.d(LOG_TAG, "totalVotes: " + totalVotes);
+                Log.d(LOG_TAG, "rating: " + rating);
 
                 int index = (int) Math.floor(rating / 20f);
                 int[] ratingColors = mContext.getResources().getIntArray(R.array.array_rate_colors);
@@ -296,6 +296,9 @@ public class PhotoCard {
             final String userID = mUserId;
             final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
             final DatabaseReference chosenPhoto = mPhotoReference.child(name);
+            Log.d(LOG_TAG, "userID = " + mUserId);
+            Log.d(LOG_TAG, "Photo userID = " + mPhoto.getUser());
+            Log.d(LOG_TAG, "name = " + name);
             if (!mUserId.equals(mPhoto.getUser())) {
                 chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

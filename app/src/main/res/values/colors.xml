@@ -55,6 +55,7 @@
     <color name="rating_color_3">#FFF176</color>
     <color name="rating_color_4">#FFB74D</color>
     <color name="rating_color_5">#E57373</color>
+    <color name="rating_color_6">#E57373</color>
 
     <!-- Rating shadow colors -->
     <color name="rating_shadow_color_1">#03A9F4</color>
@@ -62,6 +63,7 @@
     <color name="rating_shadow_color_3">#FFEB3B</color>
     <color name="rating_shadow_color_4">#FF9800</color>
     <color name="rating_shadow_color_5">#F44336</color>
+    <color name="rating_shadow_color_6">#F44336</color>
 
     <!-- Array of Colors for the 'rate' bar -->
     <array name="array_rate_colors">
@@ -70,6 +72,7 @@
         <item>@color/rating_color_3</item>
         <item>@color/rating_color_4</item>
         <item>@color/rating_color_5</item>
+        <item>@color/rating_color_6</item>
     </array>
 
     <!-- Array of Colors for the stars background -->
@@ -79,6 +82,7 @@
         <item>@color/rating_shadow_color_3</item>
         <item>@color/rating_shadow_color_4</item>
         <item>@color/rating_shadow_color_5</item>
+        <item>@color/rating_shadow_color_6</item>
     </array>
 
 

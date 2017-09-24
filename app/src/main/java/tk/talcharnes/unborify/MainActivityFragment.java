@@ -87,6 +87,7 @@ public class MainActivityFragment extends Fragment {
     private void initializeBasicSetup() {
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
+        userId = FirebaseConstants.getUser().getUid();
 
         //Native banner ad
         /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
@@ -193,7 +194,7 @@ public class MainActivityFragment extends Fragment {
                         /* Randomizing votes for photos
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
-
+                        Log.d(LOG_TAG, "Current User id: " + userId);
                         list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName, photoReference,
                                 reportRef));
                         if (len == 0) {
