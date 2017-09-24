@@ -63,7 +63,7 @@ public class LoadMoreView {
                          i < (count - 1 + LoadMoreView.LOAD_VIEW_SET_COUNT) && mFeedList.size() > i;
                          i++) {
                         mLoadMoreView.addView(new PhotoView(mLoadMoreView.getContext(),
-                                mFeedList.get(i), mUserId, mUserName));
+                                mFeedList.get(i), mUserId, mUserName, mLoadMoreView));
 
                         if (i == mFeedList.size() - 1) {
                             mLoadMoreView.noMoreToLoad();

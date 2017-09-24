@@ -1,18 +1,22 @@
 package tk.talcharnes.unborify.NavigationFragments.Notifications;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import tk.talcharnes.unborify.CommentActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.myNotifications;
@@ -41,7 +45,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(final NotificationAdapter.ItemRowHolder holder, int position) {
-        myNotifications notification = dataList.get(position);
+        final myNotifications notification = dataList.get(position);
         holder.message.setText(notification.getMessage());
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
                 .child(FirebaseConstants.USERNAME)
@@ -58,6 +62,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                     }
                 });
+        holder.notificationCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser user = FirebaseConstants.getUser();
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("url", notification.getPhotoUrl());
+                intent.putExtra("photoUserID", user.getUid());
+                intent.putExtra("currentUser", user.getUid());
+                intent.putExtra("name", user.getDisplayName());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -67,12 +83,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
+        private CardView notificationCardView;
         private TextView message, senderID;
 
         ItemRowHolder(View view) {
             super(view);
 
             if (!dataList.isEmpty()) {
+                this.notificationCardView = (CardView) view.findViewById(R.id.notification_card_view);
                 this.message = (TextView) view.findViewById(R.id.message);
                 this.senderID = (TextView) view.findViewById(R.id.senderID);
             }

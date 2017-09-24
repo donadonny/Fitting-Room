@@ -28,13 +28,15 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
  * * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 public class CommentActivityFragment extends Fragment {
+
+    private final String LOG_TAG = CommentActivityFragment.class.getSimpleName();
+
     private DatabaseReference mCommentReference;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     private RecyclerView mRecyclerView;
     private String mPhotoUploader, mUrl, mCurrentUser;
     private EditText mCommentEditText;
     private ImageButton mSubmitCommentImageButton;
-    private final String LOG_TAG = CommentActivityFragment.class.getSimpleName();
     String mComment_key;
     Comment comment;
 
@@ -50,6 +52,10 @@ public class CommentActivityFragment extends Fragment {
         mPhotoUploader = intent.getStringExtra("photoUserID");
         mUrl = intent.getStringExtra("url");
         mCurrentUser = intent.getStringExtra("currentUser");
+
+        Log.d(LOG_TAG, "photoUserID: " + mPhotoUploader);
+        Log.d(LOG_TAG, "url: " + mUrl);
+        Log.d(LOG_TAG, "currentUser: " + mCurrentUser);
 
 //        Fix reference here
         mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
@@ -89,9 +95,10 @@ public class CommentActivityFragment extends Fragment {
                 if (mCommentEditText.getText().toString().isEmpty() ||
                         mCommentEditText.getText().toString().equals("")
                         || mCommentEditText.getText().toString() == null) {
-
+                    Log.d(LOG_TAG, "User attempted to pass an empty comment.");
                     mCommentEditText.setError(getString(R.string.comment_empty_error));
                 } else if (mCommentEditText.getText().toString().length() < 5) {
+                    Log.d(LOG_TAG, "User attempted to pass a short comment.");
                     mCommentEditText.setError(getString(R.string.comment_too_short_error));
                 } else {
                     comment = new Comment();
@@ -99,6 +106,12 @@ public class CommentActivityFragment extends Fragment {
                     comment.setCommenter(mCurrentUser);
                     comment.setCommentString(mCommentEditText.getText().toString());
                     comment.setPhoto_Uploader(mPhotoUploader);
+
+                    Log.d(LOG_TAG, "New Comment:");
+                    Log.d(LOG_TAG, "\tcommenter: " + comment.getCommenter());
+                    Log.d(LOG_TAG, "\tcomment message: " + comment.getCommentString());
+                    Log.d(LOG_TAG, "\tcomment url: " + comment.getPhoto_url());
+                    Log.d(LOG_TAG, "\tcomment photo uploader: " + comment.getPhoto_Uploader());
 
                     mCommentReference.push().setValue(comment, new DatabaseReference.CompletionListener() {
                         @Override
@@ -111,6 +124,8 @@ public class CommentActivityFragment extends Fragment {
                             Log.d(LOG_TAG, "commentkey = " + mComment_key);
 
                             if (!mPhotoUploader.equals(mCurrentUser)) {
+                                Log.d(LOG_TAG, "The commenter is not the photo uploader");
+                                Log.d(LOG_TAG, "Pushing comment notification");
 
                                 DatabaseReference userNotificationRef = FirebaseConstants.getRef()
                                         .child(FirebaseConstants.USERS).child(mPhotoUploader)

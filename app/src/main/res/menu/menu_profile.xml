@@ -7,11 +7,11 @@
         android:icon="@drawable/ic_edit_profile"
         android:title="@string/action_edit"
         app:showAsAction="ifRoom" />
-    <item
+    <!--item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:icon="@drawable/ic_settings"
         android:title="@string/action_settings"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" /-->
 
 </menu>

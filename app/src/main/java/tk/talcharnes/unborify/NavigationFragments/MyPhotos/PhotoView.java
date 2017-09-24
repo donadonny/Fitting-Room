@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.widget.EditText;
@@ -15,13 +16,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
+import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import tk.talcharnes.unborify.CommentActivity;
 import tk.talcharnes.unborify.Photo;
@@ -36,6 +44,8 @@ import tk.talcharnes.unborify.ZoomPhotoActivity;
 
 @Layout(R.layout.my_photo_card)
 public class PhotoView {
+
+    private static final String TAG = PhotoView.class.getSimpleName();
 
     @View(R.id.card_image_view)
     private ImageView imageView;
@@ -58,12 +68,15 @@ public class PhotoView {
     private Photo mPhoto;
     private Context mContext;
     private String mUserId, mUserName;
+    private InfinitePlaceHolderView placeHolderView;
 
-    public PhotoView(Context context, Photo photo, String userId, String userName) {
+    public PhotoView(Context context, Photo photo, String userId, String userName,
+                     InfinitePlaceHolderView mLoadMoreView) {
         mContext = context;
         mPhoto = photo;
         mUserId = userId;
         mUserName = userName;
+        placeHolderView = mLoadMoreView;
     }
 
     @Resolve
@@ -168,6 +181,8 @@ public class PhotoView {
 
     private void deletePhoto() {
 
+        Log.d(TAG, "Deleting: " + mPhoto.getUrl());
+
         DatabaseReference photoDBReference = FirebaseConstants.getRef()
                 .child(FirebaseConstants.PHOTOS)
                 .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
@@ -179,12 +194,28 @@ public class PhotoView {
         storageReference.delete();
 
         //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
+        final DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS)
+                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+
+        reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    reportRef.removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        placeHolderView.removeView(this);
     }
 
     private void showEditStringDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ;
         final android.view.View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
         final EditText edt = dialogView.findViewById(R.id.comment_edit_dialog_box);
         edt.setHint("Edit Occasion");
@@ -193,6 +224,7 @@ public class PhotoView {
         String occasionString = mPhoto.getOccasion_subtitle();
         if (occasionString != null && !occasionString.isEmpty()) {
             edt.setText(occasionString);
+            Log.d(TAG, "Current Occasion String: " + occasionString);
         }
         dialogBuilder.setTitle("Edit Photo Occasion");
 
@@ -207,11 +239,13 @@ public class PhotoView {
                 } else if (newOccasion.length() < 5) {
                     edt.setError("Occasion must be longer than 5 characters");
                 } else {
+                    Log.d(TAG, "New Occasion String: " + newOccasion);
                     DatabaseReference photoDBReference = FirebaseConstants.getRef()
                             .child(FirebaseConstants.PHOTOS)
                             .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()))
                             .child(FirebaseConstants.OCCASION_SUBTITLE);
 
+                    occasionTextView.setText(newOccasion);
                     photoDBReference.setValue(newOccasion);
 
                 }
@@ -220,6 +254,7 @@ public class PhotoView {
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //pass
+                dialog.dismiss();
             }
         });
         AlertDialog b = dialogBuilder.create();
