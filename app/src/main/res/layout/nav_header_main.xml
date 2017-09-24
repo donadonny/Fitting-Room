@@ -17,13 +17,15 @@
         android:orientation="vertical"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
-        <ImageView
-            android:id="@+id/img_profile"
+        <agency.tango.android.avatarview.views.AvatarView
+            android:id="@+id/avatarImage"
             android:layout_marginTop="7dp"
             android:layout_width="@dimen/profile_width"
-            android:layout_height="@dimen/profile_height"
-            android:background="@drawable/circular_border"
-            android:src="@drawable/ic_profile" />
+            android:layout_height="@dimen/profile_width"
+            app:av_border_color="#FFF"
+            app:av_border_width="2dp"
+            android:scaleType="centerCrop"
+            app:av_text_size_percentage="75" />
 
         <TextView
             android:id="@+id/user_name"

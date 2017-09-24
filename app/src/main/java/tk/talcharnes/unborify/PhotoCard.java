@@ -44,6 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import agency.tango.android.avatarview.IImageLoader;
+import agency.tango.android.avatarview.views.AvatarView;
+import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.CircleTransform;
@@ -63,8 +66,8 @@ public class PhotoCard {
     @View(R.id.photoImageView)
     private ImageView photoImageView;
 
-    @View(R.id.userImage)
-    private ImageButton userImage;
+    @View(R.id.avatarImage)
+    private AvatarView avatarView;
 
     @View(R.id.realPhotoSwipeCard)
     private CardView realPhotoSwipeCard;
@@ -103,6 +106,7 @@ public class PhotoCard {
     private int width;
     private int height;
     private boolean mVisible = true;
+    private IImageLoader imageLoader;
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      String userName, DatabaseReference photoReference,
@@ -124,6 +128,7 @@ public class PhotoCard {
     @Resolve
     private void onResolved() {
         final String url = mPhoto.getUrl();
+        imageLoader = new GlideLoader();
         if (url != null && !url.isEmpty()) {
             final int rotation = getRotation();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
@@ -186,7 +191,7 @@ public class PhotoCard {
 
             setUploader(mPhoto.getUser());
 
-            userImage.setOnClickListener(new android.view.View.OnClickListener() {
+            avatarView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, ProfileActivity.class);
@@ -395,16 +400,9 @@ public class PhotoCard {
                             User user = dataSnapshot.getValue(User.class);
                             if (user != null) {
                                 usernameTextView.setText(user.getName());
-                                String uri = user.getUri();
-                                if (uri != null) {
-                                    Glide.with(mContext).load(uri)
-                                            .crossFade()
-                                            .thumbnail(.5f)
-                                            .bitmapTransform(new CircleTransform(mContext))
-                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .into(userImage);
 
-                                }
+                                String uri = user.getUri() + "";
+                                imageLoader.loadImage(avatarView, uri, user.getName());
                             }
                         }
                     }

@@ -31,19 +31,18 @@
             android:scaleType="centerCrop"
             android:src="@drawable/navigation_header_image" />
 
-        <ImageView
-            android:id="@+id/user_profile_photo"
+        <agency.tango.android.avatarview.views.AvatarView
+            android:id="@+id/avatarImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_below="@+id/header_cover_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-60dp"
-            android:background="@drawable/circular_border"
-            android:elevation="5dp"
-            android:clickable="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile"
-            android:padding="1dp"
+            android:elevation="5dp"
+            app:av_border_color="#FFF"
+            app:av_border_width="3dp"
+            app:av_text_size_percentage="75"
             tools:targetApi="lollipop" />
 
         <RelativeLayout

@@ -41,6 +41,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import agency.tango.android.avatarview.IImageLoader;
+import agency.tango.android.avatarview.views.AvatarView;
+import agency.tango.android.avatarviewglide.GlideLoader;
 import id.zelory.compressor.Compressor;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.User;
@@ -60,9 +63,10 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     private Toolbar toolbar;
     private TextView nameText, emailText, joinedText;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private ImageView imageView;
     private Bitmap thumbnail;
     private String uid;
+    private IImageLoader imageLoader;
+    private AvatarView avatarView;
 
     /**
      * Initializes basic initialization of components.
@@ -80,11 +84,13 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      * This function initializes basic stuff.
      */
     public void initialize() {
+        imageLoader = new GlideLoader();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nameText = (TextView) findViewById(R.id.user_profile_name);
         emailText = (TextView) findViewById(R.id.user_profile_email);
         joinedText = (TextView) findViewById(R.id.user_date_joined);
-        imageView = (ImageView) findViewById(R.id.user_profile_photo);
+        avatarView = (AvatarView) findViewById(R.id.avatarImage);
 
         /* Set up Toolbar to return back to the MainActivity */
         setSupportActionBar(toolbar);
@@ -108,15 +114,8 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                                     nameText.setText(user.getName());
                                     emailText.setText(user.getEmail());
                                     joinedText.setText(user.getDate_joined());
-                                    String profileUri = user.getUri();
-                                    if (profileUri != null) {
-                                        Glide.with(ProfileActivity.this).load(profileUri)
-                                                .crossFade()
-                                                .thumbnail(.5f)
-                                                .bitmapTransform(new CircleTransform(ProfileActivity.this))
-                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .into(imageView);
-                                    }
+                                    String profileUri = user.getUri() + "";
+                                    imageLoader.loadImage(avatarView, profileUri, user.getName());
                                 }
                             }
                         }
@@ -273,13 +272,6 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
             thumbnail.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
             try {
                 byte[] filedata = saveImage(outputStream.toByteArray());
-                Glide.with(this)
-                        .load(filedata)
-                        .crossFade()
-                        .thumbnail(.5f)
-                        .bitmapTransform(new CircleTransform(this))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView);
                 uploadImage(filedata);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -355,9 +347,12 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                                 }
                             }
                         });
+                String profileUri = (downloadUrl != null) ? downloadUrl.toString() : "";
                 FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                         .child(FirebaseConstants.getUser().getUid())
-                        .child(FirebaseConstants.URI).setValue(downloadUrl.toString());
+                        .child(FirebaseConstants.URI).setValue(profileUri);
+                imageLoader.loadImage(avatarView, profileUri, nameText.getText().toString());
+
             }
         });
     }

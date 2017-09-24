@@ -77,12 +77,15 @@
             android:paddingEnd="20dp"
             android:paddingStart="20dp">
 
-            <ImageButton
-                android:id="@+id/userImage"
+            <agency.tango.android.avatarview.views.AvatarView
+                android:id="@+id/avatarImage"
                 android:layout_width="@dimen/fab_size"
                 android:layout_height="@dimen/fab_size"
+                app:av_border_color="@color/colorPrimary"
+                app:av_border_width="4dp"
+                android:scaleType="centerCrop"
                 android:gravity="start"
-                android:src="@drawable/ic_no_image" />
+                app:av_text_size_percentage="75" />
 
             <LinearLayout
                 android:layout_width="0dp"

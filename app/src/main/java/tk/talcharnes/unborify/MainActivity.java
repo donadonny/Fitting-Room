@@ -32,6 +32,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import agency.tango.android.avatarview.IImageLoader;
+import agency.tango.android.avatarview.views.AvatarView;
+import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
 import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
 import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private ImageView profileImage;
     private TextView nameText, emailText;
     private ImageButton profileImageButton;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener notificationListener;
     private Toolbar toolbar;
     private String uid, userName;
+    private IImageLoader imageLoader;
+    private AvatarView avatarView;
 
     public static int fragment_id = R.id.nav_home;
     public static int previous_fragment_id = fragment_id;
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        imageLoader = new GlideLoader();
 
         // Navigation Drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -107,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         View navHeader = navigationView.getHeaderView(0);
         nameText = (TextView) navHeader.findViewById(R.id.user_name);
         emailText = (TextView) navHeader.findViewById(R.id.user_email);
-        profileImage = (ImageView) navHeader.findViewById(R.id.img_profile);
+        avatarView = (AvatarView) navHeader.findViewById(R.id.avatarImage);
         profileImageButton = (ImageButton) navHeader.findViewById(R.id.profile_image_button);
         loadHeaderData();
 
@@ -133,15 +138,8 @@ public class MainActivity extends AppCompatActivity {
             nameText.setText(userName);
             emailText.setText(email);
             Uri uri = user.getPhotoUrl();
-            if (uri != null) {
-                Glide.with(this)
-                        .load(uri)
-                        .crossFade()
-                        .thumbnail(.5f)
-                        .bitmapTransform(new CircleTransform(this))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(profileImage);
-            }
+            String uriString = (uri != null) ? uri.toString() : "";
+            imageLoader.loadImage(avatarView, uriString, userName);
             // showing dot next to notifications label
             //navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
             profileImageButton.setOnClickListener(new View.OnClickListener() {

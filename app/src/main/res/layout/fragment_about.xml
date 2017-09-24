@@ -214,6 +214,16 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:textAlignment="center"
+                android:text="@string/about_title_3_desc_10"
+                android:textSize="14sp"
+                android:textColor="#FFF"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:textAlignment="center"
                 android:text="@string/about_title_3_desc_9"
                 android:textSize="14sp"
                 android:textColor="#FFF"/>
