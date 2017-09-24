@@ -28,7 +28,7 @@ import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
-import tk.talcharnes.unborify.ZoomPhoto;
+import tk.talcharnes.unborify.ZoomPhotoActivity;
 
 /**
  * Created by khuramchaudhry on 9/21/17.
@@ -110,7 +110,7 @@ public class PhotoView {
         zoomButton.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
-                Intent intent = new Intent(mContext, ZoomPhoto.class);
+                Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
                 intent.putExtra("url", mPhoto.getUrl());
                 intent.putExtra("rotation", getRotation(mPhoto.getOrientation()));
                 mContext.startActivity(intent);

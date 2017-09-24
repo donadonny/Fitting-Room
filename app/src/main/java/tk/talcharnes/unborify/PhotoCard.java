@@ -156,7 +156,7 @@ public class PhotoCard {
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
-                    Intent intent = new Intent(mContext, ZoomPhoto.class);
+                    Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
                     intent.putExtra("url", mPhoto.getUrl());
                     intent.putExtra("rotation", rotation);
                     mContext.startActivity(intent);

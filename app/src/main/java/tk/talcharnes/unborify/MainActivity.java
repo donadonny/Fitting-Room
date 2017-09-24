@@ -40,6 +40,12 @@ import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.NavigationFragments.MyPhotos.MyPhotosFragment;
 
+/**
+ * Created by Tal.
+ * This activity sets the navigation drawers as well the fragments and is the main fall back
+ * activity.
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -58,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     public static int fragment_id = R.id.nav_home;
     public static int previous_fragment_id = fragment_id;
 
+    /**
+     * Initializes basic initialization of components.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
     private void setUpNavigationView() {
         Log.d(TAG, "Initializing the navigation drawer.");
 
-        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        // Setting Navigation View Item Selected Listener to handle the item click of the
+        // navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             // This method will trigger on item Click of navigation menu
@@ -162,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 previous_fragment_id = fragment_id;
                 fragment_id = menuItem.getItemId();
 
-                //Checking if the item is in checked state or not, if not make it in checked state
+                // Checking if the item is in checked state or not, if not make it in checked state
                 if (menuItem.isChecked()) {
                     menuItem.setChecked(false);
                 } else {
@@ -176,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     FirebaseAuth.getInstance().signOut();
+                                    finish();
                                 }
                             })
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -197,7 +208,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer,
+                R.string.closeDrawer) {
 
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -214,10 +226,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        //Setting the actionbarToggle to drawer layout
+        // Setting the actionbarToggle to drawer layout
         drawer.addDrawerListener(actionBarDrawerToggle);
 
-        //calling sync state is necessary or else your hamburger icon wont show up
+        // calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
     }
 
@@ -335,7 +347,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        return actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        return actionBarDrawerToggle.onOptionsItemSelected(item) ||
+                super.onOptionsItemSelected(item);
 
     }
 
@@ -347,6 +360,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * This function checks if a new notification has been add.
+     * */
     public void setNotificationListener(){
         notificationListener = new ChildEventListener() {
             @Override
@@ -429,6 +445,9 @@ public class MainActivity extends AppCompatActivity {
         notificationRef.addChildEventListener(notificationListener);
     }
 
+    /**
+     * This function cleans up the notification listener when the activity is destroyed.
+     * */
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -4,8 +4,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+/**
+ * Created by Tal.
+ * This activity with it's fragment displays the uploads screen for users to upload their
+ * occasion photos.
+ */
+
 public class PhotoUploadActivity extends AppCompatActivity {
 
+    private final static String TAG = PhotoUploadActivity.class.getSimpleName();
+
+    /**
+     * Initializes basic initialization of components.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -13,9 +24,10 @@ public class PhotoUploadActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 
 }

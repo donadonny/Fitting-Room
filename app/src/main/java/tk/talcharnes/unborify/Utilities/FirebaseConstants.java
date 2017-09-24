@@ -22,6 +22,7 @@ import tk.talcharnes.unborify.Report;
 
 /**
  * Created by Tal on 9/4/2017.
+ *
  */
 
 public class FirebaseConstants {
