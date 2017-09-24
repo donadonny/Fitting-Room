@@ -18,6 +18,7 @@
     <string name="title_activity_photo_upload">PhotoUploadActivity</string>
     <string name="user_photo">User Photo</string>
     <string name="submit">Submit</string>
+    <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
     <string name="title_activity_my_photos">MyPhotos</string>
