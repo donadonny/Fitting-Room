@@ -98,14 +98,14 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         likes = (likes < 1) ? 1 : likes;
         float totalVotes = likes + dislikes;
         float rating = (likes / totalVotes) * 100f;
-        int index = (int) Math.floor(rating/20f);
+        int index = (int) Math.floor(rating / 20f);
         int[] fillColor = mContext.getResources().getIntArray(R.array.array_rate_colors);
         int[] shadowColor = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
 
         holder.ratingBar.setFillColor(fillColor[index]);
         holder.ratingBar.setBorderColor(shadowColor[index]);
 
-        holder.ratingBar.setRating(rating/20f);
+        holder.ratingBar.setRating(rating / 20f);
 
         holder.occastionTextView.setText(photo.getOccasion_subtitle());
         String urlString = photo.getUrl();
@@ -218,14 +218,13 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
     private void showEditStringDialog(final Photo photo) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ;
         final View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
         final EditText edt = dialogView.findViewById(R.id.comment_edit_dialog_box);
         edt.setHint("Edit Occasion");
         dialogBuilder.setView(dialogView);
 
         String occasionString = photo.getOccasion_subtitle();
-        if(occasionString != null && !occasionString.isEmpty()) {
+        if (occasionString != null && !occasionString.isEmpty()) {
             edt.setText(occasionString);
         }
         dialogBuilder.setTitle("Edit Photo Occasion");
