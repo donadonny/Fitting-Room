@@ -49,10 +49,11 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/2/17.
- *
+ * This activity displays and handles User profile.
  */
 
-public class ProfileActivity extends AppCompatActivity implements changeNameDialogFragment.onNameChangeListener {
+public class ProfileActivity extends AppCompatActivity implements changeNameDialogFragment
+        .onNameChangeListener {
 
     private final static String TAG = ProfileActivity.class.getSimpleName();
 
@@ -63,6 +64,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     private Bitmap thumbnail;
     private String uid;
 
+    /**
+     * Initializes basic initialization of components.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +161,8 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function shows and handles options for edit.
+     * This function shows a dialog of options for the Users on what they wish to edit on their
+     * profile which includes changing their name, picture, and password.
      * */
     private void showEditDialog() {
         String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
@@ -196,6 +201,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         builder.show();
     }
 
+    /**
+     * This function shows a dialog of options for the Users on how they want to take an image.
+     * */
     private void showChoosePictureDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("What do you like to do?");
@@ -224,11 +232,17 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         builder.show();
     }
 
+    /**
+     * This function brings up the camera.
+     * */
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
+    /**
+     * This function brings up the gallery.
+     * */
     private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -236,6 +250,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
 
+    /**
+     * This function handles results of the gallery or camera intent.
+     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -270,6 +287,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         }
     }
 
+    /**
+     * This function saves the profile image to the device.
+     * */
     private byte[] saveImage(byte[] filedata) throws IOException {
         File mainDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/FittingRoom_Data");
@@ -302,6 +322,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         return bytes;
     }
 
+    /**
+     * This function uploads the image to FireBase Storage.
+     * */
     private void uploadImage(byte[] data) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -338,8 +361,12 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         });
     }
 
+    /**
+     * This is an interface function which retrieves results from the changeNameDialog.
+     * */
     @Override
     public void onChange(String name) {
         nameText.setText(name);
     }
+
 }

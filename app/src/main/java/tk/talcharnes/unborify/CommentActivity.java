@@ -5,8 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+/**
+ * Created by Tal.
+ * This activity with it's fragment displays the comments screen for users to comment on occasion
+ * photos.
+ */
+
 public class CommentActivity extends AppCompatActivity {
 
+    /**
+     * Initializes basic initialization of components.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +31,9 @@ public class CommentActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function handles the items clicked on the toolbar.
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here

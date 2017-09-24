@@ -61,10 +61,6 @@ public class MainActivityFragment extends Fragment {
     final DatabaseReference photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
     DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
-    //        For Firebase Auth
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    public static final int RC_SIGN_IN = 1;
     private InterstitialAd mInterstitialAd;
     private Boolean showAd = false;
     private View rootView;
@@ -89,7 +85,6 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         photos = new ArrayList<>();
-        isUserLoggedIn();
 
         initializeBasicSetup();
 
@@ -97,50 +92,7 @@ public class MainActivityFragment extends Fragment {
 
         //initializeAd();
 
-
         return rootView;
-    }
-
-    /**
-     * Checks if the user is logged in. If not, then the user is prompt to log in.
-     */
-    private void isUserLoggedIn() {
-        //For firebase auth
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    // User is signed in
-                    userId = user.getUid();
-                    userName = user.getDisplayName();
-
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in: " + userId);
-
-
-                    String token = FirebaseInstanceId.getInstance().getToken();
-                    FirebaseConstants.setToken(token);
-                    Log.d(LOG_TAG, "Token: " + token);
-
-                } else {
-                    // User is signed out
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                    .build(),
-                            RC_SIGN_IN);
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
-                }
-
-            }
-        };
     }
 
     /**
@@ -339,23 +291,4 @@ public class MainActivityFragment extends Fragment {
         });
     }
 
-    /**
-     * Adds the Auth Listener when the app is started up.
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    /**
-     * Removes the Auth Listener when the app is closed.
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
 }

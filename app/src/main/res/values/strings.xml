@@ -106,13 +106,19 @@
     <string name="about_title_1_desc">We are independent developers who love fashion and seek
         to bring the love of fashion to everyone.</string>
     <string name="about_title_2">Developers</string>
-    <string name="about_title_2_desc">Tal Charnes and Khuram Chaudhry</string>
+    <string name="about_title_2_desc_1">Tal Charnes</string>
+    <string name="about_title_2_desc_2">Khuram Chaudhry</string>
+    <string name="about_title_2_desc_3">Mario(marzinx3)</string>
     <string name="about_title_3">Credits</string>
-    <string name="about_title_3_desc_1">Janishar for Placeholderview Library</string>
     <string name="about_title_3_desc_2">Google for the Google Libraries used</string>
+    <string name="about_title_3_desc_1">Janishar Ali for the PlaceHolder Library</string>
     <string name="about_title_3_desc_3">Ben Manes for the Dependency Updates library</string>
-    <string name="about_title_3_desc_4">Ravi Tamada from androidhive</string>
-    <string name="about_title_3_desc_5">Icons from https://icons8.com/</string>
+    <string name="about_title_3_desc_4">Ravi Tamada from AndroidHive</string>
+    <string name="about_title_3_desc_5">Zetra(zetbaitsu) for the Compressor Library</string>
+    <string name="about_title_3_desc_6">Bump Technologies for the Glide Library</string>
+    <string name="about_title_3_desc_7">Chris Banes for the PhotoView Library</string>
+    <string name="about_title_3_desc_8">Ivan Arcuschin for the SimpleRatingBar Library</string>
+    <string name="about_title_3_desc_9">Icons from https://icons8.com/</string>
     <string name="about_trademark">Something LLC. All rights reserved.</string>
     <string name="report">report</string>
     <string name="delete">delete</string>

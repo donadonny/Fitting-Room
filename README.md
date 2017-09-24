@@ -33,7 +33,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Create photo reporting functionality
  * Have my account section with photos
  * Set up rating system for user likes or dislikes
- * Create catchy launcher icon 
+ * Create catchy launcher icon
  * Make a progress bar for user to see photo upload progress
  * Decreased image size by up to 33 times with no noticeable image quality loss in order to reduce:
      * Server storage space
@@ -69,6 +69,12 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 
 ###### Credit to
 
-* Janishar for Placeholderview Library
+* Janishar Ali for the PlaceHolder Library
 * Google for the Google Libraries used
 * Ben Manes for the Dependency Updates library
+* Zetra(zetbaitsu) for the Compressor Library
+* Bump Technologies for the Glide Library
+* Chris Banes for the PhotoView Library
+* Ivan Arcuschin for the SimpleRatingBar Library
+* Ravi Tamada from AndroidHive
+* Icons from https://icons8.com/

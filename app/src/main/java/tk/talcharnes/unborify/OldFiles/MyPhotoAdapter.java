@@ -31,7 +31,7 @@ import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
-import tk.talcharnes.unborify.ZoomPhoto;
+import tk.talcharnes.unborify.ZoomPhotoActivity;
 
 /**
  * Created by Tal on 7/12/2017.
@@ -132,7 +132,7 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         holder.zoomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, ZoomPhoto.class);
+                Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
                 intent.putExtra("url", photo.getUrl());
                 intent.putExtra("rotation", getRotation(photo.getOrientation()));
                 mContext.startActivity(intent);
