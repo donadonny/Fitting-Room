@@ -21,7 +21,6 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 8/8/16.
- *
  */
 public class changePasswordDialogFragment extends DialogFragment {
 
@@ -51,30 +50,28 @@ public class changePasswordDialogFragment extends DialogFragment {
         dialog.show();
         dialog.setCancelable(false);
         //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-        {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Boolean wantToCloseDialog = true;
                 final EditText newPassword = (EditText) dialog.findViewById(R.id.input_new_password);
                 final EditText confirmnPassword = (EditText) dialog.findViewById(R.id.confirm_new_password);
                 final String new_password = newPassword.getText().toString();
                 final String confirm_password = confirmnPassword.getText().toString();
 
-                if(new_password.isEmpty() || new_password.length() < 8 || new_password.length() > 25) {
+                if (new_password.isEmpty() || new_password.length() < 8 || new_password.length() > 25) {
                     newPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
-                if(confirm_password.isEmpty() || confirm_password.length() < 8 || confirm_password.length() > 25){
+                if (confirm_password.isEmpty() || confirm_password.length() < 8 || confirm_password.length() > 25) {
                     confirmnPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
-                if(!confirm_password.equals(new_password)) {
+                if (!confirm_password.equals(new_password)) {
                     confirmnPassword.setError("does not match");
                     wantToCloseDialog = false;
                 }
-                if(wantToCloseDialog) {
+                if (wantToCloseDialog) {
                     FirebaseUser user = FirebaseConstants.getUser();
                     user.updatePassword(new_password)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {

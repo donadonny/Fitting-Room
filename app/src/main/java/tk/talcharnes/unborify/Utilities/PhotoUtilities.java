@@ -19,7 +19,7 @@ import java.io.File;
  */
 
 public class PhotoUtilities {
-    public static int getCameraPhotoOrientation(Context context, Uri imageUri, String imagePath){
+    public static int getCameraPhotoOrientation(Context context, Uri imageUri, String imagePath) {
         int rotate = 0;
         try {
             context.getContentResolver().notifyChange(imageUri, null);
@@ -49,14 +49,13 @@ public class PhotoUtilities {
     }
 
 
-    public static void scaleImage(Activity activity, ImageView imageView)
-    {
+    public static void scaleImage(Activity activity, ImageView imageView) {
         // Get the ImageView and its bitmap
         Drawable drawing = imageView.getDrawable();
         if (drawing == null) {
             return; // Checking for null & return, as suggested in comments
         }
-        Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) drawing).getBitmap();
 
         // Get current dimensions AND the desired bounding box
         int width = bitmap.getWidth();
@@ -100,13 +99,12 @@ public class PhotoUtilities {
         Log.i("Test", "done");
     }
 
-    private static int dpToPx(int dp, Activity activity)
-    {
+    private static int dpToPx(int dp, Activity activity) {
         float density = activity.getResources().getDisplayMetrics().density;
-        return Math.round((float)dp * density);
+        return Math.round((float) dp * density);
     }
 
-    public static String removeWebPFromUrl(String url){
+    public static String removeWebPFromUrl(String url) {
         return url.replace(".webp", "");
     }
 

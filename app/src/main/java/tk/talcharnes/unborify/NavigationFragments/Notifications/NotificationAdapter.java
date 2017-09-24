@@ -19,7 +19,6 @@ import tk.talcharnes.unborify.myNotifications;
 
 /**
  * Created by khuramchaudhry on 9/17/17.
- *
  */
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ItemRowHolder> {
@@ -47,18 +46,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
                 .child(FirebaseConstants.USERNAME)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null) {
-                    holder.senderID.setText(dataSnapshot.getValue().toString());
-                }
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            holder.senderID.setText(dataSnapshot.getValue().toString());
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override
@@ -73,7 +72,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         ItemRowHolder(View view) {
             super(view);
 
-            if(!dataList.isEmpty()) {
+            if (!dataList.isEmpty()) {
                 this.message = (TextView) view.findViewById(R.id.message);
                 this.senderID = (TextView) view.findViewById(R.id.senderID);
             }

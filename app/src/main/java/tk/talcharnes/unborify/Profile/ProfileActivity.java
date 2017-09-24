@@ -78,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function initializes basic stuff.
-     * */
+     */
     public void initialize() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nameText = (TextView) findViewById(R.id.user_profile_name);
@@ -88,28 +88,28 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
         /* Set up Toolbar to return back to the MainActivity */
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
         /* Set up the user's name, email, and the register date */
         Intent intent = getIntent();
-        if(intent.getExtras() != null) {
+        if (intent.getExtras() != null) {
             uid = intent.getStringExtra("uid");
 
             FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
+                            if (dataSnapshot.exists()) {
                                 User user = dataSnapshot.getValue(User.class);
-                                if(user != null) {
+                                if (user != null) {
                                     nameText.setText(user.getName());
                                     emailText.setText(user.getEmail());
                                     joinedText.setText(user.getDate_joined());
                                     String profileUri = user.getUri();
-                                    if(profileUri != null) {
+                                    if (profileUri != null) {
                                         Glide.with(ProfileActivity.this).load(profileUri)
                                                 .crossFade()
                                                 .thumbnail(.5f)
@@ -131,12 +131,12 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function handles hidden menu on the toolbar.
-     * */
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        if(FirebaseConstants.getUser().getUid().equals(uid)) {
+        if (FirebaseConstants.getUser().getUid().equals(uid)) {
             getMenuInflater().inflate(R.menu.menu_profile, menu);
         }
         return true;
@@ -144,14 +144,14 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function handles the items clicked on the toolbar.
-     * */
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here.
         int id = item.getItemId();
-        if(id == R.id.action_edit) {
+        if (id == R.id.action_edit) {
             showEditDialog();
-        } else if(id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
             Toast.makeText(ProfileActivity.this, "This feature is not available.",
                     Toast.LENGTH_SHORT).show();
         }
@@ -163,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     /**
      * This function shows a dialog of options for the Users on what they wish to edit on their
      * profile which includes changing their name, picture, and password.
-     * */
+     */
     private void showEditDialog() {
         String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
@@ -203,7 +203,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function shows a dialog of options for the Users on how they want to take an image.
-     * */
+     */
     private void showChoosePictureDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("What do you like to do?");
@@ -234,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function brings up the camera.
-     * */
+     */
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
@@ -242,7 +242,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function brings up the gallery.
-     * */
+     */
     private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -252,7 +252,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function handles results of the gallery or camera intent.
-     * */
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -289,11 +289,11 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function saves the profile image to the device.
-     * */
+     */
     private byte[] saveImage(byte[] filedata) throws IOException {
         File mainDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/FittingRoom_Data");
-        if(!mainDirectory.exists()) {
+        if (!mainDirectory.exists()) {
             if (!mainDirectory.mkdirs()) {
                 Toast.makeText(ProfileActivity.this, "Please allow Fitting to save data to device."
                         , Toast.LENGTH_LONG).show();
@@ -301,7 +301,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         }
 
         File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                +"/FittingRoom_Data/", "profileImage.webp");
+                + "/FittingRoom_Data/", "profileImage.webp");
         FileOutputStream fo;
         try {
             fo = new FileOutputStream(destination);
@@ -324,12 +324,13 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This function uploads the image to FireBase Storage.
-     * */
+     */
     private void uploadImage(byte[] data) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         StorageReference profileImageRef = storageRef.child("profileImages/" + FirebaseConstants.getUser().getUid() + ".webp");
-        UploadTask uploadTask = profileImageRef.putBytes(data);;
+        UploadTask uploadTask = profileImageRef.putBytes(data);
+        ;
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -363,7 +364,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
 
     /**
      * This is an interface function which retrieves results from the changeNameDialog.
-     * */
+     */
     @Override
     public void onChange(String name) {
         nameText.setText(name);

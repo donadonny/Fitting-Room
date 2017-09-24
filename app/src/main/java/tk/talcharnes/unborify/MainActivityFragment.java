@@ -1,12 +1,8 @@
 package tk.talcharnes.unborify;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,32 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import tk.talcharnes.unborify.Utilities.Constants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -157,7 +143,7 @@ public class MainActivityFragment extends Fragment {
                     /*if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
                     }*/
-                    if(refresh) {
+                    if (refresh) {
                         refreshButton.setVisibility(View.VISIBLE);
                         refresh_textview.setVisibility(View.VISIBLE);
                     } else {
@@ -182,7 +168,7 @@ public class MainActivityFragment extends Fragment {
         final Photo adViewPhoto = new Photo();
         adViewPhoto.setAd(true);
 
-        if(oldestPostId.isEmpty()) {
+        if (oldestPostId.isEmpty()) {
             firstTime = true;
             query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(8);
         } else {
@@ -210,7 +196,7 @@ public class MainActivityFragment extends Fragment {
 
                         list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName, photoReference,
                                 reportRef));
-                        if(len == 0) {
+                        if (len == 0) {
                             oldestPostId = photo.getUrl();
                             len++;
                         }
@@ -219,12 +205,12 @@ public class MainActivityFragment extends Fragment {
                     }
 
                     int stopAt = (list.size() < 8) ? -1 : 0;
-                    for(int i = list.size()-1; i > stopAt; i--) {
+                    for (int i = list.size() - 1; i > stopAt; i--) {
                         mSwipeView.addView(list.get(i));
                     }
-                    if(list.size() < 7) {
+                    if (list.size() < 7) {
                         int diff = 7 - list.size();
-                        while(diff > 0) {
+                        while (diff > 0) {
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
                             diff--;
                         }
@@ -236,7 +222,7 @@ public class MainActivityFragment extends Fragment {
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
-                    System.out.println("<------------------------------------> Total execution time: " + (endTime - startTime) );
+                    System.out.println("<------------------------------------> Total execution time: " + (endTime - startTime));
                 }
             }
 

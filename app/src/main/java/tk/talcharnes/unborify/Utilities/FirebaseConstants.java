@@ -2,7 +2,6 @@ package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +21,6 @@ import tk.talcharnes.unborify.Report;
 
 /**
  * Created by Tal on 9/4/2017.
- *
  */
 
 public class FirebaseConstants {
@@ -45,7 +43,7 @@ public class FirebaseConstants {
     public final static String COMMENT_STRING = "commentString";
     public final static String OCCASION_SUBTITLE = "occasion_subtitle";
 
-//    Strings for contact us section
+    //    Strings for contact us section
     public final static String CONTACT_US = "Contact_us";
     public final static String CONTACT_TYPE_TIP = "Tip";
     public final static String CONTACT_TYPE = "contact_type";
@@ -56,12 +54,12 @@ public class FirebaseConstants {
 
     public final static String URL = "url";
 
-//    Categories of photos
+    //    Categories of photos
     public final static String CATEGORY_FASHION = "Fashion";
 
     public static void setToken(String token) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             FirebaseDatabase.getInstance().getReference().child(USERS).
                     child(user.getUid()).child(INSTANCEID).setValue(token);
         }
@@ -77,7 +75,7 @@ public class FirebaseConstants {
 
     public static void setReport(final String TAG, final Context context, final String reportID,
                                  final String userID) {
-        final DatabaseReference reportRef =  FirebaseDatabase.getInstance().getReference()
+        final DatabaseReference reportRef = FirebaseDatabase.getInstance().getReference()
                 .child(REPORTS).child(reportID);
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -8,7 +8,6 @@ import android.view.WindowManager;
 
 /**
  * Created by janisharali on 21/08/16.
- *
  */
 public class Utils {
 

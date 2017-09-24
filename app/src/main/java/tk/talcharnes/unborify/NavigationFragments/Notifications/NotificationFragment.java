@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -31,7 +29,6 @@ import tk.talcharnes.unborify.myNotifications;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
- *
  */
 
 public class NotificationFragment extends Fragment {
@@ -78,9 +75,9 @@ public class NotificationFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     List<myNotifications> notifications = new ArrayList<myNotifications>();
-                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         notifications.add(snapshot.getValue(myNotifications.class));
                     }
                     NotificationAdapter adapter = new NotificationAdapter(getActivity(), notifications);

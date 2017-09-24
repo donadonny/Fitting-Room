@@ -83,7 +83,7 @@ public class ContactUsFragment extends Fragment {
                     contactUsObject.setContact_type(messageTypes[spinnerPosition]);
 
                     mDatabaseReference.push().setValue(contactUsObject);
-                // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
+                    // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
                     spinner.setSelection(0);
                     contact_us_message_editText.setText("");
                 }
@@ -107,7 +107,7 @@ public class ContactUsFragment extends Fragment {
     private boolean spinnerNotEmpty() {
         if (spinnerPosition != 0) {
             return true;
-        } else{
+        } else {
             Toast.makeText(getContext(), "Please choose a subject", Toast.LENGTH_SHORT).show();
             return false;
         }

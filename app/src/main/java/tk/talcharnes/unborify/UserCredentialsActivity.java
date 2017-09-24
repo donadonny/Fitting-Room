@@ -69,7 +69,7 @@ public class UserCredentialsActivity extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if(!dataSnapshot.exists()) {
+                                    if (!dataSnapshot.exists()) {
                                         Log.d(TAG, "New User");
                                         Calendar c = Calendar.getInstance();
                                         SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy",
@@ -124,11 +124,11 @@ public class UserCredentialsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // RC_SIGN_IN is the request code you passed into startActivityForResult(...)
         // when starting the sign in flow.
-        if(requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             // Successfully signed in
-            if(resultCode != RESULT_OK)
+            if (resultCode != RESULT_OK)
                 if (response == null) {
                     Log.d(TAG, "Login failed due to back press.");
                 } else {

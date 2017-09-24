@@ -2,7 +2,6 @@ package tk.talcharnes.unborify;
 
 /**
  * Created by khuramchaudhry on 9/4/17.
- *
  */
 
 public class myNotifications {

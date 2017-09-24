@@ -10,7 +10,6 @@ import tk.talcharnes.unborify.R;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
- *
  */
 
 public class AboutFragment extends Fragment {

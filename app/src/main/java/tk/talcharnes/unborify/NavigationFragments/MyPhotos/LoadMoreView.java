@@ -15,7 +15,6 @@ import tk.talcharnes.unborify.R;
 
 /**
  * Created by khuramchaudhry on 9/21/17.
- *
  */
 
 @Layout(R.layout.load_more_view)
@@ -36,12 +35,12 @@ public class LoadMoreView {
     }
 
     @LoadMore
-    private void onLoadMore(){
+    private void onLoadMore() {
         Log.d("DEBUG", "onLoadMore");
         new ForcedWaitedLoading();
     }
 
-    private class ForcedWaitedLoading implements Runnable{
+    private class ForcedWaitedLoading implements Runnable {
 
         public ForcedWaitedLoading() {
             new Thread(this).start();
@@ -52,7 +51,7 @@ public class LoadMoreView {
 
             try {
                 Thread.currentThread().sleep(2000);
-            }catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -66,7 +65,7 @@ public class LoadMoreView {
                         mLoadMoreView.addView(new PhotoView(mLoadMoreView.getContext(),
                                 mFeedList.get(i), mUserId, mUserName));
 
-                        if(i == mFeedList.size() - 1){
+                        if (i == mFeedList.size() - 1) {
                             mLoadMoreView.noMoreToLoad();
                             break;
                         }

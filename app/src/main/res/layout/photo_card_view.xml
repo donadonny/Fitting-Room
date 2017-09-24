@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
@@ -22,18 +22,18 @@
             android:id="@+id/thumbs_down_fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:layout_marginStart="@dimen/fab_radius"
             android:layout_gravity="center_vertical|start"
-            app:backgroundTint="#F44336"
+            android:layout_marginStart="@dimen/fab_radius"
             android:contentDescription="@string/dislike"
-            android:src="@drawable/ic_thumb_down_white_24dp" />
+            android:src="@drawable/ic_thumb_down_white_24dp"
+            app:backgroundTint="#F44336" />
 
         <ImageView
             android:id="@+id/photoImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="55dp"
             android:layout_marginBottom="55dp"
+            android:layout_marginTop="55dp"
             android:contentDescription="@string/picture"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
@@ -42,31 +42,31 @@
             android:id="@+id/thumbs_up_fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:layout_marginEnd="@dimen/fab_radius"
             android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="@dimen/fab_radius"
             android:contentDescription="@string/approve"
-            app:backgroundTint="#4CAF50"
-            android:src="@drawable/ic_thumb_up_white_24dp" />
+            android:src="@drawable/ic_thumb_up_white_24dp"
+            app:backgroundTint="#4CAF50" />
 
         <ImageButton
+            android:id="@+id/zoom_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:layout_marginBottom="64dp"
-            android:src="@drawable/ic_action_zoom"
-            android:contentDescription="@string/expand_picture"
             android:background="@color/semi_transparent_background"
-            android:id="@+id/zoom_button"/>
+            android:contentDescription="@string/expand_picture"
+            android:src="@drawable/ic_action_zoom" />
 
         <ImageButton
+            android:id="@+id/comment_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="64dp"
-            android:src="@drawable/comments_button"
-            android:contentDescription="@string/comments"
             android:background="@color/semi_transparent_background"
-            android:id="@+id/comment_button"/>
+            android:contentDescription="@string/comments"
+            android:src="@drawable/comments_button" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                 android:layout_width="@dimen/fab_size"
                 android:layout_height="@dimen/fab_size"
                 android:gravity="start"
-                android:src="@drawable/ic_no_image"/>
+                android:src="@drawable/ic_no_image" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -98,20 +98,20 @@
                     android:id="@+id/nameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/placeholder"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="@string/placeholder" />
 
                 <TextView
                     android:id="@+id/uploadederNameTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/placeholder"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    tools:text="@string/placeholder" />
             </LinearLayout>
 
             <ImageButton
@@ -130,14 +130,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            app:srb_starSize="36dp"
             android:layout_marginBottom="15dp"
+            app:srb_borderColor="#000"
+            app:srb_fillColor="@color/colorPrimary"
+            app:srb_isIndicator="true"
             app:srb_numberOfStars="5"
             app:srb_rating="0"
-            app:srb_stepSize="0.1"
-            app:srb_borderColor="#000"
-            app:srb_isIndicator="true"
-            app:srb_fillColor="@color/colorPrimary" />
+            app:srb_starSize="36dp"
+            app:srb_stepSize="0.1" />
 
     </android.support.v7.widget.CardView>
 

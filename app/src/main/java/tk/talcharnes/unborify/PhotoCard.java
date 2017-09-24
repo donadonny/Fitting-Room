@@ -390,10 +390,10 @@ public class PhotoCard {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             User user = dataSnapshot.getValue(User.class);
-                            if(user != null) {
+                            if (user != null) {
                                 usernameTextView.setText(user.getName());
                                 String uri = user.getUri();
-                                if(uri != null) {
+                                if (uri != null) {
                                     Glide.with(mContext).load(uri)
                                             .crossFade()
                                             .thumbnail(.5f)

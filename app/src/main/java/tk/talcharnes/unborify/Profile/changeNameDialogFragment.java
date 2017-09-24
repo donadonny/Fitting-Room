@@ -25,7 +25,6 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/21/17.
- *
  */
 
 public class changeNameDialogFragment extends DialogFragment {
@@ -44,8 +43,7 @@ public class changeNameDialogFragment extends DialogFragment {
         super.onAttach(context);
         try {
             this.mListener = (onNameChangeListener) context;
-        }
-        catch (final ClassCastException e) {
+        } catch (final ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement onNameChangeListener");
         }
     }
@@ -58,10 +56,10 @@ public class changeNameDialogFragment extends DialogFragment {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             try {
                 this.mListener = (onNameChangeListener) activity;
-            }
-            catch (final ClassCastException e) {
+            } catch (final ClassCastException e) {
                 throw new ClassCastException(activity.toString() + " must implement onNameChangeListener");
-            }        }
+            }
+        }
     }
 
     @NonNull
@@ -89,20 +87,18 @@ public class changeNameDialogFragment extends DialogFragment {
         dialog.show();
         dialog.setCancelable(false);
         //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-        {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Boolean wantToCloseDialog = true;
                 final EditText newName = (EditText) dialog.findViewById(R.id.input_new_name);
                 final String name = newName.getText().toString();
 
-                if(name.isEmpty() || name.length() < 5 || name.length() > 25) {
+                if (name.isEmpty() || name.length() < 5 || name.length() > 25) {
                     newName.setError("enter between 5 and 25 characters");
                     wantToCloseDialog = false;
                 }
-                if(wantToCloseDialog) {
+                if (wantToCloseDialog) {
                     FirebaseUser user = FirebaseConstants.getUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)

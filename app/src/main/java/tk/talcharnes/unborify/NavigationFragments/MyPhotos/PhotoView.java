@@ -74,14 +74,14 @@ public class PhotoView {
         likes = (likes < 1) ? 1 : likes;
         float totalVotes = likes + dislikes;
         float rating = (likes / totalVotes) * 100f;
-        int index = (int) Math.floor(rating/20f);
+        int index = (int) Math.floor(rating / 20f);
         int[] fillColor = mContext.getResources().getIntArray(R.array.array_rate_colors);
         int[] shadowColor = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
 
         ratingBar.setFillColor(fillColor[index]);
         ratingBar.setBorderColor(shadowColor[index]);
 
-        ratingBar.setRating(rating/20f);
+        ratingBar.setRating(rating / 20f);
 
         occasionTextView.setText(mPhoto.getOccasion_subtitle());
 
@@ -191,7 +191,7 @@ public class PhotoView {
         dialogBuilder.setView(dialogView);
 
         String occasionString = mPhoto.getOccasion_subtitle();
-        if(occasionString != null && !occasionString.isEmpty()) {
+        if (occasionString != null && !occasionString.isEmpty()) {
             edt.setText(occasionString);
         }
         dialogBuilder.setTitle("Edit Photo Occasion");

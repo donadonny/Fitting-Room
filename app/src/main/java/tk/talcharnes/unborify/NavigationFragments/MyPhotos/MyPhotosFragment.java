@@ -46,7 +46,7 @@ public class MyPhotosFragment extends Fragment {
         mLoadMoreView = (InfinitePlaceHolderView) rootview.findViewById(R.id.loadMoreView);
 
         FirebaseUser user = FirebaseConstants.getUser();
-        if(user != null) {
+        if (user != null) {
             userId = user.getUid();
             userName = user.getDisplayName();
         }
@@ -65,21 +65,21 @@ public class MyPhotosFragment extends Fragment {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     photoList.clear();
-                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Photo photo = child.getValue(Photo.class);
-                        if(photo != null) {
+                        if (photo != null) {
                             photoList.add(photo);
                             System.out.println(photo.getUrl());
                         }
                     }
                     Collections.reverse(photoList);
 
-                    for(int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++){
+                    for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
                         mLoadMoreView.addView(new PhotoView(getActivity(), photoList.get(i), userId, userName));
                     }
-                    if(photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT ) {
+                    if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
                         mLoadMoreView.setLoadMoreResolver(new LoadMoreView(mLoadMoreView, photoList, userId, userName));
                     }
                 } else {

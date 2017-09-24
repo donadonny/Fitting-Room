@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import tk.talcharnes.unborify.CommentsData.Comment;
 import tk.talcharnes.unborify.CommentsData.FirebaseCommentViewHolder;
@@ -38,6 +37,7 @@ public class CommentActivityFragment extends Fragment {
     private final String LOG_TAG = CommentActivityFragment.class.getSimpleName();
     String mComment_key;
     Comment comment;
+
     public CommentActivityFragment() {
     }
 
@@ -110,17 +110,17 @@ public class CommentActivityFragment extends Fragment {
                                     .setValue(mComment_key);
                             Log.d(LOG_TAG, "commentkey = " + mComment_key);
 
-                    if(!mPhotoUploader.equals(mCurrentUser)) {
+                            if (!mPhotoUploader.equals(mCurrentUser)) {
 
-                        DatabaseReference userNotificationRef = FirebaseConstants.getRef()
-                                .child(FirebaseConstants.USERS).child(mPhotoUploader)
-                                .child(FirebaseConstants.NOTIFICATION);
+                                DatabaseReference userNotificationRef = FirebaseConstants.getRef()
+                                        .child(FirebaseConstants.USERS).child(mPhotoUploader)
+                                        .child(FirebaseConstants.NOTIFICATION);
 
-                        myNotifications myNotification = new myNotifications(false, mUrl,
-                                comment.getCommentString(), mCurrentUser);
+                                myNotifications myNotification = new myNotifications(false, mUrl,
+                                        comment.getCommentString(), mCurrentUser);
 
-                        userNotificationRef.push().setValue(myNotification);
-                    }
+                                userNotificationRef.push().setValue(myNotification);
+                            }
 
                         }
                     });

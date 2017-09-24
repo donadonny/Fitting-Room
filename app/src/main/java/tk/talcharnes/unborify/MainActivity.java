@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,14 +86,14 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function initializes basic stuff.
-     * */
+     */
     public void initialize() {
         Log.d(TAG, "Initializing Main Activity.");
 
         // Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (getSupportActionBar() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
@@ -112,19 +113,19 @@ public class MainActivity extends AppCompatActivity {
 
         // myNotifications Stuff
         FirebaseUser user = FirebaseConstants.getUser();
-        if(user != null) {
+        if (user != null) {
             notificationRef = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                     .child(user.getUid()).child(FirebaseConstants.NOTIFICATION);
-           // setNotificationListener();
+            // setNotificationListener();
         }
     }
 
     /**
      * This function loads user's data: image, name, and email.
-     * */
+     */
     private void loadHeaderData() {
         FirebaseUser user = FirebaseConstants.getUser();
-        if(user != null) {
+        if (user != null) {
             Log.d(TAG, "Loading user data to the navigation toolbar.");
             userName = user.getDisplayName();
             final String email = user.getEmail();
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             nameText.setText(userName);
             emailText.setText(email);
             Uri uri = user.getPhotoUrl();
-            if(uri != null) {
+            if (uri != null) {
                 Glide.with(this)
                         .load(uri)
                         .crossFade()
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function sets up the drawer.
-     * */
+     */
     private void setUpNavigationView() {
         Log.d(TAG, "Initializing the navigation drawer.");
 
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 menuItem.setChecked(true);
 
-                if(fragment_id == R.id.action_sign_out) {
+                if (fragment_id == R.id.action_sign_out) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(R.string.sign_out_title)
                             .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                     builder.show();
                     menuItem.setChecked(false);
-                } else if(previous_fragment_id != fragment_id) {
+                } else if (previous_fragment_id != fragment_id) {
                     loadFragment();
                 } else {
                     drawer.closeDrawers();
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function transitions from the current fragment to the one clicked.
-     * */
+     */
     private void loadFragment() {
         Log.d(TAG, "Preparing to switch fragments");
 
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function returns the proper fragment based on the click in navigation drawer.
-     * */
+     */
     private Fragment getFragment() {
         switch (fragment_id) {
             case R.id.nav_photos:
@@ -288,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function handles back presses.
-     * */
+     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -299,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* If the current fragment is the main fragment then the back key
             back sends the user back to main fragment. */
-        if(fragment_id != R.id.nav_home) {
+        if (fragment_id != R.id.nav_home) {
             fragment_id = R.id.nav_home;
             loadFragment();
             Log.d(TAG, "Back pressed. Returning to the home fragment.");
@@ -311,14 +312,14 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function handles hidden menu on the toolbar.
-     * */
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         //MenuItem item = menu.findItem(R.id.action_picture);
 
-        if(fragment_id == R.id.nav_home && FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (fragment_id == R.id.nav_home && FirebaseAuth.getInstance().getCurrentUser() != null) {
             //item.setVisible(true);
             getMenuInflater().inflate(R.menu.main, menu);
         } else {
@@ -333,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function handles the items clicked on the toolbar.
-     * */
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -354,16 +355,16 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function handles the action with the picture icon on the toolbar is clicked.
-     * */
-    public void takePic(){
+     */
+    public void takePic() {
         Intent intent = new Intent(this, PhotoUploadActivity.class);
         startActivity(intent);
     }
 
     /**
      * This function checks if a new notification has been add.
-     * */
-    public void setNotificationListener(){
+     */
+    public void setNotificationListener() {
         notificationListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -447,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function cleans up the notification listener when the activity is destroyed.
-     * */
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

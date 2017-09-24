@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Report {
 
     private int numReports;
-    private HashMap<String, String>  reported_by;
+    private HashMap<String, String> reported_by;
 
     public Report() {
 

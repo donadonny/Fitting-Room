@@ -25,7 +25,6 @@ public class Photo {
     public static final String LIKES_KEY = "likes";
 
 
-
     public String getUser() {
         return user;
     }

@@ -25,7 +25,7 @@ public class CommentActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -33,7 +33,7 @@ public class CommentActivity extends AppCompatActivity {
 
     /**
      * This function handles the items clicked on the toolbar.
-     * */
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
