@@ -145,5 +145,6 @@
     <string name="message">Message</string>
     <string name="comment_empty_error">Comment can not be empty</string>
     <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
+    <string name="share_photo">share_photo</string>
 
 </resources>

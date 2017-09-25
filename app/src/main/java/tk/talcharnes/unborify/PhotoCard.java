@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,7 +48,6 @@ import agency.tango.android.avatarview.views.AvatarView;
 import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.Analytics;
-import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -95,6 +93,9 @@ public class PhotoCard {
 
     @View(R.id.photo_card_options)
     private ImageButton photo_card_options;
+
+    @View(R.id.share_button)
+    private ImageButton share_button;
 
     private Photo mPhoto;
     private Context mContext;
@@ -179,6 +180,13 @@ public class PhotoCard {
                     intent.putExtra("currentUser", mUserId);
                     intent.putExtra("name", mUserName);
                     mContext.startActivity(intent);
+                }
+            });
+
+            share_button.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    // TODO: 9/25/2017 insert code for share button here
                 }
             });
 
@@ -439,11 +447,13 @@ public class PhotoCard {
             zoom_button.setVisibility(android.view.View.GONE);
             comment_button.setVisibility(android.view.View.GONE);
             photo_card_options.setVisibility(android.view.View.GONE);
+            share_button.setVisibility(android.view.View.GONE);
             mVisible = false;
         } else {
             zoom_button.setVisibility(android.view.View.VISIBLE);
             comment_button.setVisibility(android.view.View.VISIBLE);
             photo_card_options.setVisibility(android.view.View.VISIBLE);
+            share_button.setVisibility(android.view.View.VISIBLE);
 
             mVisible = true;
         }

@@ -28,9 +28,6 @@ import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import tk.talcharnes.unborify.CommentActivity;
 import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
@@ -64,6 +61,9 @@ public class PhotoView {
 
     @View(R.id.ratingbar)
     private SimpleRatingBar ratingBar;
+
+    @View(R.id.share_image_button)
+    private ImageButton shareButton;
 
     private Photo mPhoto;
     private Context mContext;
@@ -130,6 +130,12 @@ public class PhotoView {
             }
         });
 
+        shareButton.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                // TODO: 9/25/2017 insert code for share button here
+            }
+        });
         menuButton.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {

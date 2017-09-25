@@ -52,17 +52,28 @@
             android:id="@+id/zoom_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
+            android:layout_gravity="top|start"
             android:layout_marginBottom="64dp"
             android:background="@color/semi_transparent_background"
             android:contentDescription="@string/expand_picture"
             android:src="@drawable/ic_action_zoom" />
 
         <ImageButton
-            android:id="@+id/comment_button"
+            android:id="@+id/share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            android:layout_marginBottom="64dp"
+            android:background="@color/semi_transparent_background"
+            android:contentDescription="@string/share_photo"
+            android:src="@drawable/ic_action_share"
+             />
+
+        <ImageButton
+            android:id="@+id/comment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
             android:layout_marginBottom="64dp"
             android:background="@color/semi_transparent_background"
             android:contentDescription="@string/comments"
