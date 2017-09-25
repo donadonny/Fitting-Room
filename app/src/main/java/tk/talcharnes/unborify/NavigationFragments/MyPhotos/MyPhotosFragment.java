@@ -52,6 +52,9 @@ public class MyPhotosFragment extends Fragment {
         }
         photoList = new ArrayList<>();
 
+        Log.d(LOG_TAG, "User id: " + userId);
+        Log.d(LOG_TAG, "User name: " + userName);
+
         setUpPhotos();
 
         return rootview;
@@ -77,10 +80,12 @@ public class MyPhotosFragment extends Fragment {
                     Collections.reverse(photoList);
 
                     for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
-                        mLoadMoreView.addView(new PhotoView(getActivity(), photoList.get(i), userId, userName));
+                        mLoadMoreView.addView(new PhotoView(getActivity(), photoList.get(i),
+                                userId, userName, mLoadMoreView));
                     }
                     if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
-                        mLoadMoreView.setLoadMoreResolver(new LoadMoreView(mLoadMoreView, photoList, userId, userName));
+                        mLoadMoreView.setLoadMoreResolver(new LoadMoreView(mLoadMoreView,
+                                photoList, userId, userName));
                     }
                 } else {
                     setDefaultView();
