@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -241,9 +242,12 @@ public class PhotoView {
                         newOccasion.equals("")
                         || newOccasion == null) {
 
-                    edt.setError("Occasion can not be blank");
+                    edt.setError(mContext.getString(R.string.occasion_cannot_be_empty_string));
+                    Toast.makeText(mContext, mContext.getString(R.string.occasion_cannot_be_empty_string), Toast.LENGTH_SHORT).show();
                 } else if (newOccasion.length() < 5) {
-                    edt.setError("Occasion must be longer than 5 characters");
+                    edt.setError(mContext.getString(R.string.comment_too_short_error));
+                    Toast.makeText(mContext, mContext.getString(R.string.comment_too_short_error), Toast.LENGTH_SHORT).show();
+
                 } else {
                     Log.d(TAG, "New Occasion String: " + newOccasion);
                     DatabaseReference photoDBReference = FirebaseConstants.getRef()
