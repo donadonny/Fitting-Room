@@ -130,9 +130,7 @@ public class MainActivityFragment extends Fragment {
                         .setViewHeight(((int) (windowSize.y * .92)) - bottomMargin)
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
-                        .setRelativeScale(0.01f)
-                        .setSwipeInMsgLayoutId(R.layout.photo_swipe_in_msg_view)
-                        .setSwipeOutMsgLayoutId(R.layout.photo_swipe_out_msg_view));
+                        .setRelativeScale(0.01f));
         getPhotos();
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
