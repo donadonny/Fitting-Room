@@ -76,7 +76,7 @@
             android:layout_marginTop="42dp"
             android:layout_alignEnd="@+id/card_image_view"
             android:layout_alignBottom="@id/card_image_view"
-            android:src="@drawable/ic_action_zoom"
+            android:src="@drawable/ic_action_share"
             android:background="@color/semi_transparent_background"
             android:id="@+id/share_image_button"/>
 
