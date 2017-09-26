@@ -135,6 +135,7 @@ public class PhotoView {
             @Override
             public void onClick(android.view.View view) {
                 // TODO: 9/25/2017 insert code for share button here
+                Toast.makeText(mContext, "SHARE BUTTON NOT IMPLEMENTED YET", Toast.LENGTH_SHORT).show();
             }
         });
         menuButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -199,6 +200,8 @@ public class PhotoView {
 
         photoDBReference.removeValue();
         storageReference.delete();
+
+
 
         //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
         final DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS)

@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -187,6 +188,7 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     // TODO: 9/25/2017 insert code for share button here
+                    Toast.makeText(mContext, "SHARE BUTTON COMING SOON", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -363,6 +365,7 @@ public class PhotoCard {
     private void setReport() {
         final boolean itsAnAd = isAd;
         if (!itsAnAd) {
+            //                        // TODO: 9/26/2017  for some reason userID is null on certain photos
             final String userID = mUserId;
             final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
             final Query query = mReportsRef.child(name);
@@ -383,6 +386,7 @@ public class PhotoCard {
                     } else {
                         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
                         HashMap<String, String> reports = new HashMap<String, String>();
+//                        // TODO: 9/26/2017  for some reason userID is null on certain photos
                         reports.put(userID, timeStamp);
                         Report report = new Report(1, reports);
                         mReportsRef.child(name).setValue(report);
