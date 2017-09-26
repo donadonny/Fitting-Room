@@ -60,7 +60,13 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         mCurrentUser = currentUser;
         mCommenterID = comment.getCommenter();
         mCommentString = comment.getCommentString();
-        mOriginalCommenter = mCommenterID.equals(currentUser);
+        if (mCommenterID != null && mCurrentUser != null) {
+            if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
+                mOriginalCommenter = mCommenterID.equals(currentUser);
+            }
+        } else {
+            mOriginalCommenter = false;
+        }
         photoUploader = comment.getPhoto_Uploader();
 
         mUrl = PhotoUtilities.removeWebPFromUrl(comment.getPhoto_url());
@@ -77,25 +83,30 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
-                .child(FirebaseConstants.USERNAME)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            String userName = dataSnapshot.getValue().toString();
-                            usernameTextView.setText(userName);
-                            if (mCommenterID.equals(photoUploader)) {
-                                usernameTextView.setTextColor(Color.BLUE);
+        if(uid != null) {
+            FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                    .child(FirebaseConstants.USERNAME)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+                                String userName = dataSnapshot.getValue().toString();
+                                usernameTextView.setText(userName);
+                                if (mCommenterID.equals(photoUploader)) {
+                                    usernameTextView.setTextColor(Color.BLUE);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        usernameTextView.setText("Anonymous User");
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            usernameTextView.setText(R.string.anonymous_user);
+                        }
+                    });
+        }
+        else {
+            usernameTextView.setText(R.string.anonymous_user);
+        }
     }
 
     @Override
