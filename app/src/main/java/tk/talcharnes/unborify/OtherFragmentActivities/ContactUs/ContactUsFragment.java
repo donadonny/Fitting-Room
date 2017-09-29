@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.NavigationFragments;
+package tk.talcharnes.unborify.OtherFragmentActivities.ContactUs;
 
 import android.content.DialogInterface;
 import android.os.Build;
@@ -36,19 +36,12 @@ public class ContactUsFragment extends Fragment {
     private String[] messageTypes;
     private int spinnerPosition;
 
-    public static interface returnToMainListener {
-        public abstract void shouldReturn(Boolean returnMain);
-    }
-
-    private returnToMainListener mListener;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View rootview = inflater.inflate(R.layout.fragment_contact_us, container, false);
-        this.mListener = (returnToMainListener) getActivity();
         contact_us_message_editText = rootview.findViewById(R.id.contact_us_message_editText);
         submit_contact_us_button = rootview.findViewById(R.id.submit_contact_us_button);
         spinner = rootview.findViewById(R.id.contact_type_spinner);
@@ -117,7 +110,7 @@ public class ContactUsFragment extends Fragment {
                 .setMessage("Your message has been sent. Click ok to return to the main screen.")
                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.shouldReturn(true);
+                        getActivity().finish();
                     }
                 })
                 .show();

@@ -250,7 +250,7 @@ public class PhotoCard {
      */
     @SwipeIn
     private void onSwipeIn() {
-        //Log.d("EVENT", "onSwipedIn");
+        Log.d(LOG_TAG, "onSwipedIn");
         setVote("likes");
         Analytics.registerSwipe(mContext, "right");
     }
@@ -260,7 +260,7 @@ public class PhotoCard {
      */
     @SwipeOut
     private void onSwipedOut() {
-        //Log.d("EVENT", "onSwipedOut");
+        Log.d(LOG_TAG, "onSwipedOut");
         if (isReported != null && isReported) {
             isReported = false;
             setReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
@@ -275,7 +275,7 @@ public class PhotoCard {
      */
     @SwipeInState
     private void onSwipeInState() {
-        //Log.d("EVENT", "onSwipeInState");
+        Log.d(LOG_TAG, "onSwipeInState");
     }
 
     /**
@@ -283,7 +283,7 @@ public class PhotoCard {
      */
     @SwipeOutState
     private void onSwipeOutState() {
-        //Log.d("EVENT", "onSwipeOutState");
+        Log.d(LOG_TAG, "onSwipeOutState");
     }
 
     /**
@@ -291,7 +291,7 @@ public class PhotoCard {
      */
     @SwipeCancelState
     private void onSwipeCancelState() {
-        //Log.d("EVENT", "onSwipeCancelState");
+        Log.d(LOG_TAG, "onSwipeCancelState");
     }
 
     /**

@@ -1,31 +1,16 @@
 package tk.talcharnes.unborify;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -38,14 +23,16 @@ import com.roughike.bottombar.OnTabSelectListener;
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import agency.tango.android.avatarviewglide.GlideLoader;
-import tk.talcharnes.unborify.NavigationFragments.AboutFragment;
-import tk.talcharnes.unborify.NavigationFragments.ContactUsFragment;
-import tk.talcharnes.unborify.NavigationFragments.HelpFragment;
-import tk.talcharnes.unborify.NavigationFragments.Notifications.NotificationFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.FollowingFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.TopicsFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
+import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsFragment;
+import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationFragment;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
-import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.NavigationFragments.MyPhotos.MyPhotosFragment;
+import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosFragment;
 
 /**
  * Created by Tal.
@@ -53,7 +40,7 @@ import tk.talcharnes.unborify.NavigationFragments.MyPhotos.MyPhotosFragment;
  * activity.
  */
 
-public class MainActivity extends AppCompatActivity implements ContactUsFragment.returnToMainListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -150,10 +137,10 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
 
         pagerAdapter.addFragments(new MainActivityFragment());
-        pagerAdapter.addFragments(new MyPhotosFragment());
-        pagerAdapter.addFragments(new NotificationFragment());
-        pagerAdapter.addFragments(new ContactUsFragment());
-        pagerAdapter.addFragments(new AboutFragment());
+        pagerAdapter.addFragments(new TrendingFragment());
+        pagerAdapter.addFragments(new TopicsFragment());
+        pagerAdapter.addFragments(new FollowingFragment());
+        pagerAdapter.addFragments(new OtherFragment());
 
         viewPager.setAdapter(pagerAdapter);
     }
@@ -312,12 +299,4 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         }*/
     }
 
-    @Override
-    public void shouldReturn(Boolean returnMain) {
-        if(returnMain) {
-            if (fragment_id != R.id.nav_home) {
-                fragment_id = R.id.nav_home;
-            }
-        }
-    }
 }

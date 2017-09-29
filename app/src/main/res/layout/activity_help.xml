@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity">
+    tools:context="tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,11 +21,11 @@
     </android.support.design.widget.AppBarLayout>
 
     <fragment
-        android:name="tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosFragment"
+        android:name="tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpFragment"
         android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout="@layout/fragment_my_photos" />
+        tools:layout="@layout/fragment_help" />
 
 </android.support.design.widget.CoordinatorLayout>

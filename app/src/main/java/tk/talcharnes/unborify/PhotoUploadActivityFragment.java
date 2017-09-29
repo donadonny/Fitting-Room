@@ -51,15 +51,17 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 import static android.app.Activity.RESULT_OK;
-import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PhotoUploadActivityFragment extends Fragment {
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     private StorageReference mStorageRef;
-    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private String mCurrentPhotoPath;
     Uri photoURI;
     int photoOrientation;

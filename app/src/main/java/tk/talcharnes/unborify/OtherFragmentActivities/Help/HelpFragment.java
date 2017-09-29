@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.NavigationFragments;
+package tk.talcharnes.unborify.OtherFragmentActivities.Help;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -41,11 +41,6 @@ public class HelpFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
-        // Making notification bar transparent
-        if (Build.VERSION.SDK_INT >= 21) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
-
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) rootView.findViewById(R.id.layoutDots);
         //btnSkip = (Button) rootView.findViewById(R.id.btn_skip);
@@ -62,9 +57,6 @@ public class HelpFragment extends Fragment {
 
         // adding bottom dots
         addBottomDots(0);
-
-        // making notification bar transparent
-        changeStatusBarColor();
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -156,17 +148,6 @@ public class HelpFragment extends Fragment {
 
         }
     };
-
-    /**
-     * Making notification bar transparent
-     */
-    private void changeStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
 
     /**
      * View pager adapter
