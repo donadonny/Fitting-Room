@@ -1,7 +1,10 @@
 package tk.talcharnes.unborify.NavigationFragments;
 
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +36,19 @@ public class ContactUsFragment extends Fragment {
     private String[] messageTypes;
     private int spinnerPosition;
 
+    public static interface returnToMainListener {
+        public abstract void shouldReturn(Boolean returnMain);
+    }
+
+    private returnToMainListener mListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View rootview = inflater.inflate(R.layout.fragment_contact_us, container, false);
+        this.mListener = (returnToMainListener) getActivity();
         contact_us_message_editText = rootview.findViewById(R.id.contact_us_message_editText);
         submit_contact_us_button = rootview.findViewById(R.id.submit_contact_us_button);
         spinner = rootview.findViewById(R.id.contact_type_spinner);
@@ -67,7 +77,7 @@ public class ContactUsFragment extends Fragment {
         });
 
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.CONTACT_US);
+        mDatabaseReference = FirebaseConstants.getRef().child(FirebaseConstants.CONTACT_US);
 
 
         submit_contact_us_button.setOnClickListener(new View.OnClickListener() {
@@ -75,17 +85,19 @@ public class ContactUsFragment extends Fragment {
             public void onClick(View view) {
                 String message = contact_us_message_editText.getText().toString();
                 if (messageGood(message) && spinnerNotEmpty()) {
-                    ContactUsObject contactUsObject = new ContactUsObject();
+                    ContactUsObject contactUsObject = new ContactUsObject(message,
+                            messageTypes[spinnerPosition], FirebaseConstants.getUser().getEmail());
 
-                    contactUsObject.setMessage(message);
-                    String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    /*contactUsObject.setMessage(message);
+                    String email = FirebaseConstants.getUser().getEmail();
                     contactUsObject.setEmail(email);
-                    contactUsObject.setContact_type(messageTypes[spinnerPosition]);
+                    contactUsObject.setContact_type(messageTypes[spinnerPosition]);*/
 
                     mDatabaseReference.push().setValue(contactUsObject);
                     // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
                     spinner.setSelection(0);
                     contact_us_message_editText.setText("");
+                    showSuccessDialog();
                 }
             }
         });
@@ -94,8 +106,26 @@ public class ContactUsFragment extends Fragment {
         return rootview;
     }
 
+    private void showSuccessDialog() {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Light_Dialog);
+        } else {
+            builder = new AlertDialog.Builder(getActivity());
+        }
+        builder.setTitle("Success")
+                .setMessage("Your message has been sent. Click ok to return to the main screen.")
+                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.shouldReturn(true);
+                    }
+                })
+                .show();
+
+    }
+
     private boolean messageGood(String message) {
-        if (message.equals("") || message.isEmpty() || message == null) {
+        if (message.isEmpty()) {
             contact_us_message_editText.setError(getString(R.string.message_empty_error));
             return false;
         } else if (message.length() < 10) {

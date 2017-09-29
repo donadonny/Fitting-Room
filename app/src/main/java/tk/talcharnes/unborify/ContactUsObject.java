@@ -5,9 +5,17 @@ package tk.talcharnes.unborify;
  */
 
 public class ContactUsObject {
-    private String Message;
-    private String Contact_type;
-    private String email;
+    private String message, contact_type, email;
+
+    public ContactUsObject() {
+
+    }
+
+    public ContactUsObject(String message, String contact_type, String email) {
+        this.message = message;
+        this.contact_type = contact_type;
+        this.email = email;
+    }
 
     public String getEmail() {
         return email;
@@ -18,18 +26,18 @@ public class ContactUsObject {
     }
 
     public String getContact_type() {
-        return Contact_type;
+        return contact_type;
     }
 
     public void setContact_type(String contact_type) {
-        Contact_type = contact_type;
+        this.contact_type = contact_type;
     }
 
     public String getMessage() {
-        return Message;
+        return message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        this.message = message;
     }
 }

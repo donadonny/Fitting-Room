@@ -50,7 +50,7 @@ import tk.talcharnes.unborify.NavigationFragments.MyPhotos.MyPhotosFragment;
  * activity.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ContactUsFragment.returnToMainListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -296,8 +296,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        /* If the current fragment is the main fragment then the back key
-            back sends the user back to main fragment. */
+        /* If the current fragment is not the main fragment then the back key
+            sends the user back to main fragment. */
         if (fragment_id != R.id.nav_home) {
             fragment_id = R.id.nav_home;
             loadFragment();
@@ -455,4 +455,13 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
+    @Override
+    public void shouldReturn(Boolean returnMain) {
+        if(returnMain) {
+            if (fragment_id != R.id.nav_home) {
+                fragment_id = R.id.nav_home;
+                loadFragment();
+            }
+        }
+    }
 }
