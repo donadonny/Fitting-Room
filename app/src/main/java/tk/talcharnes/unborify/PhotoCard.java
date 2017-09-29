@@ -104,7 +104,6 @@ public class PhotoCard {
     private String mUserId, mUserName;
     private DatabaseReference mPhotoReference, mReportsRef;
     private Boolean isReported = false;
-    static boolean isAd = false;
     private int width;
     private int height;
     private boolean mVisible = true;
@@ -120,8 +119,6 @@ public class PhotoCard {
         mUserName = userName;
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
-        isAd = photo.isAd();
-        Log.d(LOG_TAG, "isAd = " + isAd);
     }
 
     /**
@@ -129,7 +126,10 @@ public class PhotoCard {
      */
     @Resolve
     private void onResolved() {
+        Log.d(LOG_TAG, "mUserId: " + mUserId);
+        Log.d(LOG_TAG, "mUserName: " + mUserName);
         final String url = mPhoto.getUrl();
+        Log.d(LOG_TAG, "url: " + url);
         imageLoader = new GlideLoader();
         if (url != null && !url.isEmpty()) {
             final int rotation = getRotation();
@@ -140,28 +140,33 @@ public class PhotoCard {
                     .using(new FirebaseImageLoader())
                     .load(storageRef).transform(new MyTransformation(mContext, rotation))
                     .into(photoImageView);
-            float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
-            nameTextView.setText(mPhoto.getOccasion_subtitle());
+
+            String occasionTitle = mPhoto.getOccasion_subtitle();
+            nameTextView.setText(occasionTitle);
+            Log.d(LOG_TAG, "\toccasion subtitle: " + occasionTitle);
+            Log.d(LOG_TAG, "\tcategory: " + mPhoto.getCategory());
             float likes = Float.parseFloat("" + mPhoto.getLikes());
+            Log.d(LOG_TAG, "\tlikes: " + likes);
+            float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
+            Log.d(LOG_TAG, "\tdislikes: " + dislikes);
 //            dislikes = (dislikes < 1) ? 1 : dislikes;
 //            likes = (likes < 1) ? 1 : likes;
             float totalVotes = likes + dislikes;
+            Log.d(LOG_TAG, "\ttotalVotes: " + totalVotes);
             if (totalVotes != 0) {
                 float rating = (likes / totalVotes) * 100f;
-                Log.d(LOG_TAG, "likes: " + likes);
-                Log.d(LOG_TAG, "dislikes: " + dislikes);
-                Log.d(LOG_TAG, "totalVotes: " + totalVotes);
-                Log.d(LOG_TAG, "rating: " + rating);
+                Log.d(LOG_TAG, "\trating: " + rating);
 
                 int index = (int) Math.floor(rating / 20f);
-                int[] ratingColors = mContext.getResources().getIntArray(R.array.array_rate_colors);
-                int[] ratingShadowColors = mContext.getResources().getIntArray(R.array.array_rate_shadow_colors);
+                int[] ratingColors = mContext.getResources().getIntArray(R.array
+                        .array_rate_colors);
+                int[] ratingShadowColors = mContext.getResources().getIntArray(R.array
+                        .array_rate_shadow_colors);
 
                 ratingBar.setFillColor(ratingColors[index]);
                 ratingBar.setBorderColor(ratingShadowColors[index]);
                 ratingBar.setRating(rating / 20f);
             }
-            ImageButton x = realPhotoSwipeCard.findViewById(R.id.zoom_button);
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
@@ -188,7 +193,8 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     // TODO: 9/25/2017 insert code for share button here
-                    Toast.makeText(mContext, "SHARE BUTTON COMING SOON", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "SHARE BUTTON COMING SOON", Toast.LENGTH_SHORT)
+                            .show();
                 }
             });
 
@@ -233,7 +239,7 @@ public class PhotoCard {
      */
     @Click(R.id.photoImageView)
     private void onClick() {
-        Log.d("EVENT", "profileImageView click");
+        //Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
         togglePhotoAddOns();
 
@@ -245,11 +251,8 @@ public class PhotoCard {
     @SwipeIn
     private void onSwipeIn() {
         //Log.d("EVENT", "onSwipedIn");
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            setVote("likes");
-            Analytics.registerSwipe(mContext, "right");
-        }
+        setVote("likes");
+        Analytics.registerSwipe(mContext, "right");
     }
 
     /**
@@ -258,15 +261,12 @@ public class PhotoCard {
     @SwipeOut
     private void onSwipedOut() {
         //Log.d("EVENT", "onSwipedOut");
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            if (isReported != null && isReported) {
-                isReported = false;
-                setReport();
-            } else {
-                setVote("dislikes");
-                Analytics.registerSwipe(mContext, "left");
-            }
+        if (isReported != null && isReported) {
+            isReported = false;
+            setReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+        } else {
+            setVote("dislikes");
+            Analytics.registerSwipe(mContext, "left");
         }
     }
 
@@ -291,7 +291,7 @@ public class PhotoCard {
      */
     @SwipeCancelState
     private void onSwipeCancelState() {
-        Log.d("EVENT", "onSwipeCancelState");
+        //Log.d("EVENT", "onSwipeCancelState");
     }
 
     /**
@@ -299,99 +299,39 @@ public class PhotoCard {
      */
     @SwipingDirection
     private void onSwipingDirection(SwipeDirection direction) {
-        Log.d(LOG_TAG, "SwipingDirection " + direction.name());
+        //Log.d(LOG_TAG, "SwipingDirection " + direction.name());
     }
 
     /**
      * This function records the user's vote in the database.
      */
     private void setVote(final String rating) {
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            final String userID = mUserId;
-            final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
-            final DatabaseReference chosenPhoto = mPhotoReference.child(name);
-            Log.d(LOG_TAG, "userID = " + mUserId);
-            Log.d(LOG_TAG, "Photo userID = " + mPhoto.getUser());
-            Log.d(LOG_TAG, "name = " + name);
-            if (!mUserId.equals(mPhoto.getUser())) {
-                chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).exists()) {
-                            String uRating = (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).getValue() + "");
-                            if (uRating.equals(rating)) {
-                                Log.d(LOG_TAG, "The User already " + rating + " the photo.");
-                            } else {
-                                String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
-                                long ratingValue = (long) dataSnapshot.child(rating).getValue();
-                                long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
-                                chosenPhoto.child(rating).setValue(ratingValue + 1);
-                                chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
-                                chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
-                            }
-                        } else {
-                            final long ratingValue = (long) dataSnapshot.child(rating).getValue();
-                            chosenPhoto.child(rating).setValue(ratingValue + 1);
-                            chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
-                            Log.d(LOG_TAG, "The User " + rating + " the photo.");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(LOG_TAG, "cancelled with error - " + databaseError);
-                    }
-                });
-            } else {
-                Log.d(LOG_TAG, "User trying to vote on own photo");
-            }
-        }
-    }
-
-    /**
-     * This function changes the value of isReported.
-     */
-    public void setReported() {
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            isReported = true;
-        }
-    }
-
-    /**
-     * This function records the user's report in the database.
-     */
-    private void setReport() {
-        final boolean itsAnAd = isAd;
-        if (!itsAnAd) {
-            //                        // TODO: 9/26/2017  for some reason userID is null on certain photos
-            final String userID = mUserId;
-            final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
-            final Query query = mReportsRef.child(name);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+        final String userID = mUserId;
+        final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
+        final DatabaseReference chosenPhoto = mPhotoReference.child(name);
+        if (!mUserId.equals(mPhoto.getUser())) {
+            chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        if (snapshot.child(FirebaseConstants.REPORTED_BY).child(userID).exists()) {
-                            Log.d(LOG_TAG, "User already reported photo.");
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(FirebaseConstants.VOTES).child(userID).exists()) {
+                        String uRating = (dataSnapshot.child(FirebaseConstants.VOTES)
+                                .child(userID).getValue() + "");
+                        if (uRating.equals(rating)) {
+                            Log.d(LOG_TAG, "The User already " + rating + " the photo.");
                         } else {
-                            long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS).getValue();
-                            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                            mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(numReports + 1);
-                            mReportsRef.child(name).child(FirebaseConstants.NUM_REPORTS).setValue(numReports + 1);
-                            mReportsRef.child(name).child(FirebaseConstants.REPORTED_BY).child(userID).setValue(timeStamp);
-                            Log.d(LOG_TAG, "Another report add.");
+                            String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
+                            long ratingValue = (long) dataSnapshot.child(rating).getValue();
+                            long ratingValue2 = (long) dataSnapshot.child(rating2).getValue();
+                            chosenPhoto.child(rating).setValue(ratingValue + 1);
+                            chosenPhoto.child(rating2).setValue(ratingValue2 - 1);
+                            chosenPhoto.child(FirebaseConstants.VOTES).child(userID)
+                                    .setValue(rating);
                         }
                     } else {
-                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US).format(new Date());
-                        HashMap<String, String> reports = new HashMap<String, String>();
-//                        // TODO: 9/26/2017  for some reason userID is null on certain photos
-                        reports.put(userID, timeStamp);
-                        Report report = new Report(1, reports);
-                        mReportsRef.child(name).setValue(report);
-                        mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
-                        Log.d(LOG_TAG, "A new report.");
+                        final long ratingValue = (long) dataSnapshot.child(rating).getValue();
+                        chosenPhoto.child(rating).setValue(ratingValue + 1);
+                        chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
+                        Log.d(LOG_TAG, "The User " + rating + " the photo.");
                     }
                 }
 
@@ -400,7 +340,59 @@ public class PhotoCard {
                     Log.d(LOG_TAG, "cancelled with error - " + databaseError);
                 }
             });
+        } else {
+            Log.d(LOG_TAG, "User trying to vote on own photo");
         }
+    }
+
+    /**
+     * This function changes the value of isReported.
+     */
+    public void setReported() {
+        isReported = true;
+    }
+
+    /**
+     * This function records the user's report in the database.
+     */
+    private void setReport(final String name) {
+        final Query query = mReportsRef.child(name);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    if (snapshot.child(FirebaseConstants.REPORTED_BY).child(mUserId).exists()) {
+                        Log.d(LOG_TAG, "User already reported photo.");
+                    } else {
+                        long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS)
+                                .getValue();
+                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US)
+                                .format(new Date());
+                        mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS)
+                                .setValue(numReports + 1);
+                        mReportsRef.child(name).child(FirebaseConstants.NUM_REPORTS)
+                                .setValue(numReports + 1);
+                        mReportsRef.child(name).child(FirebaseConstants.REPORTED_BY)
+                                .child(mUserId).setValue(timeStamp);
+                        Log.d(LOG_TAG, "Another report add.");
+                    }
+                } else {
+                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss", Locale.US)
+                            .format(new Date());
+                    HashMap<String, String> reports = new HashMap<String, String>();
+                    reports.put(mUserId, timeStamp);
+                    Report report = new Report(1, reports);
+                    mReportsRef.child(name).setValue(report);
+                    mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
+                    Log.d(LOG_TAG, "A new report.");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(LOG_TAG, "cancelled with error - " + databaseError);
+            }
+        });
     }
 
     private void setUploader(String uid) {
@@ -424,7 +416,6 @@ public class PhotoCard {
                     }
                 });
     }
-
 
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();

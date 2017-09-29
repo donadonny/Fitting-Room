@@ -24,6 +24,9 @@ public class Photo {
     public static final String DISLIKES_KEY = "dislikes";
     public static final String LIKES_KEY = "likes";
 
+    public Photo() {
+
+    }
 
     public String getUser() {
         return user;
@@ -54,7 +57,7 @@ public class Photo {
     }
 
     public HashMap<String, String> getVotes() {
-        return this.Votes;
+        return Votes;
     }
 
     public long getDislikes() {

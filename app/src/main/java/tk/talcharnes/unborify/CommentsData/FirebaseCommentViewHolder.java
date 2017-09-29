@@ -113,7 +113,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     public void onClick(View view) {
         final ArrayList<Comment> comments = new ArrayList<>();
 //      Reference correct section of database below
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+        DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -174,15 +174,29 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     private void deleteComment(Comment comment) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
+        DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS).child(comment.getComment_key());
-        ref.removeValue();
+        commentRef.removeValue();
+        final DatabaseReference reportRef = FirebaseConstants.getRef()
+                .child(FirebaseConstants.REPORTS).child(comment.getComment_key());
+        reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    reportRef.removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void showEditCommentDialog(final Comment comment) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ;
         final View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
         dialogBuilder.setView(dialogView);
 
