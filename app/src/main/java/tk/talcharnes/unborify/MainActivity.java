@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
     private String uid, userName;
     private IImageLoader imageLoader;
     private AvatarView avatarView;
+    private NoSwipePager viewPager;
+    private BottomBarAdapter pagerAdapter;
 
     public static int fragment_id = R.id.nav_home;
     public static int previous_fragment_id = fragment_id;
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         if (getSupportActionBar() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setIcon(R.drawable.ic_launcher);
+            getSupportActionBar().setLogo(R.drawable.ic_logo);
         }
         imageLoader = new GlideLoader();
 
@@ -120,24 +122,60 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         profileImageButton = (ImageButton) navHeader.findViewById(R.id.profile_image_button);
         loadHeaderData();
 
-        // myNotifications Stuff
         FirebaseUser user = FirebaseConstants.getUser();
+        AvatarView profileView = toolbar.findViewById(R.id.avatarImage);
+        Uri uri = user.getPhotoUrl();
+        String uriString = (uri != null) ? uri.toString() : "";
+        imageLoader.loadImage(profileView, uriString, userName);
+        profileView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            }
+        });
+
+        // myNotifications Stuff
         if (user != null) {
             notificationRef = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                     .child(user.getUid()).child(FirebaseConstants.NOTIFICATION);
             // setNotificationListener();
         }
 
+        setupViewPager();
+
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 if (tabId == R.id.tab_home) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
+                    viewPager.setCurrentItem(0);
+                } else if (tabId == R.id.tab_trending) {
+                    viewPager.setCurrentItem(1);
+                } else if (tabId == R.id.tab_topics) {
+                    viewPager.setCurrentItem(2);
+                } else if (tabId == R.id.tab_following) {
+                    viewPager.setCurrentItem(3);
+                } else {
+                    viewPager.setCurrentItem(4);
                 }
             }
         });
+    }
+
+    private void setupViewPager() {
+        viewPager = (NoSwipePager) findViewById(R.id.viewpager);
+        viewPager.setPagingEnabled(false);
+        pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
+
+        pagerAdapter.addFragments(new MainActivityFragment());
+        pagerAdapter.addFragments(new MyPhotosFragment());
+        pagerAdapter.addFragments(new NotificationFragment());
+        pagerAdapter.addFragments(new ContactUsFragment());
+        pagerAdapter.addFragments(new AboutFragment());
+
+        viewPager.setAdapter(pagerAdapter);
     }
 
     /**
