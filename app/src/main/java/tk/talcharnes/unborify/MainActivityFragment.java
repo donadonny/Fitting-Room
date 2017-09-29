@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,7 +88,10 @@ public class MainActivityFragment extends Fragment {
     private void initializeBasicSetup() {
         //choose your favorite adapter
         photoList = new ArrayList<Photo>();
-        userId = FirebaseConstants.getUser().getUid();
+        FirebaseUser user = FirebaseConstants.getUser();
+        userId = user.getUid();
+        userName = user.getDisplayName();
+
 
         //Native banner ad
         /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
@@ -184,23 +188,20 @@ public class MainActivityFragment extends Fragment {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                         Photo photo = child.getValue(Photo.class);
-
-                        assert photo != null;
                         /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
                                 .removeWebPFromUrl(photo.getUrl()));*/
 
                         /* Randomizing votes for photos
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
-                        Log.d(LOG_TAG, "Current User id: " + userId);
-                        list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName, photoReference,
-                                reportRef));
-                        if (len == 0) {
-                            oldestPostId = photo.getUrl();
-                            len++;
+                        if(photo != null) {
+                            list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
+                                    photoReference, reportRef));
+                            if (len == 0) {
+                                oldestPostId = photo.getUrl();
+                                len++;
+                            }
                         }
-                        /* mSwipeView.addView(new PhotoCard(mContext, adViewPhoto, mSwipeView, userId,
-                                photoReference, reportRef));*/
                     }
 
                     int stopAt = (list.size() < 8) ? -1 : 0;
