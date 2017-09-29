@@ -6,30 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <include
+        layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start">
-
-        <include
-            layout="@layout/app_bar_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <android.support.design.widget.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:contentDescription="@string/navigation_drawer_open"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/nav_header_main"
-            app:itemTextColor="@color/menu_item_color"
-            app:menu="@menu/activity_main_drawer" />
-
-    </android.support.v4.widget.DrawerLayout>
+        android:layout_height="match_parent" />
 
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
@@ -37,7 +17,8 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
-        app:bb_inActiveTabColor="@color/colorPrimaryLight"
         app:bb_activeTabColor="@color/white"
+        app:bb_inActiveTabColor="@color/colorPrimaryLight"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
+
 </RelativeLayout>

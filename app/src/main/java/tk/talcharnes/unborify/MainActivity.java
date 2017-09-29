@@ -57,17 +57,11 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
-    private TextView nameText, emailText;
-    private ImageButton profileImageButton;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private DatabaseReference notificationRef;
     private ChildEventListener notificationListener;
     private Toolbar toolbar;
     private String uid, userName;
     private IImageLoader imageLoader;
-    private AvatarView avatarView;
     private NoSwipePager viewPager;
     private BottomBarAdapter pagerAdapter;
 
@@ -88,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         if (savedInstanceState == null) {
             fragment_id = R.id.nav_home;
             previous_fragment_id = fragment_id;
-            loadFragment();
         }
 
     }
@@ -102,30 +95,17 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         // Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setLogo(R.drawable.ic_logo);
         }
         imageLoader = new GlideLoader();
 
-        // Navigation Drawer
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        setUpNavigationView();
-
-        // Navigation Header
-        View navHeader = navigationView.getHeaderView(0);
-        nameText = (TextView) navHeader.findViewById(R.id.user_name);
-        emailText = (TextView) navHeader.findViewById(R.id.user_email);
-        avatarView = (AvatarView) navHeader.findViewById(R.id.avatarImage);
-        profileImageButton = (ImageButton) navHeader.findViewById(R.id.profile_image_button);
-        loadHeaderData();
-
         FirebaseUser user = FirebaseConstants.getUser();
-        AvatarView profileView = toolbar.findViewById(R.id.avatarImage);
+        userName = user.getDisplayName();
+        uid = user.getUid();
         Uri uri = user.getPhotoUrl();
         String uriString = (uri != null) ? uri.toString() : "";
+        AvatarView profileView = toolbar.findViewById(R.id.avatarImage);
         imageLoader.loadImage(profileView, uriString, userName);
         profileView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,185 +159,10 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
     }
 
     /**
-     * This function loads user's data: image, name, and email.
-     */
-    private void loadHeaderData() {
-        FirebaseUser user = FirebaseConstants.getUser();
-        if (user != null) {
-            Log.d(TAG, "Loading user data to the navigation toolbar.");
-            userName = user.getDisplayName();
-            final String email = user.getEmail();
-            uid = user.getUid();
-            nameText.setText(userName);
-            emailText.setText(email);
-            Uri uri = user.getPhotoUrl();
-            String uriString = (uri != null) ? uri.toString() : "";
-            imageLoader.loadImage(avatarView, uriString, userName);
-            // showing dot next to notifications label
-            //navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
-            profileImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    intent.putExtra("uid", uid);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            Log.d(TAG, "User does not exist.");
-        }
-    }
-
-    /**
-     * This function sets up the drawer.
-     */
-    private void setUpNavigationView() {
-        Log.d(TAG, "Initializing the navigation drawer.");
-
-        // Setting Navigation View Item Selected Listener to handle the item click of the
-        // navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-
-            // This method will trigger on item Click of navigation menu
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                previous_fragment_id = fragment_id;
-                fragment_id = menuItem.getItemId();
-
-                // Checking if the item is in checked state or not, if not make it in checked state
-                if (menuItem.isChecked()) {
-                    menuItem.setChecked(false);
-                } else {
-                    menuItem.setChecked(true);
-                }
-                menuItem.setChecked(true);
-
-                if (fragment_id == R.id.action_sign_out) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage(R.string.sign_out_title)
-                            .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    FirebaseAuth.getInstance().signOut();
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Log.d(TAG, "Canceling out sign out dialog.");
-                                    dialog.dismiss();
-                                }
-                            });
-                    builder.show();
-                    menuItem.setChecked(false);
-                } else if (previous_fragment_id != fragment_id) {
-                    loadFragment();
-                } else {
-                    drawer.closeDrawers();
-                    Log.d(TAG, "User clicked on the same Fragment.");
-                }
-
-                return true;
-            }
-        });
-
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer,
-                R.string.closeDrawer) {
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
-                super.onDrawerClosed(drawerView);
-                drawerView.setContentDescription(getString(R.string.navigation_drawer_close));
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-                super.onDrawerOpened(drawerView);
-                drawerView.setContentDescription(getString(R.string.navigation_drawer_open));
-            }
-        };
-
-        // Setting the actionbarToggle to drawer layout
-        drawer.addDrawerListener(actionBarDrawerToggle);
-
-        // calling sync state is necessary or else your hamburger icon wont show up
-        actionBarDrawerToggle.syncState();
-    }
-
-    /**
-     * This function transitions from the current fragment to the one clicked.
-     */
-    private void loadFragment() {
-        Log.d(TAG, "Preparing to switch fragments");
-
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-        xfragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                android.R.anim.fade_out);
-        xfragmentTransaction.replace(R.id.frame, getFragment()).commit();
-
-        //Closing drawer on item click
-        drawer.closeDrawers();
-
-        // refresh toolbar menu
-        invalidateOptionsMenu();
-
-        Log.d(TAG, "Switched fragments.");
-    }
-
-    /**
-     * This function returns the proper fragment based on the click in navigation drawer.
-     */
-    private Fragment getFragment() {
-        switch (fragment_id) {
-            case R.id.nav_photos:
-                Log.d(TAG, "Returning the photos fragment.");
-                navigationView.getMenu().getItem(1).setChecked(true);
-                return new MyPhotosFragment();
-            case R.id.nav_notifications:
-                Log.d(TAG, "Returning the notifications fragment.");
-                navigationView.getMenu().getItem(2).setChecked(true);
-                return new NotificationFragment();
-            case R.id.nav_help:
-                Log.d(TAG, "Returning the help fragment.");
-                navigationView.getMenu().getItem(3).setChecked(true);
-                return new HelpFragment();
-            case R.id.nav_contact_us:
-                Log.d(TAG, "Returning the contact fragment.");
-                navigationView.getMenu().getItem(4).setChecked(true);
-                return new ContactUsFragment();
-            case R.id.nav_about_us:
-                Log.d(TAG, "Returning the about fragment.");
-                navigationView.getMenu().getItem(5).setChecked(true);
-                return new AboutFragment();
-            default:
-                Log.d(TAG, "Returning the home fragment.");
-                navigationView.getMenu().getItem(0).setChecked(true);
-                return new MainActivityFragment();
-        }
-    }
-
-    /**
      * This function handles back presses.
      */
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawers();
-            Log.d(TAG, "Closing the navigation drawer with back pressed.");
-            return;
-        }
-
-        /* If the current fragment is not the main fragment then the back key
-            sends the user back to main fragment. */
-        if (fragment_id != R.id.nav_home) {
-            fragment_id = R.id.nav_home;
-            loadFragment();
-            Log.d(TAG, "Back pressed. Returning to the home fragment.");
-            return;
-        }
-
         super.onBackPressed();
     }
 
@@ -399,8 +204,7 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
             return true;
         }
 
-        return actionBarDrawerToggle.onOptionsItemSelected(item) ||
-                super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -513,7 +317,6 @@ public class MainActivity extends AppCompatActivity implements ContactUsFragment
         if(returnMain) {
             if (fragment_id != R.id.nav_home) {
                 fragment_id = R.id.nav_home;
-                loadFragment();
             }
         }
     }
