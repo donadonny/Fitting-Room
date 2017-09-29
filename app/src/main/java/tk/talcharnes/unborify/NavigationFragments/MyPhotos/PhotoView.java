@@ -30,6 +30,7 @@ import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 
 import tk.talcharnes.unborify.CommentActivity;
+import tk.talcharnes.unborify.CommentsData.Comment;
 import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -198,15 +199,36 @@ public class PhotoView {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().
                 child("images").child(mPhoto.getUrl());
 
+        deleteReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+
+        final DatabaseReference commentsRef = photoDBReference.child(FirebaseConstants.COMMENTS);
+        commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+                        Comment comment = child.getValue(Comment.class);
+                        if(comment != null) {
+                            deleteReport(comment.getComment_key());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         photoDBReference.removeValue();
         storageReference.delete();
+        placeHolderView.removeView(this);
+    }
 
-
-
-        //// TODO: 9/10/2017 see if photo exists in reports and if so delete report
-        final DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS)
-                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
-
+    private void deleteReport(String key) {
+        final DatabaseReference reportRef = FirebaseConstants.getRef()
+                .child(FirebaseConstants.REPORTS).child(key);
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -220,7 +242,6 @@ public class PhotoView {
 
             }
         });
-        placeHolderView.removeView(this);
     }
 
     private void showEditStringDialog() {

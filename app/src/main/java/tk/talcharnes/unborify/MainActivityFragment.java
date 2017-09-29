@@ -45,8 +45,8 @@ public class MainActivityFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String userId, userName;
     private String oldestPostId = "";
-    final DatabaseReference photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
-    DatabaseReference reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
+    private DatabaseReference photoReference;
+    private DatabaseReference reportRef;
 
     private InterstitialAd mInterstitialAd;
     private Boolean showAd = false;
@@ -72,6 +72,8 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         photos = new ArrayList<>();
+        photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
+        reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
         initializeBasicSetup();
 
