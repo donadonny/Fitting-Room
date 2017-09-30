@@ -63,7 +63,7 @@ public class CommentActivityFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);
-
+        mSubmitCommentImageButton.setContentDescription(getString(R.string.submit));
 
         setUpFirebaseAdapter();
         setUpCommentSubmitting();
