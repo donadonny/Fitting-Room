@@ -20,15 +20,25 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <agency.tango.android.avatarview.views.AvatarView
-                    android:id="@+id/avatarImage"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="end"
-                    app:av_border_color="#FFF"
-                    app:av_border_width="2dp"
-                    app:av_text_size_percentage="25" />
+            <agency.tango.android.avatarview.views.AvatarView
+                android:id="@+id/avatarImage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop"
+                app:av_border_color="#FFF"
+                app:av_border_width="2dp"
+                app:av_text_size_percentage="25" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:popupBackground="@color/colorPrimary"
+                android:layout_gravity="end"
+                android:layout_marginEnd="12dp"/>
 
         </android.support.v7.widget.Toolbar>
 
@@ -40,6 +50,6 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:background="#000"/>
+        tools:background="#000" />
 
 </android.support.design.widget.CoordinatorLayout>

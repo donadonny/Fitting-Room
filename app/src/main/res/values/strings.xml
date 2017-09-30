@@ -21,6 +21,8 @@
     <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
+    <string name="no_image_title">Looks like there are no images in this category.
+        Click on the camera button to add a image in this category.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>
@@ -74,6 +76,7 @@
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_take_photo">Take Photo</string>
+    <string name="action_spinner">Spinner</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
@@ -152,5 +155,12 @@
     <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
     <string name="share_photo">share_photo</string>
     <string name="anonymous_user">Anonymous User</string>
+
+    <string-array name="spinner_list_item_array">
+        <item>All</item>
+        <item>Fashion</item>
+        <item>Art</item>
+        <item>Cooking</item>
+    </string-array>
 
 </resources>

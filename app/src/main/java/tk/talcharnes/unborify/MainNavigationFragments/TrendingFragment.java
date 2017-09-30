@@ -118,9 +118,6 @@ public class TrendingFragment extends Fragment {
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
                 if (count < 1) {
-                    /*if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    }*/
                     Log.d(TAG, "Empty SwipeView");
                     Log.d(TAG, "No more photos");
                     refreshButton.setVisibility(View.VISIBLE);
@@ -139,9 +136,6 @@ public class TrendingFragment extends Fragment {
         final long startTime = System.currentTimeMillis();
 
         Query query;
-
-        final Photo adViewPhoto = new Photo();
-        adViewPhoto.setAd(true);
 
         query = photoReference.orderByChild(Photo.LIKES_KEY).limitToLast(24);
 

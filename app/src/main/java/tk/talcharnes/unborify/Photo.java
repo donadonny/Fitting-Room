@@ -23,6 +23,8 @@ public class Photo {
     public static final String URL_KEY = "url";
     public static final String DISLIKES_KEY = "dislikes";
     public static final String LIKES_KEY = "likes";
+    public static final String CATEGORY_KEY = "category";
+    public static final String VOTES = "votes";
 
     public Photo() {
 
@@ -101,7 +103,10 @@ public class Photo {
     }
 
     public String getCategory() {
-        return category;
+        if(category != null) {
+            return category;
+        }
+        return "Fashion";
     }
 
     public void setCategory(String category) {

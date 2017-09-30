@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +21,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +90,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         View rootView = inflater.inflate(R.layout.fragment_photo_upload, container, false);
@@ -113,7 +118,6 @@ public class PhotoUploadActivityFragment extends Fragment {
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
         setImageOnClick();
 
@@ -123,7 +127,12 @@ public class PhotoUploadActivityFragment extends Fragment {
             public void onClick(View view) {
                 boolean editTextNotNull = checkEditTextNotNull();
                 if (canUpload && editTextNotNull) {
-                    uploadPhoto();
+                    if(PhotoUploadActivity.chosen.isEmpty() | PhotoUploadActivity.chosen.equals("All")) {
+                        Toast.makeText(getActivity(), "Please selete a category.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        uploadPhoto();
+                    }
                 }
             }
         });
@@ -260,10 +269,10 @@ public class PhotoUploadActivityFragment extends Fragment {
                     photo.setReports(0);
                     photo.setOccasion_subtitle(photoDescription);
                     photo.setOrientation(photoOrientation);
-                    photo.setAd(false);
 
                     // TODO change the following when expanding app to have more categories
-                    photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
+                    Log.d(LOG_TAG, PhotoUploadActivity.chosen);
+                    photo.setCategory(PhotoUploadActivity.chosen);
 
                     DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
                             .child(imageFileNameNoJPG);

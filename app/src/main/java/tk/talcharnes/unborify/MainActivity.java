@@ -1,15 +1,21 @@
 package tk.talcharnes.unborify;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +37,7 @@ import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
 import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsFragment;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationFragment;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
+import tk.talcharnes.unborify.Profile.changeNameDialogFragment;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosFragment;
 
@@ -51,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private IImageLoader imageLoader;
     private NoSwipePager viewPager;
     private BottomBarAdapter pagerAdapter;
+    private Spinner spinner;
+
+    private int currentView = 0;
 
     public static int fragment_id = R.id.nav_home;
     public static int previous_fragment_id = fragment_id;
@@ -103,6 +113,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        spinner = (Spinner) toolbar.findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
         // myNotifications Stuff
         if (user != null) {
             notificationRef = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
@@ -116,16 +135,23 @@ public class MainActivity extends AppCompatActivity {
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
+                spinner.setVisibility(View.INVISIBLE);
                 if (tabId == R.id.tab_home) {
                     viewPager.setCurrentItem(0);
+                    currentView = 0;
                 } else if (tabId == R.id.tab_trending) {
                     viewPager.setCurrentItem(1);
+                    currentView = 1;
                 } else if (tabId == R.id.tab_topics) {
+                    spinner.setVisibility(View.VISIBLE);
                     viewPager.setCurrentItem(2);
+                    currentView = 2;
                 } else if (tabId == R.id.tab_following) {
                     viewPager.setCurrentItem(3);
+                    currentView = 3;
                 } else {
                     viewPager.setCurrentItem(4);
+                    currentView = 4;
                 }
             }
         });
@@ -160,16 +186,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        //MenuItem item = menu.findItem(R.id.action_picture);
-
-        if (fragment_id == R.id.nav_home && FirebaseAuth.getInstance().getCurrentUser() != null) {
-            //item.setVisible(true);
+        Log.d(TAG, "currentView: " + currentView);
+        if(currentView == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
-        } else {
-            //item.setVisible(false);
-            /*if(fragment_id == R.id.nav_notifications) {
-                getMenuInflater().inflate(R.menu.notifications, menu);
-            }*/
+        } else if(currentView == 2) {
+            getMenuInflater().inflate(R.menu.notifications, menu);
         }
 
         return true;
@@ -201,91 +222,6 @@ public class MainActivity extends AppCompatActivity {
     public void takePic() {
         Intent intent = new Intent(this, PhotoUploadActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * This function checks if a new notification has been add.
-     */
-    public void setNotificationListener() {
-        notificationListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                /*myNotifications myNotificationsSnapshot = dataSnapshot
-                        .getValue(myNotifications.class);
-
-                if(myNotificationsSnapshot != null) {
-
-                    System.out.println(myNotificationsSnapshot.getRead()+"------------"+
-                            myNotificationsSnapshot.getPhotoUrl() + "------------"+
-                            myNotificationsSnapshot.getMessage() +"------------"+
-                            myNotificationsSnapshot.getSenderID() +"------------"+
-
-                    String title = "user: " + myNotificationsSnapshot.getSenderName() +
-                            " commented on your picture.";
-
-                    String message = myNotificationsSnapshot.getMessage();
-
-                    SharedPreferences sharedPref = MainActivity.this
-                            .getSharedPreferences("saved_notification_key", Context.MODE_PRIVATE);
-
-                    String pastKey = sharedPref.getString(FirebaseConstants.Notification_KEY,
-                            FirebaseConstants.Notification_KEY);
-
-                    String currentNotificationKey = dataSnapshot.getKey();
-
-                    if(!currentNotificationKey.equals(pastKey)) {
-
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                        Intent intent = new Intent(MainActivity.this, CommentActivity.class);
-                        intent.putExtra("url", myNotificationsSnapshot.getPhotoUrl());
-                        intent.putExtra("photoUserID", uid);
-                        intent.putExtra("currentUser", uid);
-                        intent.putExtra("notified", currentNotificationKey);
-                        PendingIntent resultPendingIntent = PendingIntent
-                                .getActivity(MainActivity.this, 0, intent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-
-                        android.app.Notification notification = new NotificationCompat
-                                .Builder(MainActivity.this, "comment_notification")
-                                .setContentTitle(title)
-                                .setContentText(message)
-                                .setContentIntent(resultPendingIntent)
-                                .setSmallIcon(R.mipmap.ic_launcher)
-                                .build();
-                        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE |
-                                Notification.FLAG_AUTO_CANCEL;
-
-                        int SERVER_DATA_RECEIVED = 1;
-                        notificationManager.notify(SERVER_DATA_RECEIVED, notification);
-                    }
-                }*/
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        notificationRef.addChildEventListener(notificationListener);
     }
 
     /**
