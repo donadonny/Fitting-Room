@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="tk.talcharnes.unborify.CommentActivityFragment"
     tools:showIn="@layout/activity_comment">
 
 <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/add_comment"
-    android:id="@+id/comments_recyclerView"/>
+    android:id="@+id/comments_recyclerView"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true" />
 
 <LinearLayout
     android:id="@+id/add_comment"
