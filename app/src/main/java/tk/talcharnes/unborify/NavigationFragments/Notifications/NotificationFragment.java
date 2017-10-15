@@ -29,6 +29,7 @@ import tk.talcharnes.unborify.myNotifications;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
+ *
  */
 
 public class NotificationFragment extends Fragment {

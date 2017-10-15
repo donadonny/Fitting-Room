@@ -28,6 +28,18 @@ public class Photo {
 
     }
 
+    public Photo(String user, String occasion_subtitle, String category, long likes, long dislikes, long reports,
+                 int orientation, String url) {
+        this.user = user;
+        this.occasion_subtitle = occasion_subtitle;
+        this.category = category;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.reports = reports;
+        this.orientation = orientation;
+        this.url = url;
+    }
+
     public String getUser() {
         return user;
     }

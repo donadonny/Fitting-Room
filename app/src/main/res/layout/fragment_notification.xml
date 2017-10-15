@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/main_view"
-    android:background="@color/colorAccent">
+    android:background="@color/cardview_light_background">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/notification_recycle_view"
