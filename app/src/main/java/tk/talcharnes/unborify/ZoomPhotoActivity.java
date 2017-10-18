@@ -8,8 +8,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,6 +48,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
 
     private final Handler mHideHandler = new Handler();
     private View mContentView;
+    private ProgressBar progressBar;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -112,7 +117,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.zoom_photo);
+        setContentView(R.layout.activity_zoom_photo);
 
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
@@ -120,6 +125,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         mVisible = true;
         // mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.photo_view);
+        progressBar = findViewById(R.id.progress_bar);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,9 +137,30 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         PhotoView photoView = (PhotoView) mContentView;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                 .child(FirebaseConstants.IMAGES).child(url);
-        Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
-                .load(storageReference).transform(new MyTransformation(getApplicationContext(),
-                rotation)).into(photoView);
+        Glide.with(getApplicationContext())
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .transform(new MyTransformation(getApplicationContext(), rotation))
+                .listener(new RequestListener<StorageReference, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, StorageReference model,
+                                               Target<GlideDrawable> target,
+                                               boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource,
+                                                   StorageReference model,
+                                                   Target<GlideDrawable> target,
+                                                   boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+                })
+                .into(photoView);
 
 
         // Set up the user interaction to manually show or hide the system UI.

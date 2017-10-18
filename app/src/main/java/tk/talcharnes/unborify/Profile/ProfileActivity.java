@@ -322,7 +322,6 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         StorageReference storageRef = storage.getReference();
         StorageReference profileImageRef = storageRef.child("profileImages/" + FirebaseConstants.getUser().getUid() + ".webp");
         UploadTask uploadTask = profileImageRef.putBytes(data);
-        ;
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
