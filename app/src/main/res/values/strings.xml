@@ -27,7 +27,7 @@
 
     <!-- Photo Upload Strings -->
     <string name="success_title">Success!</string>
-    <string name="success_message">Your occasion photo is uploaded. </string>
+    <string name="success_message">Your photo is uploaded. </string>
     <string name="failure_title">Oh no!</string>
     <string name="failure_message">Your occasion photo failed to upload. </string>
     <string name="dialog_main_message"> If you wish to take another Photo then please click cancel
