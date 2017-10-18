@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
@@ -122,7 +123,12 @@ public class PhotoUploadActivityFragment extends Fragment {
             public void onClick(View view) {
                 boolean editTextNotNull = checkEditTextNotNull();
                 if (bytes != null && editTextNotNull) {
-                    uploadImage(bytes);
+                    if(PhotoUploadActivity.chosen.isEmpty() | PhotoUploadActivity.chosen.equals("All")) {
+                        Toast.makeText(getActivity(), "Please selete a category.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        uploadImage(bytes);
+                    }
                 }
             }
         });
@@ -318,7 +324,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
                 if (getContext() != null) {
-                   // NavUtils.navigateUpFromSameTask(getActivity());
+                    // NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
 
@@ -339,7 +345,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when when the interstitial ad is closed.
                 Log.i("Ads", "onAdClosed");
                 if (getContext() != null) {
-                   // NavUtils.navigateUpFromSameTask(getActivity());
+                    // NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
         });
@@ -361,7 +367,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
         if(permissionsList.size() > 0) {
             ActivityCompat.requestPermissions(getActivity(),
-                        permissionsList.toArray(new String[0]), PERMISSIONS_REQUEST);
+                    permissionsList.toArray(new String[0]), PERMISSIONS_REQUEST);
         } else {
             EasyImage.openChooserWithGallery(PhotoUploadActivityFragment.this, "", 0);
         }

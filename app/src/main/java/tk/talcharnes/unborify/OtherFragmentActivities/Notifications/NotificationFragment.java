@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.NavigationFragments.Notifications;
+package tk.talcharnes.unborify.OtherFragmentActivities.Notifications;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

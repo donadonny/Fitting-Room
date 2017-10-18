@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.NavigationFragments.MyPhotos;
+package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
