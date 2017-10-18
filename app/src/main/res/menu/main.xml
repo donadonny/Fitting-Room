@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_picture"
-        android:orderInCategory="100"
-        android:icon="@drawable/add_photo_fab"
+        android:icon="@drawable/ic_take_photo"
         android:title="@string/action_take_photo"
         app:showAsAction="ifRoom" />
+
 </menu>
