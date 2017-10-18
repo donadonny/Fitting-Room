@@ -48,6 +48,33 @@ public class PhotoUtilities {
         return rotate;
     }
 
+    public static int getPhotoOrientation(File file) {
+        int rotate = 0;
+        try {
+            ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+
+            Log.i("RotateImage", "Exif orientation: " + orientation);
+            Log.i("RotateImage", "Rotate value: " + rotate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
 
     public static void scaleImage(Activity activity, ImageView imageView) {
         // Get the ImageView and its bitmap

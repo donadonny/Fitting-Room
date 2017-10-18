@@ -54,6 +54,7 @@ import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 
@@ -72,6 +73,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private ProgressBar progressBar;
     private InterstitialAd mInterstitialAd;
     private byte[] bytes;
+    private int rotation;
 
     public PhotoUploadActivityFragment() {
     }
@@ -168,10 +170,12 @@ public class PhotoUploadActivityFragment extends Fragment {
 
                         @Override
                         public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                            rotation = PhotoUtilities.getCameraPhotoOrientation(getActivity(),
+                                    Uri.fromFile(imageFile), imageFile.getAbsolutePath());
+
                             Log.d(LOG_TAG, "Successfully picked an image, source: " + source.name());
                             try {
                                 File compressedFile = new Compressor(getActivity()).compressToFile(imageFile);
-
                                 int size = (int) compressedFile.length();
                                 bytes = new byte[size];
                                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedFile));
@@ -232,7 +236,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 Analytics.registerUpload(getActivity(), user);
 
                 Photo photo = new Photo(user, photoDescription, FirebaseConstants.CATEGORY_FASHION,
-                        0, 0, 0, 0, photoName + ".webp");
+                        0, 0, 0, rotation, photoName + ".webp");
 
                 FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(photoName).setValue(photo);
 
