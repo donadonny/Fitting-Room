@@ -21,11 +21,14 @@
     <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
+    <string name="refresh_title_2">Click the refresh button to reload photos</string>
     <string name="retake_photo">Retake Photo</string>
     <string name="return_home">Return Home</string>
 
     <string name="no_image_title">Looks like there are no images in this category.
         Click on the camera button to add a image in this category.</string>
+    <string name="no_image_title_2">Looks like you haven\'t liked any photos.
+        Go to the home screen and see if there is anything you like.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>

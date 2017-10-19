@@ -97,13 +97,11 @@ public class MainActivityFragment extends Fragment {
         userId = user.getUid();
         userName = user.getDisplayName();
 
-
         //Native banner ad
         /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);*/
 
-        // Report Fab button
         refreshButton = rootView.findViewById(R.id.refreshBtn);
 
         refresh_textview = rootView.findViewById(R.id.refreshTitle);
@@ -260,7 +258,7 @@ public class MainActivityFragment extends Fragment {
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
-                    System.out.println("<------------------------------------> Total execution time: " + (endTime - startTime));
+                    Log.d(LOG_TAG, "Total execution time: " + (endTime - startTime));
                 }
             }
 

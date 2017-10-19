@@ -42,7 +42,6 @@ dependencies {
 
     // Custom Libraries
     compile 'com.roughike:bottom-bar:2.3.1'
-    compile 'com.bakerj:infinite-cards:1.0.3'
     compile 'id.zelory:compressor:2.1.0'
     compile 'com.mindorks:placeholderview:0.7.0'
     compile 'com.github.bumptech.glide:glide:3.8.0'
