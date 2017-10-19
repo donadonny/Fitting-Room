@@ -173,9 +173,65 @@
 
     <string-array name="spinner_list_item_array">
         <item>All</item>
+        <item>Abstract</item>
+        <item>Aerial</item>
+        <item>Animal</item>
+        <item>Architecture</item>
+        <item>Astrophotography</item>
+        <item>Avian</item>
+        <item>Black and White</item>
+        <item>Cityscape</item>
+        <item>Current Events</item>
+        <item>Decisive Moment</item>
+        <item>Defocused</item>
+        <item>Documentary</item>
+        <item>Emotive</item>
+        <item>Expression</item>
+        <item>Family</item>
         <item>Fashion</item>
-        <item>Art</item>
-        <item>Cooking</item>
+        <item>Film</item>
+        <item>Fine Art</item>
+        <item>Food</item>
+        <item>Glamour</item>
+        <item>HDRI (High Dynamic Range Imaging)</item>
+        <item>Humorous</item>
+        <item>ICM (intentional camera movement)</item>
+        <item>Industrial</item>
+        <item>Infrared</item>
+        <item>Interior</item>
+        <item>Journalism</item>
+        <item>Landscape</item>
+        <item>Lomo</item>
+        <item>Macro</item>
+        <item>Nature</item>
+        <item>Nude</item>
+        <item>Panoramas/Mosaics</item>
+        <item>Performance</item>
+        <item>Pinhole</item>
+        <item>Portrait</item>
+        <item>Product</item>
+        <item>Publicity</item>
+        <item>Random</item>
+        <item>Recycled Art</item>
+        <item>Rough Camera</item>
+        <item>Rural</item>
+        <item>Sea and Sand</item>
+        <item>Sky</item>
+        <item>Snapshot</item>
+        <item>Sports</item>
+        <item>Still Life</item>
+        <item>Stock</item>
+        <item>Street Photography</item>
+        <item>Suburban</item>
+        <item>Swimsuit</item>
+        <item>Tourist</item>
+        <item>Travel</item>
+        <item>Underwater</item>
+        <item>Urban</item>
+        <item>Vehicle</item>
+        <item>Vintage</item>
+        <item>Weather</item>
+        <item>Wedding</item>
     </string-array>
 
 </resources>
