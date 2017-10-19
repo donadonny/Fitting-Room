@@ -128,8 +128,7 @@ public class PhotoCard {
     private String mUserId, mUserName;
     private DatabaseReference mPhotoReference, mReportsRef;
     private Boolean isReported = false;
-    private int width;
-    private int height;
+    private int width, height;
     private boolean mVisible = true;
     private IImageLoader imageLoader;
     private StorageReference storageRef;
@@ -169,7 +168,9 @@ public class PhotoCard {
                         public boolean onException(Exception e, StorageReference model,
                                                    Target<GlideDrawable> target,
                                                    boolean isFirstResource) {
-                            progressBar.setVisibility(android.view.View.GONE);
+                            if(progressBar != null) {
+                                progressBar.setVisibility(android.view.View.GONE);
+                            }
                             return false;
                         }
 
@@ -179,7 +180,9 @@ public class PhotoCard {
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache,
                                                        boolean isFirstResource) {
-                            progressBar.setVisibility(android.view.View.GONE);
+                            if(progressBar != null) {
+                                progressBar.setVisibility(android.view.View.GONE);
+                            }
                             return false;
                         }
                     })
@@ -461,7 +464,7 @@ public class PhotoCard {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             User user = dataSnapshot.getValue(User.class);
-                            if (user != null) {
+                            if (user != null && usernameTextView != null) {
                                 usernameTextView.setText(user.getName());
 
                                 String uri = user.getUri() + "";

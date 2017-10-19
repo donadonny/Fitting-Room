@@ -1,6 +1,6 @@
 <resources>
     <!--App name-->
-    <string name="app_name" translatable="false">Fitting Room</string>
+    <string name="app_name" translatable="false">RateIt</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>

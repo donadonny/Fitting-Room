@@ -1,27 +1,20 @@
 package tk.talcharnes.unborify;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -32,14 +25,10 @@ import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.MainNavigationFragments.FollowingFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
-import tk.talcharnes.unborify.MainNavigationFragments.TopicsFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
-import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsFragment;
-import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationFragment;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
-import tk.talcharnes.unborify.Profile.changeNameDialogFragment;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosFragment;
 
 /**
  * Created by Tal.
@@ -137,14 +126,13 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(@IdRes int tabId) {
                 spinner.setVisibility(View.INVISIBLE);
                 if (tabId == R.id.tab_home) {
-                    //spinner.setVisibility(View.VISIBLE);
+                    spinner.setVisibility(View.VISIBLE);
                     viewPager.setCurrentItem(0);
                     currentView = 0;
                 } else if (tabId == R.id.tab_trending) {
                     viewPager.setCurrentItem(1);
                     currentView = 1;
-                } else if (tabId == R.id.tab_topics) {
-                    spinner.setVisibility(View.VISIBLE);
+                } else if (tabId == R.id.tab_deals) {
                     viewPager.setCurrentItem(2);
                     currentView = 2;
                 } else if (tabId == R.id.tab_following) {
@@ -165,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         pagerAdapter.addFragments(new MainActivityFragment());
         pagerAdapter.addFragments(new TrendingFragment());
-        pagerAdapter.addFragments(new TopicsFragment());
+        pagerAdapter.addFragments(new DealsFragment());
         pagerAdapter.addFragments(new FollowingFragment());
         pagerAdapter.addFragments(new OtherFragment());
 

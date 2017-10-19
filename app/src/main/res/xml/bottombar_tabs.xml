@@ -8,9 +8,9 @@
         icon="@drawable/ic_tab_trending"
         title="Trending" />
     <tab
-        id="@+id/tab_topics"
-        icon="@drawable/ic_tab_topics"
-        title="Topics" />
+        id="@+id/tab_deals"
+        icon="@drawable/ic_tab_deals"
+        title="Deals" />
     <tab
         id="@+id/tab_following"
         icon="@drawable/ic_tab_following"

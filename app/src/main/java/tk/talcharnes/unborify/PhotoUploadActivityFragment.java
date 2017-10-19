@@ -274,7 +274,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     }
 
     private void showUploadDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title)
                 .setMessage(message)
                 .setCancelable(false)
@@ -298,7 +298,8 @@ public class PhotoUploadActivityFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-        builder.show();
+        builder.show();*/
+        NavUtils.navigateUpFromSameTask(getActivity());
     }
 
     private void showGrantPermissionDialog() {
@@ -328,7 +329,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
                 if (getContext() != null) {
-                    // NavUtils.navigateUpFromSameTask(getActivity());
+                    NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
 
@@ -349,7 +350,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when when the interstitial ad is closed.
                 Log.i("Ads", "onAdClosed");
                 if (getContext() != null) {
-                    // NavUtils.navigateUpFromSameTask(getActivity());
+                    NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
         });

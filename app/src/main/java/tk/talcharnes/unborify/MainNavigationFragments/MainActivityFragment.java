@@ -9,7 +9,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -26,6 +28,7 @@ import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tk.talcharnes.unborify.AdCard;
 import tk.talcharnes.unborify.Photo;
@@ -52,12 +55,12 @@ public class MainActivityFragment extends Fragment {
     private View rootView;
     private SwipePlaceHolderView mSwipeView;
     private Button refreshButton;
-    private TextView refresh_textview;
+    private TextView refresh_textview, noImagesTextView;
     private Context mContext;
     private int widthInDP;
     private int heightInDP;
     private boolean refresh;
-
+    private Spinner spinner;
     /**
      * Constructor.
      */
@@ -115,6 +118,8 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        noImagesTextView = rootView.findViewById(R.id.noImagesTitle);
+
     }
 
     /**
@@ -136,7 +141,28 @@ public class MainActivityFragment extends Fragment {
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f));
-        getPhotos();
+
+        spinner = (Spinner) getActivity().findViewById(R.id.toolbar).findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                String chosen =  parent.getItemAtPosition(position).toString();
+                oldestPostId = "";
+                Log.d(LOG_TAG, "category chosen: " + chosen);
+                mSwipeView.removeAllViews();
+                noImagesTextView.setVisibility(View.INVISIBLE);
+                if(chosen.equals("All")) {
+                    getPhotos();
+                } else {
+                    getPhotos(chosen);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
             @Override
@@ -238,6 +264,61 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+    }
+
+    private void getPhotos(String category) {
+        mContext = getContext();
+
+        final long startTime = System.currentTimeMillis();
+
+        Query query = photoReference.orderByChild(Photo.CATEGORY_KEY).equalTo(category)
+                .limitToFirst(8);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    List<Photo> photos = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                        Photo photo = child.getValue(Photo.class);
+
+                        if (photo != null) {
+                            photos.add(photo);
+                        }
+                    }
+                    int count = photos.size();
+                    if(photos.isEmpty()) {
+                        noImagesTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noImagesTextView.setVisibility(View.INVISIBLE);
+                        while (count > 0) {
+                            mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1),
+                                    mSwipeView, userId, userName, photoReference, reportRef));
+                            if (count - 1 % 8 == 0) {
+                                mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                                mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                            }
+                            count--;
+                        }
+                        photos.clear();
+                    }
+
+                    Log.d(LOG_TAG, "Retrieved data");
+                    mSwipeView.refreshDrawableState();
+                    final long endTime = System.currentTimeMillis();
+                    Log.d(LOG_TAG, "Data Load time: " + (endTime - startTime));
+                } else {
+                    noImagesTextView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(LOG_TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
     /**
