@@ -61,6 +61,7 @@ public class MainActivityFragment extends Fragment {
     private int heightInDP;
     private boolean refresh;
     private Spinner spinner;
+    private boolean firstTime = true;
     /**
      * Constructor.
      */
@@ -151,10 +152,12 @@ public class MainActivityFragment extends Fragment {
                 Log.d(LOG_TAG, "category chosen: " + chosen);
                 mSwipeView.removeAllViews();
                 noImagesTextView.setVisibility(View.INVISIBLE);
-                if(chosen.equals("All")) {
-                    getPhotos();
-                } else {
-                    getPhotos(chosen);
+                if(!firstTime) {
+                    if (chosen.equals("All")) {
+                        getPhotos();
+                    } else {
+                        getPhotos(chosen);
+                    }
                 }
             }
 
@@ -163,6 +166,10 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
+
+        getPhotos();
+        spinner.setSelection(0);
+        firstTime = false;
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
             @Override
