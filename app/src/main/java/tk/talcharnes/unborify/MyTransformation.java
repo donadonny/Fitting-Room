@@ -7,29 +7,30 @@ import android.graphics.Matrix;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+import java.security.MessageDigest;
+
 public class MyTransformation extends BitmapTransformation {
 
-    private float rotate = 0f;
+    private float rotateRotationAngle = 0f;
 
-    public MyTransformation(Context context, float rotate) {
+    public MyTransformation(Context context, float rotateRotationAngle) {
         super(context);
-        this.rotate = rotate;
+
+        this.rotateRotationAngle = rotateRotationAngle;
     }
 
     @Override
-    protected Bitmap transform(BitmapPool pool, Bitmap toTransform,
-                               int outWidth, int outHeight) {
-        return rotateBitmap(toTransform, rotate);
-    }
-
-    @Override
-    public String getId() {
-        return "com.example.helpers.MyTransformation";
-    }
-
-    public static Bitmap rotateBitmap(Bitmap source, float angle) {
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+
+        matrix.postRotate(rotateRotationAngle);
+
+        return Bitmap.createBitmap(toTransform, 0, 0, toTransform.getWidth(), toTransform.getHeight(), matrix, true);
     }
+
+    @Override
+    public void updateDiskCacheKey(MessageDigest messageDigest) {
+        messageDigest.update(("rotate" + rotateRotationAngle).getBytes());
+    }
+
 }

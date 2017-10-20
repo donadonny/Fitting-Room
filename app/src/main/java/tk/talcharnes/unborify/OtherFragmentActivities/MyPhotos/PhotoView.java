@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -15,11 +16,11 @@ import android.view.MenuInflater;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,6 +78,9 @@ public class PhotoView {
     @View(R.id.share_image_button)
     private ImageButton shareButton;
 
+    @View(R.id.progress_bar)
+    private ProgressBar progressBar;
+
     private Photo mPhoto;
     private Context mContext;
     private String mUserId, mUserName;
@@ -114,10 +118,7 @@ public class PhotoView {
         if (urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child("images").child(urlString);
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
-                    .load(storageRef)
-                    .into(imageView);
+            FirebaseConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar);
         }
 
         commentsButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -146,7 +147,7 @@ public class PhotoView {
             @Override
             public void onClick(android.view.View view) {
                 Log.d(TAG, "Share button Clicked");
-                Bitmap image = ((GlideBitmapDrawable) imageView.getDrawable()).getBitmap();
+                Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] imageInByte = stream.toByteArray();
@@ -158,7 +159,8 @@ public class PhotoView {
 
                 Intent mmsIntent = new Intent(Intent.ACTION_SEND);
                 mmsIntent.putExtra(android.content.Intent.EXTRA_TEXT,
-                        "Check out this awesome image from the FittingRoom app.");
+                        mContext.getResources().getString(R.string.share_text) +
+                                mContext.getResources().getString(R.string.app_name));
                 mmsIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 mmsIntent.setType("image/*");
                 mContext.startActivity(Intent.createChooser(mmsIntent,"Send"));

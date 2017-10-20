@@ -20,10 +20,13 @@
     <string name="submit">Submit</string>
     <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
     <string name="refresh_title_2">Click the refresh button to reload photos</string>
     <string name="retake_photo">Retake Photo</string>
     <string name="return_home">Return Home</string>
+    <string name="share_text">Check out this awesome image from </string>
 
     <string name="no_image_title">Looks like there are no images in this category.
         Click on the camera button to add a image in this category.</string>

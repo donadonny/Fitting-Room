@@ -21,7 +21,6 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.MainNavigationFragments.FollowingFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
@@ -29,6 +28,7 @@ import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
  * Created by Tal.
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setLogo(R.drawable.ic_logo);
         }
-        imageLoader = new GlideLoader();
+        imageLoader = new GlideLoader2();
 
         FirebaseUser user = FirebaseConstants.getUser();
         userName = user.getDisplayName();
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = user.getPhotoUrl();
         String uriString = (uri != null) ? uri.toString() : "";
         AvatarView profileView = toolbar.findViewById(R.id.avatarImage);
-        imageLoader.loadImage(profileView, uriString, userName);
+        imageLoader.loadImage(profileView, uid, userName);
         profileView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

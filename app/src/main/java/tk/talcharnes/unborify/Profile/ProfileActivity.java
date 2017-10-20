@@ -43,12 +43,11 @@ import java.io.IOException;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import agency.tango.android.avatarviewglide.GlideLoader;
 import id.zelory.compressor.Compressor;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.User;
-import tk.talcharnes.unborify.Utilities.CircleTransform;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
  * Created by khuramchaudhry on 9/2/17.
@@ -84,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      * This function initializes basic stuff.
      */
     public void initialize() {
-        imageLoader = new GlideLoader();
+        imageLoader = new GlideLoader2();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nameText = (TextView) findViewById(R.id.user_profile_name);
@@ -115,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                                     emailText.setText(user.getEmail());
                                     joinedText.setText(user.getDate_joined());
                                     String profileUri = user.getUri() + "";
-                                    imageLoader.loadImage(avatarView, profileUri, user.getName());
+                                    imageLoader.loadImage(avatarView, uid, user.getName());
                                 }
                             }
                         }

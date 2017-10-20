@@ -2,8 +2,10 @@ package tk.talcharnes.unborify;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
@@ -11,7 +13,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -20,6 +23,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+
+import tk.talcharnes.unborify.Utilities.GlideApp;
+import tk.talcharnes.unborify.Utilities.MyAppGlideModule;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -137,31 +145,9 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         PhotoView photoView = (PhotoView) mContentView;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                 .child(FirebaseConstants.IMAGES).child(url);
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
-                .load(storageReference)
-                .transform(new MyTransformation(getApplicationContext(), rotation))
-                .listener(new RequestListener<StorageReference, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, StorageReference model,
-                                               Target<GlideDrawable> target,
-                                               boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource,
-                                                   StorageReference model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache,
-                                                   boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
-                        return false;
-                    }
-                })
-                .into(photoView);
-
+        FirebaseConstants.loadImageUsingGlide(getApplicationContext(), photoView, storageReference,
+                progressBar);
 
         // Set up the user interaction to manually show or hide the system UI.
         getWindow().getDecorView().findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {

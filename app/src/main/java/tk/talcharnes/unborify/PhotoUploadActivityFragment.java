@@ -185,7 +185,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedFile));
                                 int i = buf.read(bytes, 0, bytes.length);
                                 buf.close();
-                                Glide.with(getActivity()).load(bytes).asBitmap().into(userImageToUploadView);
+                                Glide.with(getActivity()).asBitmap().load(bytes).into(userImageToUploadView);
 
                             } catch (IOException e) {
                                 Log.d(LOG_TAG, "Failed to compress image, error: " + e.toString());

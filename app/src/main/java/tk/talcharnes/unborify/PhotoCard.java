@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
@@ -23,14 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,14 +56,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.sql.DataSource;
-
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import agency.tango.android.avatarviewglide.GlideLoader;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.GlideLoader2;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
@@ -154,39 +145,14 @@ public class PhotoCard {
         Log.d(LOG_TAG, "mUserName: " + mUserName);
         final String url = mPhoto.getUrl();
         Log.d(LOG_TAG, "url: " + url);
-        imageLoader = new GlideLoader();
+        imageLoader = new GlideLoader2();
         if (url != null && !url.isEmpty()) {
             final int rotation = getRotation();
             storageRef = FirebaseStorage.getInstance().getReference()
                     .child(FirebaseConstants.IMAGES).child(url);
 
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
-                    .load(storageRef).transform(new MyTransformation(mContext, rotation))
-                    .listener(new RequestListener<StorageReference, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, StorageReference model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFirstResource) {
-                            if(progressBar != null) {
-                                progressBar.setVisibility(android.view.View.GONE);
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource,
-                                                       StorageReference model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache,
-                                                       boolean isFirstResource) {
-                            if(progressBar != null) {
-                                progressBar.setVisibility(android.view.View.GONE);
-                            }
-                            return false;
-                        }
-                    })
-                    .into(photoImageView);
+            FirebaseConstants.loadImageUsingGlide(mContext, photoImageView, storageRef,
+                    progressBar);
 
             String occasionTitle = mPhoto.getOccasion_subtitle();
             nameTextView.setText(occasionTitle);
@@ -240,7 +206,7 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     Log.d(LOG_TAG, "Share button Clicked");
-                    Bitmap image = ((GlideBitmapDrawable) photoImageView.getDrawable()).getBitmap();
+                    Bitmap image = ((BitmapDrawable) photoImageView.getDrawable()).getBitmap();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] imageInByte = stream.toByteArray();
@@ -252,7 +218,8 @@ public class PhotoCard {
 
                     Intent mmsIntent = new Intent(Intent.ACTION_SEND);
                     mmsIntent.putExtra(android.content.Intent.EXTRA_TEXT,
-                            "Check out this awesome image from the FittingRoom app.");
+                            mContext.getResources().getString(R.string.share_text) +
+                                    mContext.getResources().getString(R.string.app_name));
                     mmsIntent.putExtra(Intent.EXTRA_STREAM, uri);
                     mmsIntent.setType("image/*");
                     mContext.startActivity(Intent.createChooser(mmsIntent,"Send"));
@@ -272,7 +239,9 @@ public class PhotoCard {
             avatarView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
-                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    Intent intent = new Intent(mContext,
+                            (FirebaseConstants.getUser().getUid().equals(mPhoto.getUser())) ?
+                                    ProfileActivity.class : UserProfileActivity.class);
                     intent.putExtra("uid", mPhoto.getUser());
                     mContext.startActivity(intent);
                 }
@@ -457,7 +426,7 @@ public class PhotoCard {
         });
     }
 
-    private void setUploader(String uid) {
+    private void setUploader(final String uid) {
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -468,7 +437,7 @@ public class PhotoCard {
                                 usernameTextView.setText(user.getName());
 
                                 String uri = user.getUri() + "";
-                                imageLoader.loadImage(avatarView, uri, user.getName());
+                                imageLoader.loadImage(avatarView, uid, user.getName());
                             }
                         }
                     }

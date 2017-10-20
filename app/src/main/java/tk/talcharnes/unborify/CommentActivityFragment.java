@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
@@ -72,14 +73,25 @@ public class CommentActivityFragment extends Fragment {
     }
 
     private void setUpFirebaseAdapter() {
+        FirebaseRecyclerOptions<Comment> options =
+                new FirebaseRecyclerOptions.Builder<Comment>()
+                        .setQuery(mCommentReference, Comment.class)
+                        .build();
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Comment, FirebaseCommentViewHolder>
-                (Comment.class, R.layout.comment_template, FirebaseCommentViewHolder.class,
-                        mCommentReference) {
+                (options) {
 
             @Override
-            protected void populateViewHolder(FirebaseCommentViewHolder viewHolder,
-                                              Comment model, int position) {
-                viewHolder.bindComment(model, mCurrentUser);
+            public FirebaseCommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.comment_template, parent, false);
+
+                return new FirebaseCommentViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(FirebaseCommentViewHolder holder, int position, Comment model) {
+                holder.bindComment(model, mCurrentUser);
+
             }
         };
         mRecyclerView.setHasFixedSize(true);
@@ -148,8 +160,8 @@ public class CommentActivityFragment extends Fragment {
 
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mFirebaseAdapter.cleanup();
+    public void onStop() {
+        super.onStop();
+        mFirebaseAdapter.stopListening();
     }
 }
