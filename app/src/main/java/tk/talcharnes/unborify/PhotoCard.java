@@ -152,7 +152,7 @@ public class PhotoCard {
                     .child(FirebaseConstants.IMAGES).child(url);
 
             FirebaseConstants.loadImageUsingGlide(mContext, photoImageView, storageRef,
-                    progressBar);
+                    progressBar, mPhoto.getOrientation());
 
             String occasionTitle = mPhoto.getOccasion_subtitle();
             nameTextView.setText(occasionTitle);

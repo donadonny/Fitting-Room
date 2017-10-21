@@ -118,7 +118,8 @@ public class PhotoView {
         if (urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child("images").child(urlString);
-            FirebaseConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar);
+            FirebaseConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar,
+                    mPhoto.getOrientation());
         }
 
         commentsButton.setOnClickListener(new android.view.View.OnClickListener() {

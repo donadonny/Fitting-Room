@@ -19,6 +19,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.List;
 
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * Created by khuramchaudhry on 10/19/17.

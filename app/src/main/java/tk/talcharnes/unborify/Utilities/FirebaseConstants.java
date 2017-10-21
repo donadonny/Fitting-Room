@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import tk.talcharnes.unborify.MyTransformation;
+import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Report;
 
 /**
@@ -141,7 +142,34 @@ public class FirebaseConstants {
                                     final ProgressBar progressBar) {
         GlideApp.with(context)
                 .load(storageReference)
-                .transform(new MyTransformation(context, 90))
+                .transform(new MyTransformation(context, 0))
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e,
+                                                Object model, Target<Drawable> target,
+                                                boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+
+                })
+                .into(imageView);
+    }
+
+    public static void loadImageUsingGlide(Context context, ImageView imageView,
+                                           StorageReference storageReference,
+                                           final ProgressBar progressBar, int rotation) {
+        GlideApp.with(context)
+                .load(storageReference)
+                .transform(new MyTransformation(context, rotation))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e,

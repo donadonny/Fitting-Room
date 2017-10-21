@@ -35,6 +35,7 @@ import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.PhotoCard;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
@@ -62,6 +63,7 @@ public class MainActivityFragment extends Fragment {
     private boolean refresh;
     private Spinner spinner;
     private boolean firstTime = true;
+    private boolean categoryMode = false;
     /**
      * Constructor.
      */
@@ -149,12 +151,14 @@ public class MainActivityFragment extends Fragment {
                 oldestPostId = "";
                 Log.d(LOG_TAG, "category chosen: " + chosen);
                 mSwipeView.removeAllViews();
-                noImagesTextView.setVisibility(View.INVISIBLE);
+                noImagesTextView.setVisibility(View.GONE);
                 if(!firstTime) {
                     if (chosen.equals("All")) {
                         getPhotos();
+                        categoryMode = false;
                     } else {
                         getPhotos(chosen);
+                        categoryMode = true;
                     }
                 }
             }
@@ -180,7 +184,11 @@ public class MainActivityFragment extends Fragment {
                         mInterstitialAd.show();
                     }*/
                     Log.d(LOG_TAG, "Empty SwipeView");
-                    if (refresh) {
+                    if(categoryMode) {
+                        noImagesTextView.setVisibility(View.VISIBLE);
+                        noImagesTextView.setText(getActivity().getResources()
+                                .getString(R.string.no_image_title_6));
+                    } else if (refresh) {
                         Log.d(LOG_TAG, "No more photos");
                         refreshButton.setVisibility(View.VISIBLE);
                         refresh_textview.setVisibility(View.VISIBLE);
@@ -227,9 +235,14 @@ public class MainActivityFragment extends Fragment {
                         /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
                                 .removeWebPFromUrl(photo.getUrl()));*/
 
-                        /* Randomizing votes for photos
+                        /*Randomizing votes for photos
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
+
+                        /*Randomizing categories for photos
+                        String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
+                        photoReference.child(photo.getUrl().replace(".webp", "")).child("category")
+                                .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
                         if(photo != null) {
                             list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
                                     photoReference, reportRef));
@@ -296,7 +309,6 @@ public class MainActivityFragment extends Fragment {
                     if(photos.isEmpty()) {
                         noImagesTextView.setVisibility(View.VISIBLE);
                     } else {
-                        noImagesTextView.setVisibility(View.INVISIBLE);
                         while (count > 0) {
                             mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1),
                                     mSwipeView, userId, userName, photoReference, reportRef));

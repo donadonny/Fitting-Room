@@ -51,8 +51,8 @@
                     android:id="@+id/user_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
                     android:text="@string/placeholder"
                     android:textAlignment="center"
                     android:textColor="#fff"
@@ -61,26 +61,27 @@
 
                 <TextView
                     android:id="@+id/user_date_joined"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:maxLength="18"
+                    android:layout_gravity=""
                     android:layout_marginTop="15dp"
+                    android:maxLength="18"
                     android:text="@string/placeholder"
                     android:textAlignment="center"
                     android:textColor="#fff"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
+
+
+                <Button
+                    android:id="@+id/following_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:background="@color/bg_screen1"
+                    android:text="@string/follow" />
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/following_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_margin="10dp"
-                android:text="@string/follow"
-                android:layout_gravity="center_vertical|end"
-                android:background="@color/bg_screen1" />
 
         </LinearLayout>
 

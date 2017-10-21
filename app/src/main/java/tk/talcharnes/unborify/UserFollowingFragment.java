@@ -1,5 +1,6 @@
 package tk.talcharnes.unborify;
 
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,7 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -19,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
  * Created by khuramchaudhry on 10/19/17.
@@ -30,6 +35,7 @@ public class UserFollowingFragment extends Fragment {
 
     private View rootView;
     private RecyclerView my_recycler_view;
+    private TextView noImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +47,10 @@ public class UserFollowingFragment extends Fragment {
         Log.d(TAG, "Loading UserFollowingFragment");
 
         my_recycler_view = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        noImageView = (TextView) rootView.findViewById(R.id.noImagesTitle);
+
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
+        final int size = (int) Math.floor(windowSize.x / 300);
 
         if(getArguments() != null) {
             String uid = getArguments().getString("uid");
@@ -58,21 +68,23 @@ public class UserFollowingFragment extends Fragment {
                                     HashMap<String, String> map = dataSnapshot.getValue(t);
                                     if(map != null) {
                                         for (Map.Entry<String, String> entry : map.entrySet()) {
-                                            if(entry.getValue().equals("following")) {
+                                            if(entry.getValue().equals("Following")) {
                                                 users.add(entry.getKey());
                                             }
                                         }
-                                        if(users.size() < 1) {
-
-                                        } else {
-                                            my_recycler_view.setLayoutManager(new GridLayoutManager(getActivity(),
-                                                    3));
-                                            my_recycler_view.setHasFixedSize(false);
-                                            UserProfileAdapter adapter = new UserProfileAdapter(getActivity(),
-                                                    FirebaseConstants.getUser().getUid(), users, "Not Photos");
-                                            my_recycler_view.setAdapter(adapter);
-                                        }
                                     }
+                                }
+                                if(users.size() < 1) {
+                                    noImageView.setVisibility(View.VISIBLE);
+                                } else {
+                                    noImageView.setVisibility(View.GONE);
+                                    my_recycler_view.setLayoutManager(new GridLayoutManager(
+                                            getActivity(), size));
+                                    my_recycler_view.setHasFixedSize(false);
+                                    UserProfileAdapter adapter = new UserProfileAdapter(
+                                            getActivity(), FirebaseConstants.getUser().getUid(),
+                                            users, "Not Photos");
+                                    my_recycler_view.setAdapter(adapter);
                                 }
                             }
 
