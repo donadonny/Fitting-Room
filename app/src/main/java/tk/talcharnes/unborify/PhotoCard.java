@@ -500,10 +500,32 @@ public class PhotoCard {
                         setReported();
                         mSwipeView.doSwipe(false);
                         return true;
+                    case R.id.action_favorite_photo:
+                        addToFavorites();
+                        return true;
                     default:
                         return false;
                 }
                 //return false;
+            }
+        });
+    }
+
+    public void addToFavorites() {
+        final DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                .child(mUserId).child(FirebaseConstants.USER_FAVORITES)
+                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    ref.setValue(FirebaseConstants.FAVORITE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

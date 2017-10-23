@@ -53,7 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                 .child(FirebaseConstants.IMAGES).child(notification.getPhotoUrl());
         FirebaseConstants.loadImageUsingGlide(mContext, holder.imageView, storageRef,
-                holder.progressBar);
+                holder.progressBar, 0);
         holder.message.setText(notification.getMessage());
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
                 .child(FirebaseConstants.USERNAME)

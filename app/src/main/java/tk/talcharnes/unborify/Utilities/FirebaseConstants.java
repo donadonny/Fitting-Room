@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -42,6 +43,8 @@ public class FirebaseConstants {
     public final static String INSTANCEID = "instanceId";
     public final static String USERNAME = "name";
     public final static String USER_CONNECTIONS = "user_connections";
+    public final static String USER_FAVORITES= "user_favorites";
+    public final static String FAVORITE = "Favorite";
     public final static String URI = "uri";
     public final static String IMAGES = "images";
     public final static String PROFILE_IMAGE = "profileImages";
@@ -143,12 +146,15 @@ public class FirebaseConstants {
         GlideApp.with(context)
                 .load(storageReference)
                 .transform(new MyTransformation(context, 0))
+                .placeholder(R.mipmap.ic_launcher)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e,
                                                 Object model, Target<Drawable> target,
                                                 boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
+                        if(progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
                         return false;
                     }
 
@@ -156,7 +162,9 @@ public class FirebaseConstants {
                     public boolean onResourceReady(Drawable resource, Object model,
                                                    Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
+                        if(progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
                         return false;
                     }
 
@@ -167,6 +175,17 @@ public class FirebaseConstants {
     public static void loadImageUsingGlide(Context context, ImageView imageView,
                                            StorageReference storageReference,
                                            final ProgressBar progressBar, int rotation) {
+        if (context.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            if (rotation != 0) {
+                rotation = 0;
+            }
+        } else if (context.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT) {
+            if (rotation != 0) {
+                rotation = 0;
+            }
+        }
         GlideApp.with(context)
                 .load(storageReference)
                 .transform(new MyTransformation(context, rotation))

@@ -149,6 +149,28 @@
                 android:value="tk.talcharnes.unborify.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".OtherFragmentActivities.LikesActivity"
+            android:label="@string/title_activity_likes"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.talcharnes.unborify.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".OtherFragmentActivities.FavoritesActivity"
+            android:label="@string/title_activity_favorites"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.talcharnes.unborify.MainActivity" />
+        </activity>
+
         <!-- [START fireBase_id_service] -->
         <service
             android:name=".Services.MyFirebaseInstanceIDService"
