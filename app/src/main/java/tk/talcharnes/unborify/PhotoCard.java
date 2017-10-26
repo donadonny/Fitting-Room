@@ -108,6 +108,7 @@ public class PhotoCard {
     private int height;
     private boolean mVisible = true;
     private IImageLoader imageLoader;
+    private String uploaderName="";
 
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      String userName, DatabaseReference photoReference,
@@ -120,9 +121,36 @@ public class PhotoCard {
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
     }
+    /**
+     * @TODO
+     * @param uid
+     */
+    private void setUploader(String uid) {
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if (user != null) {
+                                usernameTextView.setText(user.getName());
+                                uploaderName=user.getName();
+                                String uri = user.getUri() + "";
+                                imageLoader.loadImage(avatarView, uri, user.getName());
+                                photoImageView.setContentDescription("Uploaded By "+uploaderName+" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
     /**
      * This function sets up the Card View with an image, name, and the ratings.
+     *
+     * @TODO this function seems to do a lot of things can we break it up some?
      */
     @Resolve
     private void onResolved() {
@@ -166,6 +194,7 @@ public class PhotoCard {
                 ratingBar.setFillColor(ratingColors[index]);
                 ratingBar.setBorderColor(ratingShadowColors[index]);
                 ratingBar.setRating(rating / 20f);
+
             }
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
@@ -241,6 +270,7 @@ public class PhotoCard {
     private void onClick() {
         //Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
+        photoImageView.setContentDescription("Uploaded By "+uploaderName+" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
         togglePhotoAddOns();
 
     }
@@ -395,34 +425,23 @@ public class PhotoCard {
         });
     }
 
-    private void setUploader(String uid) {
-        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            User user = dataSnapshot.getValue(User.class);
-                            if (user != null) {
-                                usernameTextView.setText(user.getName());
 
-                                String uri = user.getUri() + "";
-                                imageLoader.loadImage(avatarView, uri, user.getName());
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-    }
-
+    /**
+     * @// TODO: 10/25/2017
+     * @param px
+     * @return
+     */
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return dp;
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     * @return
+     */
     private int getRotation() {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -437,6 +456,9 @@ public class PhotoCard {
         return rotation;
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     */
     private void togglePhotoAddOns() {
         if (mVisible) {
             zoom_button.setVisibility(android.view.View.GONE);
@@ -454,6 +476,11 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     * @param v
+     * @param i
+     */
     private void showPopup(android.view.View v, final int i) {
         PopupMenu popup = new PopupMenu(mContext, v);
         MenuInflater inflater = popup.getMenuInflater();
