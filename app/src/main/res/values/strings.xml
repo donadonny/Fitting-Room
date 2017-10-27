@@ -21,7 +21,25 @@
     <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
+    <string name="retake_photo">Retake Photo</string>
+    <string name="return_home">Return Home</string>
+
+    <string name="no_image_title">Looks like there are no images in this category.
+        Click on the camera button to add a image in this category.</string>
     <string name="title_activity_my_photos">My Photos</string>
+    <string name="title_activity_notifications">Notifications</string>
+    <string name="title_activity_help">Help</string>
+    <string name="title_activity_contact_us">Contact Us</string>
+    <string name="title_activity_about">About</string>
+
+
+    <!-- Photo Upload Strings -->
+    <string name="success_title">Success!</string>
+    <string name="success_message">Your photo is uploaded. </string>
+    <string name="failure_title">Oh no!</string>
+    <string name="failure_message">Your occasion photo failed to upload. </string>
+    <string name="dialog_main_message"> If you wish to take another Photo then please click cancel
+        else if you wish to return home then please click return home.</string>>
 
     <string name="occasion_for_outfit">Occasion for outfit</string>
     <string name="uploading">Uploading</string>
@@ -69,6 +87,7 @@
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_take_photo">Take Photo</string>
+    <string name="action_spinner">Spinner</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
@@ -121,6 +140,7 @@
     <string name="about_title_3_desc_8">Ivan Arcuschin for the SimpleRatingBar Library</string>
     <string name="about_title_3_desc_9">Icons from https://icons8.com/</string>
     <string name="about_title_3_desc_10">Tango Agency for the Avatar View Library</string>
+    <string name="about_title_3_desc_11">Jacek for the EasyImage Library</string>
     <string name="about_trademark">Something LLC. All rights reserved.</string>
     <string name="report">report</string>
     <string name="delete">delete</string>
@@ -147,5 +167,15 @@
     <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
     <string name="share_photo">share_photo</string>
     <string name="anonymous_user">Anonymous User</string>
+
+    <!-- Content Description -->
+    <string name="description_submit_comment">Submit Comment</string>
+
+    <string-array name="spinner_list_item_array">
+        <item>All</item>
+        <item>Fashion</item>
+        <item>Art</item>
+        <item>Cooking</item>
+    </string-array>
 
 </resources>

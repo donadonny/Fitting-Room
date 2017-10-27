@@ -1,9 +1,12 @@
-package tk.talcharnes.unborify.NavigationFragments.MyPhotos;
+package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +32,12 @@ import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import tk.talcharnes.unborify.CommentActivity;
 import tk.talcharnes.unborify.CommentsData.Comment;
@@ -135,8 +145,24 @@ public class PhotoView {
         shareButton.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
-                // TODO: 9/25/2017 insert code for share button here
-                Toast.makeText(mContext, "SHARE BUTTON NOT IMPLEMENTED YET", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Share button Clicked");
+                Bitmap image = ((GlideBitmapDrawable) imageView.getDrawable()).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] imageInByte = stream.toByteArray();
+                File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + "/FittingRoom_Data/", "share_photo.png");
+
+                saveFile(destination, imageInByte);
+                Uri uri = Uri.fromFile(destination);
+
+                Intent mmsIntent = new Intent(Intent.ACTION_SEND);
+                mmsIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+                        "Check out this awesome image from the FittingRoom app.");
+                mmsIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                mmsIntent.setType("image/*");
+                mContext.startActivity(Intent.createChooser(mmsIntent,"Send"));
+
             }
         });
         menuButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -293,5 +319,19 @@ public class PhotoView {
         });
         AlertDialog b = dialogBuilder.create();
         b.show();
+    }
+
+    public void saveFile(File destination, byte[] fileSize) {
+        FileOutputStream fo;
+        try {
+            fo = new FileOutputStream(destination);
+            fo.write(fileSize);
+            fo.close();
+            //Toast.makeText(mContext, "File Successfully Saved!!", Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            //Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

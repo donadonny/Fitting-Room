@@ -78,4 +78,5 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 * Ivan Arcuschin for the SimpleRatingBar Library
 * Ravi Tamada from AndroidHive
 * Tango Agency for the Avatar View Library
+* Jacek for the EasyImage Library
 * Icons from https://icons8.com/

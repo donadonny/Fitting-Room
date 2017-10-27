@@ -12,9 +12,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/thumbs_down_fab"
             android:layout_width="@dimen/fab_size"
@@ -56,6 +56,13 @@
             android:contentDescription="@string/expand_picture"
             android:src="@drawable/ic_action_zoom" />
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+
         <ImageButton
             android:id="@+id/share_button"
             android:layout_width="wrap_content"
@@ -65,7 +72,7 @@
             android:background="@color/semi_transparent_background"
             android:contentDescription="@string/share_photo"
             android:src="@drawable/ic_action_share"
-             />
+            />
 
         <ImageButton
             android:id="@+id/comment_button"

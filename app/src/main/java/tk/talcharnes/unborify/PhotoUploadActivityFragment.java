@@ -1,18 +1,19 @@
 package tk.talcharnes.unborify;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.FileProvider;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,56 +28,52 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import id.zelory.compressor.Compressor;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
-import static android.app.Activity.RESULT_OK;
-import static tk.talcharnes.unborify.MainActivityFragment.REQUEST_IMAGE_CAPTURE;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PhotoUploadActivityFragment extends Fragment {
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private StorageReference mStorageRef;
-    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    private String mCurrentPhotoPath;
-    Uri photoURI;
-    int photoOrientation;
-    String imageFileNameNoJPG;
-    FirebaseDatabase database;
-    ImageView userImageToUploadView;
-    boolean canUpload = false;
-    Button submitButton;
-    EditText photo_description_edit_text;
-    String photoDescription;
-    ProgressBar progressBar;
-    String user;
-    private Uri compressedPhotoUri;
-    private File compressedImage;
-    File photoFile;
-    private AdView mAdView;
+
+    private static final String LOG_TAG = PhotoUploadActivityFragment.class.getSimpleName();
+    private static final int PERMISSIONS_REQUEST = 123;
+
+    private ImageView userImageToUploadView;
+    private Button submitButton;
+    private EditText photo_description_edit_text;
+    private String photoDescription, user;
+    private ProgressBar progressBar;
     private InterstitialAd mInterstitialAd;
+    private byte[] bytes;
+    private int rotation;
 
     public PhotoUploadActivityFragment() {
     }
@@ -84,17 +81,15 @@ public class PhotoUploadActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user = FirebaseConstants.getUser().getUid();
 
         View rootView = inflater.inflate(R.layout.fragment_photo_upload, container, false);
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        database = FirebaseDatabase.getInstance();
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
         photo_description_edit_text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(photo_description_edit_text.getWindowToken(), 0);
                 }
                 return true;
@@ -103,7 +98,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
-        mAdView = (AdView) rootView.findViewById(R.id.photo_upload_adview);
+        AdView mAdView = (AdView) rootView.findViewById(R.id.photo_upload_adview);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -111,17 +106,31 @@ public class PhotoUploadActivityFragment extends Fragment {
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
+        EasyImage.configuration(getActivity())
+                .setImagesFolderName("FittingRoom_Data")
+                .saveInAppExternalFilesDir();
 
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
-        setImageOnClick();
+
+        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askForPermission();
+            }
+        });
 
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean editTextNotNull = checkEditTextNotNull();
-                if (canUpload && editTextNotNull) {
-                    uploadPhoto();
+                if (bytes != null && editTextNotNull) {
+                    if(PhotoUploadActivity.chosen.isEmpty() | PhotoUploadActivity.chosen.equals("All")) {
+                        Toast.makeText(getActivity(), "Please selete a category.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        uploadImage(bytes);
+                    }
                 }
             }
         });
@@ -129,218 +138,242 @@ public class PhotoUploadActivityFragment extends Fragment {
         return rootView;
     }
 
-    private void takePhoto() throws IOException {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Create the File where the photo should go
-        photoFile = null;
-        try {
-            photoFile = getFile();
-
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-
-        }
-        if (photoFile != null) {
-            photoURI = FileProvider.getUriForFile(getContext(),
-                    "com.example.android.fileprovider",
-                    photoFile);
-
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-
-        }
-    }
-
-    private File getFile() throws IOException {
-        askForPermission();
-        Long timeStamp = System.currentTimeMillis();
-        imageFileNameNoJPG = timeStamp + "_byUser_" + FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileNameNoJPG,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private void askForPermission() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (getActivity().checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (shouldShowRequestPermissionRationale(
-                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                        // Explain to the user why we need to read the contacts
-                    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if(requestCode == PERMISSIONS_REQUEST && grantResults.length > 0) {
+            boolean allPermissionsGranted = true;
+            for (int grantResult : grantResults) {
+                if (grantResult == PackageManager.PERMISSION_DENIED) {
+                    allPermissionsGranted = false;
                 }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                }
-
-                // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                // app-defined int constant that should be quite unique
+            }
+            if(allPermissionsGranted) {
+                EasyImage.openChooserWithGallery(PhotoUploadActivityFragment.this, "", 0);
+            } else {
+                showGrantPermissionDialog();
             }
         }
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            canUpload = true;
-            Uri imageUri = photoURI;
-            compressPhotoFactory(photoFile);
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            photoOrientation = PhotoUtilities.getCameraPhotoOrientation(getContext(), photoURI, mCurrentPhotoPath);
+        if (resultCode == Activity.RESULT_OK) {
+            EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(),
+                    new DefaultCallback() {
+                        @Override
+                        public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                            Log.d(LOG_TAG, "Failed to pick a image, error: " + e.toString());
+                        }
 
-            userImageToUploadView.setImageBitmap(bitmap);
-//          Ensure image is set the right way
-            userImageToUploadView.setRotation(90);
+                        @Override
+                        public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                            rotation = PhotoUtilities.getCameraPhotoOrientation(getActivity(),
+                                    Uri.fromFile(imageFile), imageFile.getAbsolutePath());
+
+                            Log.d(LOG_TAG, "Successfully picked an image, source: " + source.name());
+                            try {
+                                File compressedFile = new Compressor(getActivity()).compressToFile(imageFile);
+                                int size = (int) compressedFile.length();
+                                bytes = new byte[size];
+                                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedFile));
+                                int i = buf.read(bytes, 0, bytes.length);
+                                buf.close();
+                                Glide.with(getActivity()).load(bytes).asBitmap().into(userImageToUploadView);
+
+                            } catch (IOException e) {
+                                Log.d(LOG_TAG, "Failed to compress image, error: " + e.toString());
+                            }
+                        }
+
+                        @Override
+                        public void onCanceled(EasyImage.ImageSource source, int type) {
+                            //Cancel handling, you might wanna remove taken photo if it was canceled
+                            Log.d(LOG_TAG, "Canceling taken photo");
+                            if (source == EasyImage.ImageSource.CAMERA) {
+                                File photoFile = EasyImage.lastlyTakenButCanceledPhoto(getActivity());
+                                if (photoFile != null) {
+                                    Boolean isDeleted = photoFile.delete();
+                                }
+                            }
+                        }
+                    });
         }
     }
 
-
-    private void uploadPhoto() {
+    private void uploadImage(byte[] data) {
         submitButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         photo_description_edit_text.setVisibility(View.GONE);
-        removeImageOnClick();
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType("image/webp")
+                .build();
 
-        final String compressedImageFileName = imageFileNameNoJPG + ".webp";
-        StorageReference riversRef = mStorageRef.child("images/" + compressedImageFileName);
-        if (mCurrentPhotoPath != null) {
-            final UploadTask uploadTask =
-//                    The following line makes app upload original photo
-//                    riversRef.putFile(photoURI);
-                    riversRef.putFile(compressedPhotoUri);
+        final String photoName = System.currentTimeMillis() + "_byUser_" + user;
+        StorageReference imageRef = FirebaseConstants.getStorRef().child("images/" + photoName + ".webp");
+        UploadTask uploadTask = imageRef.putBytes(data, metadata);
 
-            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) /
-                            taskSnapshot.getTotalByteCount();
-                    progressBar.setProgress((int) progress);
+        final Resources res = getResources();
 
-                }
-            });
-
-
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Get a URL to the uploaded content
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), R.string.upload_success, Toast.LENGTH_SHORT).show();
-                    }
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Photo photo = new Photo();
-                    photo.setUrl(compressedImageFileName);
-                    photo.setUser(user);
-                    photo.setLikes(0);
-                    photo.setDislikes(0);
-                    photo.setReports(0);
-                    photo.setOccasion_subtitle(photoDescription);
-                    photo.setOrientation(photoOrientation);
-                    photo.setAd(false);
-
-                    // TODO change the following when expanding app to have more categories
-                    photo.setCategory(FirebaseConstants.CATEGORY_FASHION);
-
-                    DatabaseReference photoReference = database.getReference(FirebaseConstants.PHOTOS)
-                            .child(imageFileNameNoJPG);
-                    //DatabaseReference userReference = database.getReference().child(FirebaseConstants.USERS).child(user).child(imageFileNameNoJPG);
-
-                    photoReference.setValue(photo);
-                    //userReference.setValue(photo);
-
-                    Utils.photosUploadedCounter++;
-                    if (Utils.photosUploadedCounter % 2 == 0) {
-                        if (mInterstitialAd.isLoaded()) {
-                            mInterstitialAd.show();
-                        } else {
-                            Log.d("TAG", "The interstitial wasn't loaded yet.");
-                        }
-                    } else {
-                        if (getContext() != null) {
-                            NavUtils.navigateUpFromSameTask(getActivity());
-                        }
-                    }
-                    mInterstitialAd.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            // Code to be executed when an ad finishes loading.
-                            Log.i("Ads", "onAdLoaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(int errorCode) {
-                            // Code to be executed when an ad request fails.
-                            Log.i("Ads", "onAdFailedToLoad");
-                            if (getContext() != null) {
-                                NavUtils.navigateUpFromSameTask(getActivity());
-                            }
-                        }
-
-                        @Override
-                        public void onAdOpened() {
-                            // Code to be executed when the ad is displayed.
-                            Log.i("Ads", "onAdOpened");
-                        }
-
-                        @Override
-                        public void onAdLeftApplication() {
-                            // Code to be executed when the user has left the app.
-                            Log.i("Ads", "onAdLeftApplication");
-                        }
-
-                        @Override
-                        public void onAdClosed() {
-                            // Code to be executed when when the interstitial ad is closed.
-                            Log.i("Ads", "onAdClosed");
-                            if (getContext() != null) {
-                                NavUtils.navigateUpFromSameTask(getActivity());
-                            }
-                        }
-                    });
-
-                    Analytics.registerUpload(getActivity(), user);
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            if (getContext() != null) {
-                                Toast.makeText(getContext(), R.string.sending_failed, Toast.LENGTH_SHORT).show();
-                            }
-                            submitButton.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            photo_description_edit_text.setVisibility(View.VISIBLE);
-                            setImageOnClick();
-                        }
-                    });
-        } else {
-            Log.d(LOG_TAG, "mCurrentPhotoPath was null");
-            if (getContext() != null) {
-                Toast.makeText(getContext(), R.string.upload_failed_error_string, Toast.LENGTH_SHORT).show();
+        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = 100.0 * (taskSnapshot.getBytesTransferred() /
+                        taskSnapshot.getTotalByteCount());
+                progressBar.setProgress((int) progress);
             }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size,
+                // content-type, and download URL.
+                Log.d(LOG_TAG, "Image is successfully uploaded: " + taskSnapshot.getMetadata());
+
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                Analytics.registerUpload(getActivity(), user);
+
+                Photo photo = new Photo(user, photoDescription, FirebaseConstants.CATEGORY_FASHION,
+                        0, 0, 0, rotation, photoName + ".webp");
+
+                FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(photoName).setValue(photo);
+
+                Utils.photosUploadedCounter++;
+                if (Utils.photosUploadedCounter % 2 == 0) {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    }
+                } else {
+                    if (getContext() != null) {
+                        //NavUtils.navigateUpFromSameTask(getActivity());
+                    }
+                }
+
+                setupAd();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                showUploadDialog(res.getString(R.string.failure_title),
+                        res.getString(R.string.failure_message) + " " +
+                                res.getString(R.string.dialog_main_message));
+            }
+        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                showUploadDialog(res.getString(R.string.success_title),
+                        res.getString(R.string.success_message) + " " +
+                                res.getString(R.string.dialog_main_message));
+            }
+        });
+    }
+
+    private void showUploadDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.return_home, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //getActivity().finish();
+                        NavUtils.navigateUpFromSameTask(getActivity());
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        submitButton.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        photo_description_edit_text.setVisibility(View.VISIBLE);
+                        photo_description_edit_text.setText("");
+                        userImageToUploadView.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                                R.drawable.ic_add_a_photo_black_48dp));
+                        bytes = null;
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
+    private void showGrantPermissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Stop!")
+                .setMessage("You must grant all the permissions request otherwise you can't use this feature.")
+                .setCancelable(false)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
+    private void setupAd() {
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad");
+                if (getContext() != null) {
+                    // NavUtils.navigateUpFromSameTask(getActivity());
+                }
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+                Log.i("Ads", "onAdOpened");
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.i("Ads", "onAdLeftApplication");
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+                Log.i("Ads", "onAdClosed");
+                if (getContext() != null) {
+                    // NavUtils.navigateUpFromSameTask(getActivity());
+                }
+            }
+        });
+    }
+
+    private void askForPermission() {
+
+        ArrayList<String> permissionsList = new ArrayList<String>(Arrays
+                .asList(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.CAMERA));
+
+        for(int i = permissionsList.size()-1; i > -1; i--) {
+            if(ActivityCompat.checkSelfPermission(getActivity(), permissionsList.get(i)) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                permissionsList.remove(i);
+            }
+        }
+
+        if(permissionsList.size() > 0) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    permissionsList.toArray(new String[0]), PERMISSIONS_REQUEST);
+        } else {
+            EasyImage.openChooserWithGallery(PhotoUploadActivityFragment.this, "", 0);
         }
 
     }
@@ -349,68 +382,17 @@ public class PhotoUploadActivityFragment extends Fragment {
         photoDescription = photo_description_edit_text.getText().toString();
 
         int photoDescriptionLength = photoDescription.length();
-        boolean editTextVerifiedForUpload;
-        if (photoDescription != null && !photoDescription.isEmpty() && !photoDescription.equals("") && photoDescriptionLength <= 40) {
-            editTextVerifiedForUpload = true;
-        } else if (photoDescriptionLength > 40) {
-            int tooLongByThisManyCharacters = photoDescriptionLength - 40;
-            photo_description_edit_text.setError("Please remove " + tooLongByThisManyCharacters + " characters");
-            editTextVerifiedForUpload = false;
-        } else {
+
+        if(photoDescriptionLength == 0) {
             photo_description_edit_text.setError(getString(R.string.occasion_cannot_be_empty_string));
-            editTextVerifiedForUpload = false;
+        } else if(photoDescriptionLength > 40) {
+            int tooLongByThisManyCharacters = photoDescriptionLength - 40;
+            photo_description_edit_text.setError("Please remove " + tooLongByThisManyCharacters +
+                    " characters");
+        } else {
+            return true;
         }
-        return editTextVerifiedForUpload;
+        return false;
     }
-
-    private void removeImageOnClick() {
-        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-    }
-
-    private void setImageOnClick() {
-        userImageToUploadView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    takePhoto();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void compressPhotoFactory(File photoFile) {
-        try {
-            compressedImage = new Compressor(getContext()).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(photoFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        compressedPhotoUri = Uri.fromFile(new File(compressedImage.getAbsolutePath()));
-        Log.d(LOG_TAG, "COMPRESSED PHOTO URI = " + compressedPhotoUri.toString());
-
-    }
-
-    /*private void loadAd() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean hasUploadedBefore = sharedPref.getBoolean("showAd", false);
-        if(hasUploadedBefore) {
-
-        }
-    }
-
-    private void editShowAd() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.saved_high_score), newHighScore);
-        editor.commit();
-
-    }*/
 
 }

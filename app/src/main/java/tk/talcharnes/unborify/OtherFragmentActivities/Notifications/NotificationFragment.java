@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.NavigationFragments.Notifications;
+package tk.talcharnes.unborify.OtherFragmentActivities.Notifications;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +29,7 @@ import tk.talcharnes.unborify.myNotifications;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
+ *
  */
 
 public class NotificationFragment extends Fragment {

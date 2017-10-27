@@ -1,9 +1,8 @@
-package tk.talcharnes.unborify;
+package tk.talcharnes.unborify.MainNavigationFragments;
 
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,6 +27,10 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 import java.util.ArrayList;
 
+import tk.talcharnes.unborify.AdCard;
+import tk.talcharnes.unborify.Photo;
+import tk.talcharnes.unborify.PhotoCard;
+import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -36,15 +39,11 @@ import tk.talcharnes.unborify.Utilities.Utils;
  */
 public class MainActivityFragment extends Fragment {
 
-    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-    FloatingActionButton fab;
-
-    ArrayList<Photo> photoList;
-    private int i = 0;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private ArrayList<Photo> photoList;
     private String userId, userName;
-    private String oldestPostId = "";
+    private String oldestPostId;
     private DatabaseReference photoReference;
     private DatabaseReference reportRef;
 
@@ -58,7 +57,6 @@ public class MainActivityFragment extends Fragment {
     private int widthInDP;
     private int heightInDP;
     private boolean refresh;
-    private ArrayList<Photo> photos;
 
     /**
      * Constructor.
@@ -71,13 +69,14 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        photos = new ArrayList<>();
         photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
         reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
+        oldestPostId = "";
 
         initializeBasicSetup();
 
         initializeSwipePlaceHolderView();
+        Log.d(LOG_TAG, "Load main");
 
         //initializeAd();
 
@@ -124,7 +123,7 @@ public class MainActivityFragment extends Fragment {
     private void initializeSwipePlaceHolderView() {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
-        int bottomMargin = Utils.dpToPx(50);
+        int bottomMargin = Utils.dpToPx(90);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
@@ -133,7 +132,7 @@ public class MainActivityFragment extends Fragment {
                 .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
                         .setViewWidth((int) (windowSize.x * .99))
-                        .setViewHeight(((int) (windowSize.y * .92)) - bottomMargin)
+                        .setViewHeight(((int) (windowSize.y * .90)) - bottomMargin)
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f));
@@ -142,17 +141,21 @@ public class MainActivityFragment extends Fragment {
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
             @Override
             public void onItemRemoved(int count) {
+                Log.d(LOG_TAG, "Swipe");
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
                 if (count < 1) {
                     /*if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
                     }*/
+                    Log.d(LOG_TAG, "Empty SwipeView");
                     if (refresh) {
+                        Log.d(LOG_TAG, "No more photos");
                         refreshButton.setVisibility(View.VISIBLE);
                         refresh_textview.setVisibility(View.VISIBLE);
                     } else {
                         getPhotos();
+                        Log.d(LOG_TAG, "Getting more photos");
                     }
                 }
             }

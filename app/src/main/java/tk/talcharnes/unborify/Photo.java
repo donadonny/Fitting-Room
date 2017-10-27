@@ -23,9 +23,23 @@ public class Photo {
     public static final String URL_KEY = "url";
     public static final String DISLIKES_KEY = "dislikes";
     public static final String LIKES_KEY = "likes";
+    public static final String CATEGORY_KEY = "category";
+    public static final String VOTES = "votes";
 
     public Photo() {
 
+    }
+
+    public Photo(String user, String occasion_subtitle, String category, long likes, long dislikes, long reports,
+                 int orientation, String url) {
+        this.user = user;
+        this.occasion_subtitle = occasion_subtitle;
+        this.category = category;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.reports = reports;
+        this.orientation = orientation;
+        this.url = url;
     }
 
     public String getUser() {
@@ -101,7 +115,10 @@ public class Photo {
     }
 
     public String getCategory() {
-        return category;
+        if(category != null) {
+            return category;
+        }
+        return "Fashion";
     }
 
     public void setCategory(String category) {
