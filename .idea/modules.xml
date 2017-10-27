@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Fitting-Room.iml" filepath="$PROJECT_DIR$/Fitting-Room.iml" />
-      <module fileurl="file://$PROJECT_DIR$/UnBorify.iml" filepath="$PROJECT_DIR$/UnBorify.iml" />
+      <module fileurl="file://D:\Users\coolm_000\GitHub_Projects\fittingRoom\Fitting-Room.iml" filepath="D:\Users\coolm_000\GitHub_Projects\fittingRoom\Fitting-Room.iml" />
+      <module fileurl="file://D:\Users\coolm_000\GitHub_Projects\fittingRoom\UnBorify.iml" filepath="D:\Users\coolm_000\GitHub_Projects\fittingRoom\UnBorify.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fittingRoom.iml" filepath="$PROJECT_DIR$/fittingRoom.iml" />
     </modules>
   </component>
 </project>
