@@ -1,9 +1,18 @@
 package tk.talcharnes.unborify.Utilities;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,6 +28,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.MyTransformation;
+import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Report;
 
 /**
@@ -31,8 +42,12 @@ public class FirebaseConstants {
     public final static String USERS = "Users";
     public final static String INSTANCEID = "instanceId";
     public final static String USERNAME = "name";
+    public final static String USER_CONNECTIONS = "user_connections";
+    public final static String USER_FAVORITES= "user_favorites";
+    public final static String FAVORITE = "Favorite";
     public final static String URI = "uri";
     public final static String IMAGES = "images";
+    public final static String PROFILE_IMAGE = "profileImages";
     public final static String REPORTS = "Reports";
     public final static String NOTIFICATION = "Notifications";
     public final static String VOTES = "votes";
@@ -123,6 +138,76 @@ public class FirebaseConstants {
             }
 
         });
+    }
+
+    public static void loadImageUsingGlide(Context context, ImageView imageView,
+                                    StorageReference storageReference,
+                                    final ProgressBar progressBar) {
+        GlideApp.with(context)
+                .load(storageReference)
+                .transform(new MyTransformation(context, 0))
+                .placeholder(R.mipmap.ic_launcher)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e,
+                                                Object model, Target<Drawable> target,
+                                                boolean isFirstResource) {
+                        if(progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+                        if(progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
+                        return false;
+                    }
+
+                })
+                .into(imageView);
+    }
+
+    public static void loadImageUsingGlide(Context context, ImageView imageView,
+                                           StorageReference storageReference,
+                                           final ProgressBar progressBar, int rotation) {
+        if (context.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            if (rotation != 0) {
+                rotation = 0;
+            }
+        } else if (context.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT) {
+            if (rotation != 0) {
+                rotation = 0;
+            }
+        }
+        GlideApp.with(context)
+                .load(storageReference)
+                .transform(new MyTransformation(context, rotation))
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e,
+                                                Object model, Target<Drawable> target,
+                                                boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                        return false;
+                    }
+
+                })
+                .into(imageView);
     }
 
 }

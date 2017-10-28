@@ -1,6 +1,6 @@
 <resources>
     <!--App name-->
-    <string name="app_name" translatable="false">Fitting Room</string>
+    <string name="app_name" translatable="false">RateIt</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>
@@ -20,18 +20,32 @@
     <string name="submit">Submit</string>
     <string name="add_photo">Add Photo</string>
     <string name="refresh">Refresh</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
     <string name="refresh_title">Click the refresh button to load new photos</string>
+    <string name="refresh_title_2">Click the refresh button to reload photos</string>
     <string name="retake_photo">Retake Photo</string>
     <string name="return_home">Return Home</string>
+    <string name="share_text">Check out this awesome image from </string>
+    <string name="favorites">Add to Favorites</string>
 
     <string name="no_image_title">Looks like there are no images in this category.
         Click on the camera button to add a image in this category.</string>
+    <string name="no_image_title_2">Looks like you haven\'t liked any photos.
+        Go to the home screen and see if there is anything you like.</string>
+    <string name="no_image_title_3">Looks like this user has not uploaded any photos.</string>
+    <string name="no_image_title_4">Looks like this user isn\'t following anybody.</string>
+    <string name="no_image_title_5">Looks like this user doesn\'t like any photos.</string>
+    <string name="no_image_title_6">Looks like there no more photos. Come back to this category
+        later.</string>
+    <string name="no_image_title_7">Looks like you haven\'t liked any photos.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>
     <string name="title_activity_contact_us">Contact Us</string>
     <string name="title_activity_about">About</string>
-
+    <string name="title_activity_likes">Likes</string>
+    <string name="title_activity_favorites">Favorites</string>
 
     <!-- Photo Upload Strings -->
     <string name="success_title">Success!</string>
@@ -72,6 +86,8 @@
     <string name="nav_help">Help</string>
     <string name="nav_contact_us">Contact Us</string>
     <string name="nav_about_us">About Us</string>
+    <string name="nav_likes">Likes</string>
+    <string name="nav_favorites">Favorites</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
@@ -93,6 +109,7 @@
     <string name="action_edit_photo">Edit Photo</string>
     <string name="dislike">Dislike</string>
     <string name="like">like</string>
+    <string name="picture">Picture</string>
     <string name="expand_picture">Expand Picture</string>
     <string name="comments">Comments</string>
     <string name="picture_options">Picture Options</string>
@@ -173,9 +190,21 @@
 
     <string-array name="spinner_list_item_array">
         <item>All</item>
-        <item>Fashion</item>
-        <item>Art</item>
-        <item>Cooking</item>
+        <item>Trendy</item>
+        <item>Casual</item>
+        <item>Exotic</item>
+        <item>Vibrant</item>
+        <item>Sexy</item>
+        <item>Preppy</item>
+        <item>Elegant</item>
+        <item>Bohemian</item>
+        <item>Punk</item>
+        <item>Artsy</item>
+        <item>Professional</item>
+        <item>Gothic</item>
+        <item>Rocker</item>
+        <item>Classic</item>
+        <item>Sporty</item>
     </string-array>
 
 </resources>

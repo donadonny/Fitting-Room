@@ -111,10 +111,10 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.ViewHold
         String urlString = photo.getUrl();
         if (urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images").child(urlString);
-            Glide.with(mContext)
+            /*Glide.with(mContext)
                     .using(new FirebaseImageLoader())
                     .load(storageRef)
-                    .into(holder.mImageView);
+                    .into(holder.mImageView); */
         }
 
         holder.commentsButton.setOnClickListener(new View.OnClickListener() {

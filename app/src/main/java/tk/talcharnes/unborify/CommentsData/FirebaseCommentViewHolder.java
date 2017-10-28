@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,6 +54,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void bindComment(final Comment comment, String currentUser) {
+        Log.d(TAG, "Loading Comment: " + comment.getComment_key());
         TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);

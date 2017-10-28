@@ -11,11 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,29 +52,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final myNotifications notification = dataList.get(position);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                 .child(FirebaseConstants.IMAGES).child(notification.getPhotoUrl());
-        Glide.with(mContext)
-                .using(new FirebaseImageLoader())
-                .load(storageRef).transform(new MyTransformation(mContext, 90))
-                .listener(new RequestListener<StorageReference, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, StorageReference model,
-                                               Target<GlideDrawable> target,
-                                               boolean isFirstResource) {
-                        holder.progressBar.setVisibility(android.view.View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource,
-                                                   StorageReference model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache,
-                                                   boolean isFirstResource) {
-                        holder.progressBar.setVisibility(android.view.View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.imageView);
+        FirebaseConstants.loadImageUsingGlide(mContext, holder.imageView, storageRef,
+                holder.progressBar, 0);
         holder.message.setText(notification.getMessage());
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
                 .child(FirebaseConstants.USERNAME)
