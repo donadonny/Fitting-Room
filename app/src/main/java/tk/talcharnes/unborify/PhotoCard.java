@@ -6,13 +6,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
@@ -22,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -124,6 +119,7 @@ public class PhotoCard {
     private IImageLoader imageLoader;
     private StorageReference storageRef;
 
+
     public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
                      String userName, DatabaseReference photoReference,
                      DatabaseReference reportsRef) {
@@ -135,9 +131,35 @@ public class PhotoCard {
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
     }
+    /**
+     * @TODO
+     * @param uid
+     */
+    private void setUploader(final String uid) {
+        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if (user != null) {
+                                usernameTextView.setText(user.getName());
+                                imageLoader.loadImage(avatarView, uid, user.getName());
+                                photoImageView.setContentDescription("Uploaded By "+ user.getName()
+                                        +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
     /**
      * This function sets up the Card View with an image, name, and the ratings.
+     *
+     * @TODO this function seems to do a lot of things can we break it up some?
      */
     @Resolve
     private void onResolved() {
@@ -179,6 +201,7 @@ public class PhotoCard {
                 ratingBar.setFillColor(ratingColors[index]);
                 ratingBar.setBorderColor(ratingShadowColors[index]);
                 ratingBar.setRating(rating / 20f);
+
             }
             zoom_button.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
@@ -272,6 +295,8 @@ public class PhotoCard {
     private void onClick() {
         //Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
+        /*photoImageView.setContentDescription("Uploaded By "+ mUploaderName
+                +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");*/
         togglePhotoAddOns();
 
     }
@@ -426,34 +451,21 @@ public class PhotoCard {
         });
     }
 
-    private void setUploader(final String uid) {
-        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            User user = dataSnapshot.getValue(User.class);
-                            if (user != null && usernameTextView != null) {
-                                usernameTextView.setText(user.getName());
-
-                                String uri = user.getUri() + "";
-                                imageLoader.loadImage(avatarView, uid, user.getName());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-    }
-
+    /**
+     * @// TODO: 10/25/2017
+     * @param px
+     * @return
+     */
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return dp;
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     * @return
+     */
     private int getRotation() {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -468,6 +480,9 @@ public class PhotoCard {
         return rotation;
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     */
     private void togglePhotoAddOns() {
         if (mVisible) {
             zoom_button.setVisibility(android.view.View.GONE);
@@ -485,6 +500,11 @@ public class PhotoCard {
         }
     }
 
+    /**
+     * @// TODO: 10/25/2017
+     * @param v
+     * @param i
+     */
     private void showPopup(android.view.View v, final int i) {
         PopupMenu popup = new PopupMenu(mContext, v);
         MenuInflater inflater = popup.getMenuInflater();
