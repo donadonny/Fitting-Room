@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="20dp"
-            android:text="@string/placeholder"
+            android:text="@string/no_deals_available_string"
             android:textColor="#FFF"
             android:textAlignment="center" />
 

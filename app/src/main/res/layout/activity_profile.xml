@@ -63,7 +63,7 @@
                 android:layout_marginTop="76dp"
                 android:textColor="#fff"
                 android:textSize="24sp"
-                android:text="@string/placeholder"
+                android:text="@string/no_deals_available_string"
                 android:textStyle="bold" />
 
             <TextView
@@ -95,7 +95,7 @@
                 android:elevation="4dp"
                 android:padding="20dp"
                 android:textSize="14sp"
-                android:text="@string/placeholder"
+                android:text="@string/no_deals_available_string"
                 tools:targetApi="lollipop" />
 
             <TextView
@@ -109,7 +109,7 @@
                 android:elevation="4dp"
                 android:padding="20dp"
                 android:textSize="14sp"
-                android:text="@string/placeholder"
+                android:text="@string/no_deals_available_string"
                 tools:targetApi="lollipop" />
 
             <TextView

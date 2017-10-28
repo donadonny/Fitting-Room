@@ -9,7 +9,7 @@
     <string name="no_network_or_rest_api_chosen_string">Error! Please check that you are connected to network and at least one entertainment source is chosen!</string>
 
     <!-- Place holder string -->
-    <string name="placeholder">placeholder</string>
+    <string name="no_deals_available_string">No deals available. Please come back later!</string>
 
     <!--Test banner ad unit id-->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

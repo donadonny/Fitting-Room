@@ -123,7 +123,7 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    tools:text="@string/placeholder" />
+                    tools:text="@string/no_deals_available_string" />
 
                 <TextView
                     android:id="@+id/uploadederNameTxt"
@@ -132,7 +132,7 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     android:textStyle="normal"
-                    tools:text="@string/placeholder" />
+                    tools:text="@string/no_deals_available_string" />
             </LinearLayout>
 
             <ImageButton
