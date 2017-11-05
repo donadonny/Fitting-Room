@@ -94,7 +94,9 @@ public class PhotoUploadActivityFragment extends Fragment {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(photo_description_edit_text.getWindowToken(), 0);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(photo_description_edit_text.getWindowToken(), 0);
+                    }
                 }
                 return true;
             }
