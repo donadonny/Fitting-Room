@@ -9,6 +9,7 @@
     <string name="no_network_or_rest_api_chosen_string">Error! Please check that you are connected to network and at least one entertainment source is chosen!</string>
 
     <!-- Place holder string -->
+    <string name="placeholder">placeholder</string>
     <string name="no_deals_available_string">No deals available. Please come back later!</string>
 
     <!--Test banner ad unit id-->
@@ -39,6 +40,7 @@
     <string name="no_image_title_6">Looks like there no more photos. Come back to this category
         later.</string>
     <string name="no_image_title_7">Looks like you haven\'t liked any photos.</string>
+    <string name="no_image_title_8">Looks like you aren\'t following anybody..</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>

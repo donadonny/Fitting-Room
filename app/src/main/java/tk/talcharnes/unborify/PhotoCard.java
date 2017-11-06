@@ -131,6 +131,7 @@ public class PhotoCard {
         mPhotoReference = photoReference;
         mReportsRef = reportsRef;
     }
+
     /**
      * @TODO
      * @param uid
@@ -142,7 +143,7 @@ public class PhotoCard {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             User user = dataSnapshot.getValue(User.class);
-                            if (user != null) {
+                            if (user != null && usernameTextView != null && user.getName() != null) {
                                 usernameTextView.setText(user.getName());
                                 imageLoader.loadImage(avatarView, uid, user.getName());
                                 photoImageView.setContentDescription("Uploaded By "+ user.getName()

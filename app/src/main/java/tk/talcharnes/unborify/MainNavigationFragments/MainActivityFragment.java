@@ -143,6 +143,8 @@ public class MainActivityFragment extends Fragment {
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f));
 
+        getPhotos();
+
         spinner = (Spinner) getActivity().findViewById(R.id.toolbar).findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -152,7 +154,7 @@ public class MainActivityFragment extends Fragment {
                 Log.d(LOG_TAG, "category chosen: " + chosen);
                 mSwipeView.removeAllViews();
                 noImagesTextView.setVisibility(View.GONE);
-                if(!firstTime) {
+                if(firstTime) {
                     if (chosen.equals("All")) {
                         getPhotos();
                         categoryMode = false;
@@ -165,12 +167,9 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
-        getPhotos();
-        spinner.setSelection(0);
         firstTime = false;
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
@@ -208,18 +207,14 @@ public class MainActivityFragment extends Fragment {
         mContext = getContext();
 
         final long startTime = System.currentTimeMillis();
-
-        final boolean firstTime;
         Query query;
 
         final Photo adViewPhoto = new Photo();
         adViewPhoto.setAd(true);
 
         if (oldestPostId.isEmpty()) {
-            firstTime = true;
-            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(8);
+            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(9);
         } else {
-            firstTime = false;
             query = photoReference.orderByChild(Photo.URL_KEY).endAt(oldestPostId).limitToLast(8);
         }
 
@@ -227,7 +222,6 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    int len = 0;
                     ArrayList<PhotoCard> list = new ArrayList<PhotoCard>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
@@ -244,12 +238,11 @@ public class MainActivityFragment extends Fragment {
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("category")
                                 .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
                         if(photo != null) {
+                            if(list.size() == 0) {
+                                oldestPostId = PhotoUtilities.removeWebPFromUrl(photo.getUrl());
+                            }
                             list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
                                     photoReference, reportRef));
-                            if (len == 0) {
-                                oldestPostId = photo.getUrl();
-                                len++;
-                            }
                         }
                     }
 
