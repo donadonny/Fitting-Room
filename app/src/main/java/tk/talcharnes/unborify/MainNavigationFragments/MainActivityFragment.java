@@ -9,7 +9,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -26,12 +28,14 @@ import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tk.talcharnes.unborify.AdCard;
 import tk.talcharnes.unborify.Photo;
 import tk.talcharnes.unborify.PhotoCard;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
@@ -52,12 +56,14 @@ public class MainActivityFragment extends Fragment {
     private View rootView;
     private SwipePlaceHolderView mSwipeView;
     private Button refreshButton;
-    private TextView refresh_textview;
+    private TextView refresh_textview, noImagesTextView;
     private Context mContext;
     private int widthInDP;
     private int heightInDP;
     private boolean refresh;
-
+    private Spinner spinner;
+    private boolean firstTime = true;
+    private boolean categoryMode = false;
     /**
      * Constructor.
      */
@@ -93,13 +99,11 @@ public class MainActivityFragment extends Fragment {
         userId = user.getUid();
         userName = user.getDisplayName();
 
-
         //Native banner ad
         /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);*/
 
-        // Report Fab button
         refreshButton = rootView.findViewById(R.id.refreshBtn);
 
         refresh_textview = rootView.findViewById(R.id.refreshTitle);
@@ -114,6 +118,8 @@ public class MainActivityFragment extends Fragment {
                 getPhotos();
             }
         });
+
+        noImagesTextView = rootView.findViewById(R.id.noImagesTitle);
 
     }
 
@@ -136,7 +142,36 @@ public class MainActivityFragment extends Fragment {
                         .setViewGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f));
+
+        spinner = (Spinner) getActivity().findViewById(R.id.toolbar).findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                String chosen =  parent.getItemAtPosition(position).toString();
+                oldestPostId = "";
+                Log.d(LOG_TAG, "category chosen: " + chosen);
+                mSwipeView.removeAllViews();
+                noImagesTextView.setVisibility(View.GONE);
+                if(!firstTime) {
+                    if (chosen.equals("All")) {
+                        getPhotos();
+                        categoryMode = false;
+                    } else {
+                        getPhotos(chosen);
+                        categoryMode = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         getPhotos();
+        spinner.setSelection(0);
+        firstTime = false;
 
         mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
             @Override
@@ -149,7 +184,11 @@ public class MainActivityFragment extends Fragment {
                         mInterstitialAd.show();
                     }*/
                     Log.d(LOG_TAG, "Empty SwipeView");
-                    if (refresh) {
+                    if(categoryMode) {
+                        noImagesTextView.setVisibility(View.VISIBLE);
+                        noImagesTextView.setText(getActivity().getResources()
+                                .getString(R.string.no_image_title_6));
+                    } else if (refresh) {
                         Log.d(LOG_TAG, "No more photos");
                         refreshButton.setVisibility(View.VISIBLE);
                         refresh_textview.setVisibility(View.VISIBLE);
@@ -196,9 +235,14 @@ public class MainActivityFragment extends Fragment {
                         /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
                                 .removeWebPFromUrl(photo.getUrl()));*/
 
-                        /* Randomizing votes for photos
+                        /*Randomizing votes for photos
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
+
+                        /*Randomizing categories for photos
+                        String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
+                        photoReference.child(photo.getUrl().replace(".webp", "")).child("category")
+                                .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
                         if(photo != null) {
                             list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
                                     photoReference, reportRef));
@@ -227,7 +271,7 @@ public class MainActivityFragment extends Fragment {
                     System.out.println("Got data.");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
-                    System.out.println("<------------------------------------> Total execution time: " + (endTime - startTime));
+                    Log.d(LOG_TAG, "Total execution time: " + (endTime - startTime));
                 }
             }
 
@@ -238,6 +282,60 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+    }
+
+    private void getPhotos(String category) {
+        mContext = getContext();
+
+        final long startTime = System.currentTimeMillis();
+
+        Query query = photoReference.orderByChild(Photo.CATEGORY_KEY).equalTo(category)
+                .limitToFirst(8);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    List<Photo> photos = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                        Photo photo = child.getValue(Photo.class);
+
+                        if (photo != null) {
+                            photos.add(photo);
+                        }
+                    }
+                    int count = photos.size();
+                    if(photos.isEmpty()) {
+                        noImagesTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        while (count > 0) {
+                            mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1),
+                                    mSwipeView, userId, userName, photoReference, reportRef));
+                            if (count - 1 % 8 == 0) {
+                                mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                                mSwipeView.addView(new AdCard(mContext, mSwipeView));
+                            }
+                            count--;
+                        }
+                        photos.clear();
+                    }
+
+                    Log.d(LOG_TAG, "Retrieved data");
+                    mSwipeView.refreshDrawableState();
+                    final long endTime = System.currentTimeMillis();
+                    Log.d(LOG_TAG, "Data Load time: " + (endTime - startTime));
+                } else {
+                    noImagesTextView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(LOG_TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
     /**

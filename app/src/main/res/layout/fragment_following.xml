@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:infiniteCard="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context="tk.talcharnes.unborify.MainNavigationFragments.FollowingFragment"
+    tools:showIn="@layout/activity_main">
 
-    <com.bakerj.infinitecards.InfiniteCardView
-        android:id="@+id/view"
+    <com.mindorks.placeholderview.SwipePlaceHolderView
+        android:id="@+id/swipeView"
         android:layout_width="match_parent"
+        android:background="#FDFDFD"
         android:layout_height="match_parent"
-        infiniteCard:animDuration="1000"
-        infiniteCard:cardRatio="1" />
+        android:layout_centerVertical="true"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/noImagesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="50dp"
-        android:orientation="horizontal">
+        android:text="@string/no_image_title_2"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
-        <Button
-            android:id="@+id/pre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pre" />
+    <TextView
+        android:id="@+id/refreshTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/refresh_title_2"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="next" />
+    <Button
+        android:id="@+id/refreshBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:drawableTop="@drawable/ic_refresh"
+        android:text="@string/refresh"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/custom_button"
+        android:visibility="gone"
+        android:layout_margin="@dimen/activity_horizontal_margin" />
 
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

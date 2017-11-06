@@ -14,7 +14,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import tk.talcharnes.unborify.OtherFragmentActivities.About.AboutActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.LikesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationsActivity;
 import tk.talcharnes.unborify.R;
@@ -73,6 +75,23 @@ public class OtherFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        rootView.findViewById(R.id.nav_likes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), LikesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        rootView.findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FavoritesActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         rootView.findViewById(R.id.nav_sign_out).setOnClickListener(new View.OnClickListener() {
             @Override

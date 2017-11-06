@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 import tk.talcharnes.unborify.CommentsData.Comment;
 import tk.talcharnes.unborify.CommentsData.FirebaseCommentViewHolder;
@@ -72,14 +74,29 @@ public class CommentActivityFragment extends Fragment {
     }
 
     private void setUpFirebaseAdapter() {
+        Log.d(LOG_TAG, "Loading comments");
+        Query query = mCommentReference.orderByChild("commenter");
+        Log.d(LOG_TAG, query.getRef().toString());
+        FirebaseRecyclerOptions<Comment> options =
+                new FirebaseRecyclerOptions.Builder<Comment>()
+                        .setQuery(query, Comment.class)
+                        .build();
+
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Comment, FirebaseCommentViewHolder>
-                (Comment.class, R.layout.comment_template, FirebaseCommentViewHolder.class,
-                        mCommentReference) {
+                (options) {
 
             @Override
-            protected void populateViewHolder(FirebaseCommentViewHolder viewHolder,
-                                              Comment model, int position) {
-                viewHolder.bindComment(model, mCurrentUser);
+            public FirebaseCommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.comment_template, parent, false);
+
+                return new FirebaseCommentViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(FirebaseCommentViewHolder holder, int position, Comment comment) {
+                holder.bindComment(comment, mCurrentUser);
+
             }
         };
         mRecyclerView.setHasFixedSize(true);
@@ -92,9 +109,7 @@ public class CommentActivityFragment extends Fragment {
         mSubmitCommentImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mCommentEditText.getText().toString().isEmpty() ||
-                        mCommentEditText.getText().toString().equals("")
-                        || mCommentEditText.getText().toString() == null) {
+                if (mCommentEditText.getText().toString().isEmpty()) {
                     Log.d(LOG_TAG, "User attempted to pass an empty comment.");
                     mCommentEditText.setError(getString(R.string.comment_empty_error));
                 } else if (mCommentEditText.getText().toString().length() < 5) {
@@ -146,10 +161,15 @@ public class CommentActivityFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mFirebaseAdapter.startListening();
+    }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mFirebaseAdapter.cleanup();
+    public void onStop() {
+        super.onStop();
+        mFirebaseAdapter.stopListening();
     }
 }

@@ -34,11 +34,13 @@
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="wrap_content"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
-                android:popupBackground="@color/colorPrimary"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 android:layout_gravity="end"
-                android:layout_marginEnd="12dp"/>
+                android:layout_marginEnd="12dp"
+                tools:targetApi="lollipop" />
 
         </android.support.v7.widget.Toolbar>
 

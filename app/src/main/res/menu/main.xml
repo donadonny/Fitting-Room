@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_picture"
-        android:icon="@drawable/ic_take_photo"
+        android:icon="@drawable/add_photo_button"
         android:title="@string/action_take_photo"
         app:showAsAction="ifRoom" />
 

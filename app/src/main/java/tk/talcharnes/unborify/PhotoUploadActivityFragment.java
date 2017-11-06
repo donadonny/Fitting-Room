@@ -1,18 +1,20 @@
 package tk.talcharnes.unborify;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -56,6 +58,8 @@ import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 
 /**
@@ -181,7 +185,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedFile));
                                 int i = buf.read(bytes, 0, bytes.length);
                                 buf.close();
-                                Glide.with(getActivity()).load(bytes).asBitmap().into(userImageToUploadView);
+                                Glide.with(getActivity()).asBitmap().load(bytes).into(userImageToUploadView);
 
                             } catch (IOException e) {
                                 Log.d(LOG_TAG, "Failed to compress image, error: " + e.toString());
@@ -259,46 +263,36 @@ public class PhotoUploadActivityFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                showUploadDialog(res.getString(R.string.failure_title),
-                        res.getString(R.string.failure_message) + " " +
-                                res.getString(R.string.dialog_main_message));
+                showUploadNotification(res.getString(R.string.failure_title),
+                        res.getString(R.string.failure_message));
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                showUploadDialog(res.getString(R.string.success_title),
-                        res.getString(R.string.success_message) + " " +
-                                res.getString(R.string.dialog_main_message));
+                showUploadNotification(res.getString(R.string.success_title),
+                        res.getString(R.string.success_message));
             }
         });
     }
 
-    private void showUploadDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(R.string.return_home, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //getActivity().finish();
-                        NavUtils.navigateUpFromSameTask(getActivity());
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        submitButton.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                        photo_description_edit_text.setVisibility(View.VISIBLE);
-                        photo_description_edit_text.setText("");
-                        userImageToUploadView.setImageDrawable(ContextCompat.getDrawable(getActivity(),
-                                R.drawable.ic_add_a_photo_black_48dp));
-                        bytes = null;
-                        dialog.dismiss();
-                    }
-                });
-        builder.show();
+    private void showUploadNotification(String title, String message) {
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        android.app.Notification notification = new NotificationCompat
+                .Builder(getActivity(), "upload_notification")
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .setSound(defaultSoundUri)
+                .build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+
+        int SERVER_DATA_RECEIVED = 0;
+        notificationManager.notify(SERVER_DATA_RECEIVED, notification);
+        NavUtils.navigateUpFromSameTask(getActivity());
     }
 
     private void showGrantPermissionDialog() {
@@ -328,7 +322,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
                 if (getContext() != null) {
-                    // NavUtils.navigateUpFromSameTask(getActivity());
+                    NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
 
@@ -349,7 +343,7 @@ public class PhotoUploadActivityFragment extends Fragment {
                 // Code to be executed when when the interstitial ad is closed.
                 Log.i("Ads", "onAdClosed");
                 if (getContext() != null) {
-                    // NavUtils.navigateUpFromSameTask(getActivity());
+                    NavUtils.navigateUpFromSameTask(getActivity());
                 }
             }
         });
