@@ -140,6 +140,16 @@ public class FirebaseConstants {
         });
     }
 
+
+    public static void loadImageUsingGlide(Context context, ImageView imageView,
+                                           StorageReference storageReference) {
+        GlideApp.with(context)
+                .load(storageReference)
+                .transform(new MyTransformation(context, 0))
+                .placeholder(R.mipmap.ic_launcher)
+                .into(imageView);
+    }
+
     public static void loadImageUsingGlide(Context context, ImageView imageView,
                                     StorageReference storageReference,
                                     final ProgressBar progressBar) {
