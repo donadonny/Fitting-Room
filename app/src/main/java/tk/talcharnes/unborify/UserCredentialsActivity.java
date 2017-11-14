@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Models.User;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**

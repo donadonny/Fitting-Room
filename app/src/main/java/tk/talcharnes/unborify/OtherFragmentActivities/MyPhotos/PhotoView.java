@@ -20,8 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,13 +38,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import tk.talcharnes.unborify.CommentActivity;
-import tk.talcharnes.unborify.CommentsData.Comment;
-import tk.talcharnes.unborify.Photo;
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
+import tk.talcharnes.unborify.Models.Comment;
+import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
-import tk.talcharnes.unborify.ZoomPhotoActivity;
+import tk.talcharnes.unborify.PhotoCard.ZoomPhotoActivity;
 
 /**
  * Created by khuramchaudhry on 9/21/17.

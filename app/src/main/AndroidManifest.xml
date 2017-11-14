@@ -63,14 +63,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".UserProfile.UserProfileActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".PhotoUploadActivity"
+            android:name=".PhotoUpload.PhotoUploadActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_photo_upload"
             android:parentActivityName=".MainActivity"
@@ -83,14 +83,14 @@
         </activity>
 
         <activity
-            android:name=".ZoomPhotoActivity"
+            android:name=".PhotoCard.ZoomPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_zoom_photo"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
         <activity
-            android:name=".CommentActivity"
+            android:name=".PhotoCard.Comments.CommentActivity"
             android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -150,7 +150,7 @@
         </activity>
 
         <activity
-            android:name=".OtherFragmentActivities.LikesActivity"
+            android:name=".OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity"
             android:label="@string/title_activity_likes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -161,7 +161,7 @@
         </activity>
 
         <activity
-            android:name=".OtherFragmentActivities.FavoritesActivity"
+            android:name=".OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity"
             android:label="@string/title_activity_favorites"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"

@@ -21,11 +21,14 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import tk.talcharnes.unborify.MainNavigationFragments.FollowingFragment;
+import tk.talcharnes.unborify.BottomBar.BottomBarAdapter;
+import tk.talcharnes.unborify.BottomBar.NoSwipePager;
+import tk.talcharnes.unborify.MainNavigationFragments.Following.FollowingFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
+import tk.talcharnes.unborify.PhotoUpload.PhotoUploadActivity;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;

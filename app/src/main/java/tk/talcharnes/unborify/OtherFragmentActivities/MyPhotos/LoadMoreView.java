@@ -10,7 +10,7 @@ import com.mindorks.placeholderview.annotations.infinite.LoadMore;
 
 import java.util.List;
 
-import tk.talcharnes.unborify.Photo;
+import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
 
 /**

@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.SimpleDividerItemDecoration;
+import tk.talcharnes.unborify.Utilities.SimpleDividerItemDecoration;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.myNotifications;
+import tk.talcharnes.unborify.Models.myNotifications;
 
 /**
  * Created by khuramchaudhry on 8/31/17.

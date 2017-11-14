@@ -28,9 +28,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import tk.talcharnes.unborify.MyTransformation;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Report;
+import tk.talcharnes.unborify.Models.Report;
 
 /**
  * Created by Tal on 9/4/2017.
