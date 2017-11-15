@@ -236,7 +236,7 @@ public class PhotoView {
                     for(DataSnapshot child : dataSnapshot.getChildren()) {
                         CommentModel commentModel = child.getValue(CommentModel.class);
                         if(commentModel != null) {
-                            deleteReport(commentModel.getComment_key());
+                            deleteReport(commentModel.getCommentKey());
                         }
                     }
                 }

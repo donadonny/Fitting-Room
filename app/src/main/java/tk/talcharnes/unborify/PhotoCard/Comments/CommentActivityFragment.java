@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 import tk.talcharnes.unborify.Models.CommentModel;
-import tk.talcharnes.unborify.Models.myNotifications;
+import tk.talcharnes.unborify.Models.NotificationModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
@@ -118,23 +118,23 @@ public class CommentActivityFragment extends Fragment {
                     mCommentEditText.setError(getString(R.string.comment_too_short_error));
                 } else {
                     commentModel = new CommentModel();
-                    commentModel.setPhoto_url(mUrl);
-                    commentModel.setCommenter(mCurrentUser);
+                    commentModel.setPhotoUrl(mUrl);
+                    commentModel.setCommenterUid(mCurrentUser);
                     commentModel.setCommentString(mCommentEditText.getText().toString());
-                    commentModel.setPhoto_Uploader(mPhotoUploader);
+                    commentModel.setPhotoUploaderUid(mPhotoUploader);
 
                     Log.d(LOG_TAG, "New CommentModel:");
-                    Log.d(LOG_TAG, "\tcommenter: " + commentModel.getCommenter());
+                    Log.d(LOG_TAG, "\tcommenter: " + commentModel.getCommenterUid());
                     Log.d(LOG_TAG, "\tcommentModel message: " + commentModel.getCommentString());
-                    Log.d(LOG_TAG, "\tcommentModel url: " + commentModel.getPhoto_url());
-                    Log.d(LOG_TAG, "\tcommentModel photo uploader: " + commentModel.getPhoto_Uploader());
+                    Log.d(LOG_TAG, "\tcommentModel url: " + commentModel.getPhotoUrl());
+                    Log.d(LOG_TAG, "\tcommentModel photo uploader: " + commentModel.getPhotoUploaderUid());
 
                     mCommentReference.push().setValue(commentModel, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError,
                                                DatabaseReference databaseReference) {
                             mComment_key = databaseReference.getKey();
-                            commentModel.setComment_key(mComment_key);
+                            commentModel.setCommentKey(mComment_key);
                             mCommentReference.child(mComment_key).child(FirebaseConstants.COMMENT_KEY)
                                     .setValue(mComment_key);
                             Log.d(LOG_TAG, "commentkey = " + mComment_key);
@@ -147,7 +147,7 @@ public class CommentActivityFragment extends Fragment {
                                         .child(FirebaseConstants.USERS).child(mPhotoUploader)
                                         .child(FirebaseConstants.NOTIFICATION);
 
-                                myNotifications myNotification = new myNotifications(false, mUrl,
+                                NotificationModel myNotification = new NotificationModel(false, mUrl,
                                         commentModel.getCommentString(), mCurrentUser);
 
                                 userNotificationRef.push().setValue(myNotification);

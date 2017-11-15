@@ -55,13 +55,13 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void bindComment(final CommentModel commentModel, String currentUser) {
-        Log.d(TAG, "Loading CommentModel: " + commentModel.getComment_key());
+        Log.d(TAG, "Loading CommentModel: " + commentModel.getCommentKey());
         TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
         TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
         ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
         mCurrentUser = currentUser;
-        mCommenterID = commentModel.getCommenter();
+        mCommenterID = commentModel.getCommenterUid();
         mCommentString = commentModel.getCommentString();
         if (mCommenterID != null && mCurrentUser != null) {
             if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
@@ -70,11 +70,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         } else {
             mOriginalCommenter = false;
         }
-        photoUploader = commentModel.getPhoto_Uploader();
+        photoUploader = commentModel.getPhotoUploaderUid();
 
-        mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url());
+        mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhotoUrl());
 
-        //usernameTextView.setText(commentModel.getCommenter());
+        //usernameTextView.setText(commentModel.getCommenterUid());
         setCommentorsName(mCommenterID, usernameTextView);
         comment_textview.setText(mCommentString);
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +153,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 switch (item.getItemId()) {
                     case R.id.action_report_comment:
                         FirebaseConstants.setReport(TAG, mView.getContext(),
-                                commentModel.getComment_key(), mCurrentUser);
+                                commentModel.getCommentKey(), mCurrentUser);
                         return true;
                     case R.id.action_delete_comment:
                         deleteComment(commentModel);
@@ -178,10 +178,10 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     private void deleteComment(CommentModel commentModel) {
         DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key());
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey());
         commentRef.removeValue();
         final DatabaseReference reportRef = FirebaseConstants.getRef()
-                .child(FirebaseConstants.REPORTS).child(commentModel.getComment_key());
+                .child(FirebaseConstants.REPORTS).child(commentModel.getCommentKey());
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -221,7 +221,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                     edt.setError("CommentModel must be longer than 5 characters");
                 } else {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-                            .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key())
+                            .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey())
                             .child(FirebaseConstants.COMMENT_STRING);
 
                     ref.setValue(newComment);

@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        // myNotifications Stuff
+        // NotificationModel Stuff
         if (user != null) {
             notificationRef = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                     .child(user.getUid()).child(FirebaseConstants.NOTIFICATION);
