@@ -115,7 +115,7 @@ public class FirebaseConstants {
                                 .format(new Date());
                         reportRef.child(NUM_REPORTS).setValue(numReports + 1);
                         reportRef.child(REPORTED_BY).child(userID).setValue(timeStamp);
-                        Log.d(TAG, "User made a report. Another report was added.");
+                        Log.d(TAG, "UserModel made a report. Another report was added.");
                         Toast.makeText(context, "A report was made.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -125,7 +125,7 @@ public class FirebaseConstants {
                     reports.put(userID, timeStamp);
                     Report report = new Report(1, reports);
                     reportRef.setValue(report);
-                    Log.d(TAG, "User made a report. A new report was made.");
+                    Log.d(TAG, "UserModel made a report. A new report was made.");
                     Toast.makeText(context, "A report was made.", Toast.LENGTH_SHORT).show();
                 }
             }

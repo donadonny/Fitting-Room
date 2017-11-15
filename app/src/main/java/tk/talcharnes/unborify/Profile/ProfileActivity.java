@@ -41,14 +41,14 @@ import java.io.IOException;
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Models.User;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
  * Created by khuramchaudhry on 9/2/17.
- * This activity displays and handles User profile.
+ * This activity displays and handles UserModel profile.
  */
 
 public class ProfileActivity extends AppCompatActivity implements changeNameDialogFragment
@@ -105,13 +105,13 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                User user = dataSnapshot.getValue(User.class);
-                                if (user != null) {
-                                    nameText.setText(user.getName());
-                                    emailText.setText(user.getEmail());
-                                    joinedText.setText(user.getDate_joined());
-                                    String profileUri = user.getUri() + "";
-                                    imageLoader.loadImage(avatarView, uid, user.getName());
+                                UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                if (userModel != null) {
+                                    nameText.setText(userModel.getName());
+                                    emailText.setText(userModel.getEmail());
+                                    joinedText.setText(userModel.getDate_joined());
+                                    String profileUri = userModel.getUri() + "";
+                                    imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }
                             }
                         }
@@ -338,7 +338,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Log.d(TAG, "User profile updated.");
+                                    Log.d(TAG, "UserModel profile updated.");
                                 }
                             }
                         });

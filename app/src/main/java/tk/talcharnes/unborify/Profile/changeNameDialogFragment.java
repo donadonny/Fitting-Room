@@ -109,7 +109,7 @@ public class changeNameDialogFragment extends DialogFragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d(TAG, "User name updated.");
+                                        Log.d(TAG, "UserModel name updated.");
                                     }
                                 }
                             });

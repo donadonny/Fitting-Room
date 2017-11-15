@@ -1,6 +1,6 @@
 ## An app that assists users with their fashion choices
 
-This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the user can always go out knowing that they have an amazing outfit that is approved by people who know style.
+This app allows users to upload a photo of an outfit for users to rate by swiping left or right to show their thoughts. This way, the userModel can always go out knowing that they have an amazing outfit that is approved by people who know style.
 
 ### To do:
  * Put app on Google play
@@ -26,23 +26,23 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
  * Have photo upload to Firebase storage
  * Set up Firebase database
    * Db structure
-    * [user|photo urls]
+    * [userModel|photo urls]
     * [photo urls|likes|dislikes|reports|usernames]
  * Set up photo functionality
  * Create layout for new photo creation
  * Create photo reporting functionality
  * Have my account section with photos
- * Set up rating system for user likes or dislikes
+ * Set up rating system for userModel likes or dislikes
  * Create catchy launcher icon
- * Make a progress bar for user to see photo upload progress
+ * Make a progress bar for userModel to see photo upload progress
  * Decreased image size by up to 33 times with no noticeable image quality loss in order to reduce:
      * Server storage space
      * Server bandwidth usage
      * User upload time
-     * Time it takes user to view photos
+     * Time it takes userModel to view photos
  * Add ability for users to zoom into photo
  * Add option for commenting on photos
- * Created notifications for when user gets a commentModel on their photo
+ * Created notifications for when userModel gets a commentModel on their photo
   * Add Firebase analytics
 
 ### Known bugs/ to fix:
@@ -54,12 +54,12 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
 * Make a sort of timeline view like facebook/instagram?
 * If enough users are not being rated then allow for only one photo to be uploaded/ rated for free and then future photos will be on a per-rate basis where 1 rate = 1 new photo uploaded
 * Allow following other users
-   * This will add a field to the user part of the database which will be followed users. Possibilities for this are:
+   * This will add a field to the userModel part of the database which will be followed users. Possibilities for this are:
      * The app will push photos from the followed users to the front of the list of photos to rate.
      * Dedicated section to followed users (like with youtube subscriptions)
-   * Add number of followers to user part of database
+   * Add number of followers to userModel part of database
    * Add animations/transitions
-   * Add search user
+   * Add search userModel
    * Add profile photos
  * Add option to skip or indifferent view of style
  * Have local database so that "my photos" section will load faster

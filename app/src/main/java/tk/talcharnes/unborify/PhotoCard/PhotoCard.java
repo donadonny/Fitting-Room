@@ -56,7 +56,7 @@ import agency.tango.android.avatarview.views.AvatarView;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.Models.Report;
-import tk.talcharnes.unborify.Models.User;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.UserProfile.UserProfileActivity;
@@ -148,11 +148,11 @@ public class PhotoCard {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            User user = dataSnapshot.getValue(User.class);
-                            if (user != null && usernameTextView != null && user.getName() != null) {
-                                usernameTextView.setText(user.getName());
-                                imageLoader.loadImage(avatarView, uid, user.getName());
-                                photoImageView.setContentDescription("Uploaded By "+ user.getName()
+                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                            if (userModel != null && usernameTextView != null && userModel.getName() != null) {
+                                usernameTextView.setText(userModel.getName());
+                                imageLoader.loadImage(avatarView, uid, userModel.getName());
+                                photoImageView.setContentDescription("Uploaded By "+ userModel.getName()
                                         +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
                             }
                         }
@@ -380,7 +380,7 @@ public class PhotoCard {
                         String uRating = (dataSnapshot.child(FirebaseConstants.VOTES)
                                 .child(userID).getValue() + "");
                         if (uRating.equals(rating)) {
-                            Log.d(LOG_TAG, "The User already " + rating + " the photo.");
+                            Log.d(LOG_TAG, "The UserModel already " + rating + " the photo.");
                         } else {
                             String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
                             long ratingValue = (long) dataSnapshot.child(rating).getValue();
@@ -394,7 +394,7 @@ public class PhotoCard {
                         final long ratingValue = (long) dataSnapshot.child(rating).getValue();
                         chosenPhoto.child(rating).setValue(ratingValue + 1);
                         chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
-                        Log.d(LOG_TAG, "The User " + rating + " the photo.");
+                        Log.d(LOG_TAG, "The UserModel " + rating + " the photo.");
                     }
                 }
 
@@ -404,7 +404,7 @@ public class PhotoCard {
                 }
             });
         } else {
-            Log.d(LOG_TAG, "User trying to vote on own photo");
+            Log.d(LOG_TAG, "UserModel trying to vote on own photo");
         }
     }
 
@@ -425,7 +425,7 @@ public class PhotoCard {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     if (snapshot.child(FirebaseConstants.REPORTED_BY).child(mUserId).exists()) {
-                        Log.d(LOG_TAG, "User already reported photo.");
+                        Log.d(LOG_TAG, "UserModel already reported photo.");
                     } else {
                         long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS)
                                 .getValue();

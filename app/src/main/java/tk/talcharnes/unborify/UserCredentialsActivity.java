@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-import tk.talcharnes.unborify.Models.User;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/23/17.
- * This activity handles basic User authorization with email or Google Api.
+ * This activity handles basic UserModel authorization with email or Google Api.
  */
 
 public class UserCredentialsActivity extends AppCompatActivity {
@@ -63,7 +63,7 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
-                    // User is signed in
+                    // UserModel is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
 
                     FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(user.getUid())
@@ -71,15 +71,15 @@ public class UserCredentialsActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.exists()) {
-                                        Log.d(TAG, "New User");
+                                        Log.d(TAG, "New UserModel");
                                         Calendar c = Calendar.getInstance();
                                         SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy",
                                                 Locale.getDefault());
                                         String formattedDate = df.format(c.getTime());
-                                        User databaseUser = new User(user.getDisplayName(),
+                                        UserModel databaseUserModel = new UserModel(user.getDisplayName(),
                                                 user.getEmail(), null, formattedDate);
                                         FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                                                .child(user.getUid()).setValue(databaseUser);
+                                                .child(user.getUid()).setValue(databaseUserModel);
 
                                         String token = FirebaseInstanceId.getInstance().getToken();
                                         FirebaseConstants.setToken(token);
@@ -95,10 +95,10 @@ public class UserCredentialsActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(UserCredentialsActivity.this, MainActivity.class);
                     startActivity(intent);
-                    Log.d(TAG, "User is signed in starting up MainActivity.");
+                    Log.d(TAG, "UserModel is signed in starting up MainActivity.");
 
                 } else {
-                    // User is signed out
+                    // UserModel is signed out
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)

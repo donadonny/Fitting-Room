@@ -111,10 +111,10 @@ public class CommentActivityFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mCommentEditText.getText().toString().isEmpty()) {
-                    Log.d(LOG_TAG, "User attempted to pass an empty commentModel.");
+                    Log.d(LOG_TAG, "UserModel attempted to pass an empty commentModel.");
                     mCommentEditText.setError(getString(R.string.comment_empty_error));
                 } else if (mCommentEditText.getText().toString().length() < 5) {
-                    Log.d(LOG_TAG, "User attempted to pass a short commentModel.");
+                    Log.d(LOG_TAG, "UserModel attempted to pass a short commentModel.");
                     mCommentEditText.setError(getString(R.string.comment_too_short_error));
                 } else {
                     commentModel = new CommentModel();

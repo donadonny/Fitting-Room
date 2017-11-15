@@ -52,8 +52,8 @@ public class MyPhotosFragment extends Fragment {
         }
         photoList = new ArrayList<>();
 
-        Log.d(LOG_TAG, "User id: " + userId);
-        Log.d(LOG_TAG, "User name: " + userName);
+        Log.d(LOG_TAG, "UserModel id: " + userId);
+        Log.d(LOG_TAG, "UserModel name: " + userName);
 
         setUpPhotos();
 

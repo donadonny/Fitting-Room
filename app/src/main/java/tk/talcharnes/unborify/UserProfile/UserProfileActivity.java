@@ -23,7 +23,7 @@ import java.util.List;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import tk.talcharnes.unborify.Models.User;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
@@ -87,18 +87,18 @@ public class UserProfileActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                User user = dataSnapshot.getValue(User.class);
-                                if (user != null) {
-                                    if(user.getName().length() > 18) {
+                                UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                if (userModel != null) {
+                                    if(userModel.getName().length() > 18) {
 
                                     }
-                                    String name = user.getName();
+                                    String name = userModel.getName();
                                     userNameText.setText((name.length() > 18) ?
                                             name.substring(0, 15) + "...\n..." + name.substring(15)
                                             : name);
-                                    userJoinedText.setText(user.getDate_joined());
-                                    String profileUri = user.getUri() + "";
-                                    imageLoader.loadImage(avatarView, uid, user.getName());
+                                    userJoinedText.setText(userModel.getDate_joined());
+                                    String profileUri = userModel.getUri() + "";
+                                    imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }
                             }
                         }
