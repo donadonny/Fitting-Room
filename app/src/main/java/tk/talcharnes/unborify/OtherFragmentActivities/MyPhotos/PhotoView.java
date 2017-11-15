@@ -38,8 +38,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import tk.talcharnes.unborify.Models.CommentModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
-import tk.talcharnes.unborify.Models.Comment;
 import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -234,9 +234,9 @@ public class PhotoView {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     for(DataSnapshot child : dataSnapshot.getChildren()) {
-                        Comment comment = child.getValue(Comment.class);
-                        if(comment != null) {
-                            deleteReport(comment.getComment_key());
+                        CommentModel commentModel = child.getValue(CommentModel.class);
+                        if(commentModel != null) {
+                            deleteReport(commentModel.getComment_key());
                         }
                     }
                 }

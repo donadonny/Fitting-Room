@@ -42,7 +42,7 @@ This app allows users to upload a photo of an outfit for users to rate by swipin
      * Time it takes user to view photos
  * Add ability for users to zoom into photo
  * Add option for commenting on photos
- * Created notifications for when user gets a comment on their photo
+ * Created notifications for when user gets a commentModel on their photo
   * Add Firebase analytics
 
 ### Known bugs/ to fix:
