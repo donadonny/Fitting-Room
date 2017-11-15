@@ -25,7 +25,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class CommentsTest {
 
     @Before
-    public void init(){
+    public void init() {
         mActivityRule.getActivity().getSupportFragmentManager().beginTransaction();
     }
 
@@ -35,7 +35,7 @@ public class CommentsTest {
 
 
     @Test
-    public void CheckIfOneCommentsSaves(){
+    public void CheckIfOneCommentsSaves() {
         onView(withId(R.id.comment_edittext)).perform(typeText("HELLO!"));
         onView(withId(R.id.submit_comment_button)).perform(click());
         onView(withId(R.id.comments_recyclerView)).check(matches(withText("HELLO!")));
@@ -51,9 +51,10 @@ public class CommentsTest {
             onView(withId(R.id.comments_recyclerView)).check(matches(withText(demoText + (x + i))));
         }
     }
-        @Test
-        public void performCommentsScroll(){
-            onView(withId(R.id.comments_recyclerView)).perform(ViewActions.swipeUp());
-        }
+
+    @Test
+    public void performCommentsScroll() {
+        onView(withId(R.id.comments_recyclerView)).perform(ViewActions.swipeUp());
+    }
 }
 

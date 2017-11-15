@@ -139,8 +139,8 @@ public class PhotoCard {
     }
 
     /**
-     * @TODO
      * @param uid
+     * @TODO
      */
     private void setUploader(final String uid) {
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
@@ -152,8 +152,8 @@ public class PhotoCard {
                             if (user != null && usernameTextView != null && user.getName() != null) {
                                 usernameTextView.setText(user.getName());
                                 imageLoader.loadImage(avatarView, uid, user.getName());
-                                photoImageView.setContentDescription("Uploaded By "+ user.getName()
-                                        +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
+                                photoImageView.setContentDescription("Uploaded By " + user.getName()
+                                        + " " + " photo name " + mPhoto.getOccasion_subtitle() + " ");
                             }
                         }
                     }
@@ -163,6 +163,7 @@ public class PhotoCard {
                     }
                 });
     }
+
     /**
      * This function sets up the Card View with an image, name, and the ratings.
      *
@@ -252,7 +253,7 @@ public class PhotoCard {
                                     mContext.getResources().getString(R.string.app_name));
                     mmsIntent.putExtra(Intent.EXTRA_STREAM, uri);
                     mmsIntent.setType("image/*");
-                    mContext.startActivity(Intent.createChooser(mmsIntent,"Send"));
+                    mContext.startActivity(Intent.createChooser(mmsIntent, "Send"));
 
                 }
             });
@@ -459,9 +460,9 @@ public class PhotoCard {
     }
 
     /**
-     * @// TODO: 10/25/2017
      * @param px
      * @return
+     * @// TODO: 10/25/2017
      */
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
@@ -470,8 +471,8 @@ public class PhotoCard {
     }
 
     /**
-     * @// TODO: 10/25/2017
      * @return
+     * @// TODO: 10/25/2017
      */
     private int getRotation() {
         int rotation = 0;
@@ -508,9 +509,9 @@ public class PhotoCard {
     }
 
     /**
-     * @// TODO: 10/25/2017
      * @param v
      * @param i
+     * @// TODO: 10/25/2017
      */
     private void showPopup(android.view.View v, final int i) {
         PopupMenu popup = new PopupMenu(mContext, v);
@@ -545,7 +546,7 @@ public class PhotoCard {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()) {
+                if (!dataSnapshot.exists()) {
                     ref.setValue(FirebaseConstants.FAVORITE);
                 }
             }

@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         Log.d(TAG, "currentView: " + currentView);
-        if(currentView == 0) {
+        if (currentView == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
-        } else if(currentView == 2) {
+        } else if (currentView == 2) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
 

@@ -78,7 +78,7 @@ public class UserProfileActivity extends AppCompatActivity {
         imageLoader = new GlideLoader2();
 
         Intent intent = getIntent();
-        if(intent.getExtras() != null) {
+        if (intent.getExtras() != null) {
             final String uid = intent.getStringExtra("uid");
             final String following = getResources().getString(R.string.following);
 
@@ -89,7 +89,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             if (dataSnapshot.exists()) {
                                 User user = dataSnapshot.getValue(User.class);
                                 if (user != null) {
-                                    if(user.getName().length() > 18) {
+                                    if (user.getName().length() > 18) {
 
                                     }
                                     String name = user.getName();
@@ -115,7 +115,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
+                            if (dataSnapshot.exists()) {
                                 followingButton.setText(following);
                                 followingButton.setBackgroundColor(ContextCompat
                                         .getColor(getApplicationContext(),
@@ -151,7 +151,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
-        if(intent.getExtras() != null) {
+        if (intent.getExtras() != null) {
             bundle.putString("uid", intent.getStringExtra("uid"));
         }
 

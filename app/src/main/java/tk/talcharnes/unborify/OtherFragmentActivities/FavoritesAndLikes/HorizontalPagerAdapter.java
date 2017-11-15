@@ -66,12 +66,12 @@ public class HorizontalPagerAdapter extends PagerAdapter {
         final ImageView img = (ImageView) view.findViewById(R.id.img_item);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         final StorageReference storageReference = FirebaseConstants.getStorRef()
-                .child(FirebaseConstants.IMAGES).child(url+".webp");
+                .child(FirebaseConstants.IMAGES).child(url + ".webp");
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                intent.putExtra("url", url+".webp");
+                intent.putExtra("url", url + ".webp");
                 intent.putExtra("rotation", 0);
                 mContext.startActivity(intent);
             }

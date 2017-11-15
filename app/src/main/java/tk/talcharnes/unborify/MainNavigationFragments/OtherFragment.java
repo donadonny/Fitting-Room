@@ -23,7 +23,6 @@ import tk.talcharnes.unborify.R;
 
 /**
  * Created by khuramchaudhry on 9/29/17.
- *
  */
 
 public class OtherFragment extends Fragment {

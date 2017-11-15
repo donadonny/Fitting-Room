@@ -11,7 +11,7 @@ import tk.talcharnes.unborify.R;
  * Created by khuramchaudhry on 10/22/17.
  */
 
-public class LikesActivity  extends AppCompatActivity {
+public class LikesActivity extends AppCompatActivity {
 
     private static final String TAG = FavoritesActivity.class.getSimpleName();
 

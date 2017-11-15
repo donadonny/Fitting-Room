@@ -162,7 +162,7 @@ public class PhotoView {
                                 mContext.getResources().getString(R.string.app_name));
                 mmsIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 mmsIntent.setType("image/*");
-                mContext.startActivity(Intent.createChooser(mmsIntent,"Send"));
+                mContext.startActivity(Intent.createChooser(mmsIntent, "Send"));
 
             }
         });
@@ -232,10 +232,10 @@ public class PhotoView {
         commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
                         CommentModel commentModel = child.getValue(CommentModel.class);
-                        if(commentModel != null) {
+                        if (commentModel != null) {
                             deleteReport(commentModel.getComment_key());
                         }
                     }
@@ -259,7 +259,7 @@ public class PhotoView {
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     reportRef.removeValue();
                 }
             }

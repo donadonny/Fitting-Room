@@ -2,10 +2,8 @@ package tk.talcharnes.unborify.Utilities;
 
 import android.support.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition;
 import com.google.firebase.storage.StorageReference;
 
 import agency.tango.android.avatarview.AvatarPlaceholder;
@@ -32,7 +30,7 @@ public class GlideLoader2 extends ImageLoaderBase {
                           @NonNull String avatarUrl) {
 
         StorageReference storageReference = FirebaseConstants.getStorRef()
-                .child(FirebaseConstants.PROFILE_IMAGE).child(avatarUrl+".webp");
+                .child(FirebaseConstants.PROFILE_IMAGE).child(avatarUrl + ".webp");
 
         GlideApp.with(avatarView.getContext())
                 .load(storageReference)

@@ -64,6 +64,7 @@ public class MainActivityFragment extends Fragment {
     private Spinner spinner;
     private boolean firstTime = true;
     private boolean categoryMode = false;
+
     /**
      * Constructor.
      */
@@ -149,12 +150,12 @@ public class MainActivityFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                String chosen =  parent.getItemAtPosition(position).toString();
+                String chosen = parent.getItemAtPosition(position).toString();
                 oldestPostId = "";
                 Log.d(LOG_TAG, "category chosen: " + chosen);
                 mSwipeView.removeAllViews();
                 noImagesTextView.setVisibility(View.GONE);
-                if(firstTime) {
+                if (firstTime) {
                     if (chosen.equals("All")) {
                         getPhotos();
                         categoryMode = false;
@@ -183,7 +184,7 @@ public class MainActivityFragment extends Fragment {
                         mInterstitialAd.show();
                     }*/
                     Log.d(LOG_TAG, "Empty SwipeView");
-                    if(categoryMode) {
+                    if (categoryMode) {
                         noImagesTextView.setVisibility(View.VISIBLE);
                         noImagesTextView.setText(getActivity().getResources()
                                 .getString(R.string.no_image_title_6));
@@ -237,8 +238,8 @@ public class MainActivityFragment extends Fragment {
                         String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
                         photoReference.child(photo.getUrl().replace(".webp", "")).child("category")
                                 .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
-                        if(photo != null) {
-                            if(list.size() == 0) {
+                        if (photo != null) {
+                            if (list.size() == 0) {
                                 oldestPostId = PhotoUtilities.removeWebPFromUrl(photo.getUrl());
                             }
                             list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
@@ -299,7 +300,7 @@ public class MainActivityFragment extends Fragment {
                         }
                     }
                     int count = photos.size();
-                    if(photos.isEmpty()) {
+                    if (photos.isEmpty()) {
                         noImagesTextView.setVisibility(View.VISIBLE);
                     } else {
                         while (count > 0) {

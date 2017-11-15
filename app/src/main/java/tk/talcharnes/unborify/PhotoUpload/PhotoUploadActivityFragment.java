@@ -133,7 +133,7 @@ public class PhotoUploadActivityFragment extends Fragment {
             public void onClick(View view) {
                 boolean editTextNotNull = checkEditTextNotNull();
                 if (bytes != null && editTextNotNull) {
-                    if(PhotoUploadActivity.chosen.isEmpty() | PhotoUploadActivity.chosen.equals("All")) {
+                    if (PhotoUploadActivity.chosen.isEmpty() | PhotoUploadActivity.chosen.equals("All")) {
                         Toast.makeText(getActivity(), "Please selete a category.",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -149,14 +149,14 @@ public class PhotoUploadActivityFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if(requestCode == PERMISSIONS_REQUEST && grantResults.length > 0) {
+        if (requestCode == PERMISSIONS_REQUEST && grantResults.length > 0) {
             boolean allPermissionsGranted = true;
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_DENIED) {
                     allPermissionsGranted = false;
                 }
             }
-            if(allPermissionsGranted) {
+            if (allPermissionsGranted) {
                 EasyImage.openChooserWithGallery(PhotoUploadActivityFragment.this, "", 0);
             } else {
                 showGrantPermissionDialog();
@@ -360,14 +360,14 @@ public class PhotoUploadActivityFragment extends Fragment {
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         android.Manifest.permission.CAMERA));
 
-        for(int i = permissionsList.size()-1; i > -1; i--) {
-            if(ActivityCompat.checkSelfPermission(getActivity(), permissionsList.get(i)) ==
+        for (int i = permissionsList.size() - 1; i > -1; i--) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), permissionsList.get(i)) ==
                     PackageManager.PERMISSION_GRANTED) {
                 permissionsList.remove(i);
             }
         }
 
-        if(permissionsList.size() > 0) {
+        if (permissionsList.size() > 0) {
             ActivityCompat.requestPermissions(getActivity(),
                     permissionsList.toArray(new String[0]), PERMISSIONS_REQUEST);
         } else {
@@ -381,9 +381,9 @@ public class PhotoUploadActivityFragment extends Fragment {
 
         int photoDescriptionLength = photoDescription.length();
 
-        if(photoDescriptionLength == 0) {
+        if (photoDescriptionLength == 0) {
             photo_description_edit_text.setError(getString(R.string.occasion_cannot_be_empty_string));
-        } else if(photoDescriptionLength > 40) {
+        } else if (photoDescriptionLength > 40) {
             int tooLongByThisManyCharacters = photoDescriptionLength - 40;
             photo_description_edit_text.setError("Please remove " + tooLongByThisManyCharacters +
                     " characters");

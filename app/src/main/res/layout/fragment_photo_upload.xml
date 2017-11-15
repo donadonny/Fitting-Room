@@ -11,78 +11,78 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="-2dp"
         android:layout_marginEnd="7dp"
         android:layout_marginStart="7dp"
         android:orientation="horizontal"
-        android:layout_marginBottom="-2dp"
         app:cardCornerRadius="1dp"
         app:cardUseCompatPadding="true">
 
         <EditText
+            android:id="@+id/photo_description_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/occasion_for_outfit"
-            android:id="@+id/photo_description_edit_text"
-            android:maxLines="1"
-            android:textSize="12sp"
             android:imeOptions="actionDone"
-            android:maxLength="40"/>
+            android:maxLength="40"
+            android:maxLines="1"
+            android:textSize="12sp" />
 
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="horizontal"
         android:layout_marginEnd="7dp"
         android:layout_marginStart="7dp"
+        android:layout_weight="3"
+        android:orientation="horizontal"
         app:cardCornerRadius="1dp"
         app:cardUseCompatPadding="true">
 
         <ImageView
+            android:id="@+id/uploadedPhoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:tooltipText="Add photo"
-            android:scaleType="centerCrop"
+            android:contentDescription="@string/user_photo"
             android:gravity="top"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_add_a_photo_black_48dp"
-            android:id="@+id/uploadedPhoto"
-            android:contentDescription="@string/user_photo"/>
+            android:tooltipText="Add photo" />
 
     </android.support.v7.widget.CardView>
 
     <Button
+        android:id="@+id/submitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="3dp"
-        android:layout_gravity="center_horizontal"
         android:background="#FFF"
+        android:drawableTop="@drawable/ic_upload_image_button"
         android:text="@string/add_photo"
         android:textAllCaps="false"
-        android:textColor="@color/colorPrimary"
-        android:drawableTop="@drawable/ic_upload_image_button"
-        android:id="@+id/submitButton"/>
+        android:textColor="@color/colorPrimary" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:progressTint="@color/colorAccent"
         android:layout_margin="8dp"
-        android:visibility="gone"
-        android:id="@+id/progressBar"/>
+        android:progressTint="@color/colorAccent"
+        android:visibility="gone" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".25"/>
+        android:layout_weight=".25" />
 
-    <include layout="@layout/smart_ad_banner"
+    <include
         android:id="@+id/photo_upload_adview"
-        />
+        layout="@layout/smart_ad_banner" />
 
 </LinearLayout>

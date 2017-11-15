@@ -21,7 +21,7 @@ public class Analytics {
     public static void registerUpload(Context context, String userID) {
         Bundle params = new Bundle();
         params.putString("uid", userID);
-        if(context != null) {
+        if (context != null) {
             FirebaseAnalytics.getInstance(context).logEvent("photo_uploads", params);
         }
     }

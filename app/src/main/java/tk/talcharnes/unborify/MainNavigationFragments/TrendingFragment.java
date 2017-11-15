@@ -34,7 +34,6 @@ import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
  * Created by khuramchaudhry on 9/29/17.
- *
  */
 
 public class TrendingFragment extends Fragment {
@@ -148,16 +147,16 @@ public class TrendingFragment extends Fragment {
 
                         Photo photo = child.getValue(Photo.class);
 
-                        if(photo != null) {
+                        if (photo != null) {
                             photos.add(photo);
                         }
                     }
 
                     int count = photos.size();
-                    while(count > 0) {
-                        mSwipeView.addView(new PhotoCard(mContext, photos.get(count-1), mSwipeView,
+                    while (count > 0) {
+                        mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1), mSwipeView,
                                 userId, userName, photoReference, reportRef));
-                        if (count-1 % 8 == 0) {
+                        if (count - 1 % 8 == 0) {
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
                         }

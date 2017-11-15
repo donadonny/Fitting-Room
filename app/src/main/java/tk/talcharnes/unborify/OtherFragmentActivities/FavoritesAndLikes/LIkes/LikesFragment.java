@@ -21,7 +21,6 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 10/22/17.
- *
  */
 
 public class LikesFragment extends Fragment {
@@ -48,12 +47,12 @@ public class LikesFragment extends Fragment {
                 (HorizontalInfiniteCycleViewPager) view.findViewById(R.id.hicvp);
 
         Query query = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .orderByChild("votes/"+FirebaseConstants.getUser().getUid()).equalTo("likes");
+                .orderByChild("votes/" + FirebaseConstants.getUser().getUid()).equalTo("likes");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<String> urls = new ArrayList<String>();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     urls.add(snapshot.getKey());
                 }
                 horizontalInfiniteCycleViewPager.setAdapter(new HorizontalPagerAdapter(
