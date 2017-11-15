@@ -20,11 +20,10 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-import tk.talcharnes.unborify.CommentActivity;
-import tk.talcharnes.unborify.MyTransformation;
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.myNotifications;
+import tk.talcharnes.unborify.Models.myNotifications;
 
 /**
  * Created by khuramchaudhry on 9/17/17.

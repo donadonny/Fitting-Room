@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tk.talcharnes.unborify.OtherFragmentActivities.LikesActivity">
+    tools:context="tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <fragment
-        android:name="tk.talcharnes.unborify.OtherFragmentActivities.LikesFragment"
+        android:name="tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesFragment"
         android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

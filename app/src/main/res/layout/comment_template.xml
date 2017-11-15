@@ -37,7 +37,7 @@
                 android:layout_toLeftOf="@id/comment_more_options"
                 android:layout_marginStart="8dp"
                 android:textSize="20sp"
-                tools:text="This is a test comment" />
+                tools:text="This is a test commentModel" />
 
             <TextView
                 android:id="@+id/comment_username"

@@ -25,9 +25,9 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.talcharnes.unborify.AdCard;
-import tk.talcharnes.unborify.Photo;
-import tk.talcharnes.unborify.PhotoCard;
+import tk.talcharnes.unborify.PhotoCard.AdCard;
+import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;

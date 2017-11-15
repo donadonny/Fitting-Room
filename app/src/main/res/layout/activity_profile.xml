@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/navigation_header_image" />
+            android:src="@drawable/profile_header_image" />
 
         <agency.tango.android.avatarview.views.AvatarView
             android:id="@+id/avatarImage"

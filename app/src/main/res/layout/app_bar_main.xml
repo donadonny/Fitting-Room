@@ -46,7 +46,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <tk.talcharnes.unborify.NoSwipePager
+    <tk.talcharnes.unborify.BottomBar.NoSwipePager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

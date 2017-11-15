@@ -20,7 +20,7 @@ import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import tk.talcharnes.unborify.Photo;
+import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 

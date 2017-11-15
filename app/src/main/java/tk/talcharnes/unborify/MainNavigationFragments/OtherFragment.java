@@ -14,9 +14,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import tk.talcharnes.unborify.OtherFragmentActivities.About.AboutActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsActivity;
-import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
-import tk.talcharnes.unborify.OtherFragmentActivities.LikesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationsActivity;
 import tk.talcharnes.unborify.R;

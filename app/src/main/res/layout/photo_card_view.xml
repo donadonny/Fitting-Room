@@ -85,7 +85,7 @@
             android:layout_alignBottom="@id/photoImageView"
             android:layout_alignParentStart="true"
             android:background="@color/semi_transparent_background"
-            android:contentDescription="@string/comments"
+            android:contentDescription="@string/commentModels"
             android:src="@drawable/comments_button" />
 
         <LinearLayout

@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import tk.talcharnes.unborify.CommentActivity;
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
