@@ -54,7 +54,7 @@ import java.util.Arrays;
 import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -243,10 +243,10 @@ public class PhotoUploadActivityFragment extends Fragment {
 
                 Analytics.registerUpload(getActivity(), user);
 
-                Photo photo = new Photo(user, photoDescription, FirebaseConstants.CATEGORY_FASHION,
+                PhotoModel photoModel = new PhotoModel(user, photoDescription, FirebaseConstants.CATEGORY_FASHION,
                         0, 0, 0, rotation, photoName + ".webp");
 
-                FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(photoName).setValue(photo);
+                FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(photoName).setValue(photoModel);
 
                 Utils.photosUploadedCounter++;
                 if (Utils.photosUploadedCounter % 2 == 0) {

@@ -20,7 +20,7 @@ import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
@@ -33,7 +33,7 @@ public class MyPhotosFragment extends Fragment {
 
     private View rootview;
     private InfinitePlaceHolderView mLoadMoreView;
-    private ArrayList<Photo> photoList;
+    private ArrayList<PhotoModel> photoModelList;
     private String userId, userName;
 
     public MyPhotosFragment() {
@@ -50,7 +50,7 @@ public class MyPhotosFragment extends Fragment {
             userId = user.getUid();
             userName = user.getDisplayName();
         }
-        photoList = new ArrayList<>();
+        photoModelList = new ArrayList<>();
 
         Log.d(LOG_TAG, "UserModel id: " + userId);
         Log.d(LOG_TAG, "UserModel name: " + userName);
@@ -61,7 +61,7 @@ public class MyPhotosFragment extends Fragment {
     }
 
     public void setUpPhotos() {
-        Query query = FirebaseConstants.getRef().child("Photos").orderByChild(Photo.USER_KEY)
+        Query query = FirebaseConstants.getRef().child("Photos").orderByChild(PhotoModel.USER_KEY)
                 .equalTo(userId);
 
         // Read from the database
@@ -69,23 +69,23 @@ public class MyPhotosFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    photoList.clear();
+                    photoModelList.clear();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Photo photo = child.getValue(Photo.class);
-                        if (photo != null) {
-                            photoList.add(photo);
-                            System.out.println(photo.getUrl());
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
+                        if (photoModel != null) {
+                            photoModelList.add(photoModel);
+                            System.out.println(photoModel.getUrl());
                         }
                     }
-                    Collections.reverse(photoList);
+                    Collections.reverse(photoModelList);
 
-                    for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
-                        mLoadMoreView.addView(new PhotoView(getActivity(), photoList.get(i),
+                    for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoModelList.size(); i++) {
+                        mLoadMoreView.addView(new PhotoView(getActivity(), photoModelList.get(i),
                                 userId, userName, mLoadMoreView));
                     }
-                    if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
+                    if (photoModelList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
                         mLoadMoreView.setLoadMoreResolver(new LoadMoreView(mLoadMoreView,
-                                photoList, userId, userName));
+                                photoModelList, userId, userName));
                     }
                 } else {
                     setDefaultView();

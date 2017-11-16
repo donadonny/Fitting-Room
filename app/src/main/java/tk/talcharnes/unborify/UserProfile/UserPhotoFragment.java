@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
@@ -51,7 +51,7 @@ public class UserPhotoFragment extends Fragment {
             if(uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
                 FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                        .orderByChild(Photo.USER_KEY).equalTo(uid)
+                        .orderByChild(PhotoModel.USER_KEY).equalTo(uid)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

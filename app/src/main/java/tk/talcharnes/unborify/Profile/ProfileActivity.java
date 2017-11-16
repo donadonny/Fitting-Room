@@ -160,7 +160,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      * profile which includes changing their name, picture, and password.
      */
     private void showEditDialog() {
-        String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
+        String[] array = {"Change Name", "Change Password", "Change Profile PhotoModel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("What do you like to change?")
                 .setItems(array, new DialogInterface.OnClickListener() {

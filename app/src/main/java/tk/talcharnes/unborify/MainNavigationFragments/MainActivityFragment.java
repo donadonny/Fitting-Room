@@ -30,8 +30,8 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
-import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -45,7 +45,7 @@ public class MainActivityFragment extends Fragment {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-    private ArrayList<Photo> photoList;
+    private ArrayList<PhotoModel> photoModelList;
     private String userId, userName;
     private String oldestPostId;
     private DatabaseReference photoReference;
@@ -90,11 +90,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     /**
-     * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
+     * Initializes Basic stuff. The photoModelList, mAdView, and the fab buttons.
      */
     private void initializeBasicSetup() {
         //choose your favorite adapter
-        photoList = new ArrayList<Photo>();
+        photoModelList = new ArrayList<PhotoModel>();
         FirebaseUser user = FirebaseConstants.getUser();
         userId = user.getUid();
         userName = user.getDisplayName();
@@ -209,13 +209,10 @@ public class MainActivityFragment extends Fragment {
         final long startTime = System.currentTimeMillis();
         Query query;
 
-        final Photo adViewPhoto = new Photo();
-        adViewPhoto.setAd(true);
-
         if (oldestPostId.isEmpty()) {
-            query = photoReference.orderByChild(Photo.URL_KEY).limitToLast(9);
+            query = photoReference.orderByChild(PhotoModel.URL_KEY).limitToLast(9);
         } else {
-            query = photoReference.orderByChild(Photo.URL_KEY).endAt(oldestPostId).limitToLast(8);
+            query = photoReference.orderByChild(PhotoModel.URL_KEY).endAt(oldestPostId).limitToLast(8);
         }
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -225,23 +222,23 @@ public class MainActivityFragment extends Fragment {
                     ArrayList<PhotoCard> list = new ArrayList<PhotoCard>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                        Photo photo = child.getValue(Photo.class);
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
                         /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
-                                .removeWebPFromUrl(photo.getUrl()));*/
+                                .removeWebPFromUrl(photoModel.getUrl()));*/
 
                         /*Randomizing votes for photos
-                        photoReference.child(photo.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
-                        photoReference.child(photo.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
 
                         /*Randomizing categories for photos
                         String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
-                        photoReference.child(photo.getUrl().replace(".webp", "")).child("category")
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("category")
                                 .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
-                        if(photo != null) {
+                        if(photoModel != null) {
                             if(list.size() == 0) {
-                                oldestPostId = PhotoUtilities.removeWebPFromUrl(photo.getUrl());
+                                oldestPostId = PhotoUtilities.removeWebPFromUrl(photoModel.getUrl());
                             }
-                            list.add(new PhotoCard(mContext, photo, mSwipeView, userId, userName,
+                            list.add(new PhotoCard(mContext, photoModel, mSwipeView, userId, userName,
                                     photoReference, reportRef));
                         }
                     }
@@ -282,28 +279,28 @@ public class MainActivityFragment extends Fragment {
 
         final long startTime = System.currentTimeMillis();
 
-        Query query = photoReference.orderByChild(Photo.CATEGORY_KEY).equalTo(category)
+        Query query = photoReference.orderByChild(PhotoModel.CATEGORY_KEY).equalTo(category)
                 .limitToFirst(8);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    List<Photo> photos = new ArrayList<>();
+                    List<PhotoModel> photoModels = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                        Photo photo = child.getValue(Photo.class);
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
 
-                        if (photo != null) {
-                            photos.add(photo);
+                        if (photoModel != null) {
+                            photoModels.add(photoModel);
                         }
                     }
-                    int count = photos.size();
-                    if(photos.isEmpty()) {
+                    int count = photoModels.size();
+                    if(photoModels.isEmpty()) {
                         noImagesTextView.setVisibility(View.VISIBLE);
                     } else {
                         while (count > 0) {
-                            mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1),
+                            mSwipeView.addView(new PhotoCard(mContext, photoModels.get(count - 1),
                                     mSwipeView, userId, userName, photoReference, reportRef));
                             if (count - 1 % 8 == 0) {
                                 mSwipeView.addView(new AdCard(mContext, mSwipeView));
@@ -311,7 +308,7 @@ public class MainActivityFragment extends Fragment {
                             }
                             count--;
                         }
-                        photos.clear();
+                        photoModels.clear();
                     }
 
                     Log.d(LOG_TAG, "Retrieved data");

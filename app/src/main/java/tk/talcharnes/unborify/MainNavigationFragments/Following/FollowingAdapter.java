@@ -18,7 +18,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 import agency.tango.android.avatarview.views.AvatarView;
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.UserProfile.UserProfileAdapter;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -73,7 +73,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
         if(!uid.isEmpty()) {
             Log.d(TAG, "Loading user Photos");
             FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                    .orderByChild(Photo.USER_KEY).equalTo(uid)
+                    .orderByChild(PhotoModel.USER_KEY).equalTo(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

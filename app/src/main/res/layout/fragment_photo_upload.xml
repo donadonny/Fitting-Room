@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:tooltipText="Add photo"
+            android:tooltipText="Add photoModel"
             android:scaleType="centerCrop"
             android:gravity="top"
             android:src="@drawable/ic_add_a_photo_black_48dp"

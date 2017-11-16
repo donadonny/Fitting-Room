@@ -55,7 +55,7 @@ import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import tk.talcharnes.unborify.Models.ReportModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
@@ -114,7 +114,7 @@ public class PhotoCard {
     @View(R.id.photo_card_options)
     private ImageButton photo_card_options;
 
-    private Photo mPhoto;
+    private PhotoModel mPhotoModel;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
     private String mUserId, mUserName;
@@ -126,11 +126,11 @@ public class PhotoCard {
     private StorageReference storageRef;
 
 
-    public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
+    public PhotoCard(Context context, PhotoModel photoModel, SwipePlaceHolderView swipeView, String userId,
                      String userName, DatabaseReference photoReference,
                      DatabaseReference reportsRef) {
         mContext = context;
-        mPhoto = photo;
+        mPhotoModel = photoModel;
         mSwipeView = swipeView;
         mUserId = userId;
         mUserName = userName;
@@ -153,7 +153,7 @@ public class PhotoCard {
                                 usernameTextView.setText(userModel.getName());
                                 imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 photoImageView.setContentDescription("Uploaded By "+ userModel.getName()
-                                        +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");
+                                        +" "+" photo name "+ mPhotoModel.getOccasionSubtitle()+" ");
                             }
                         }
                     }
@@ -172,7 +172,7 @@ public class PhotoCard {
     private void onResolved() {
         Log.d(LOG_TAG, "mUserId: " + mUserId);
         Log.d(LOG_TAG, "mUserName: " + mUserName);
-        final String url = mPhoto.getUrl();
+        final String url = mPhotoModel.getUrl();
         Log.d(LOG_TAG, "url: " + url);
         imageLoader = new GlideLoader2();
         if (url != null && !url.isEmpty()) {
@@ -181,15 +181,15 @@ public class PhotoCard {
                     .child(FirebaseConstants.IMAGES).child(url);
 
             FirebaseConstants.loadImageUsingGlide(mContext, photoImageView, storageRef,
-                    progressBar, mPhoto.getOrientation());
+                    progressBar, mPhotoModel.getOrientation());
 
-            String occasionTitle = mPhoto.getOccasion_subtitle();
+            String occasionTitle = mPhotoModel.getOccasionSubtitle();
             nameTextView.setText(occasionTitle);
             Log.d(LOG_TAG, "\toccasion subtitle: " + occasionTitle);
-            Log.d(LOG_TAG, "\tcategory: " + mPhoto.getCategory());
-            float likes = Float.parseFloat("" + mPhoto.getLikes());
+            Log.d(LOG_TAG, "\tcategory: " + mPhotoModel.getCategory());
+            float likes = Float.parseFloat("" + mPhotoModel.getLikes());
             Log.d(LOG_TAG, "\tlikes: " + likes);
-            float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
+            float dislikes = Float.parseFloat("" + mPhotoModel.getDislikes());
             Log.d(LOG_TAG, "\tdislikes: " + dislikes);
 //            dislikes = (dislikes < 1) ? 1 : dislikes;
 //            likes = (likes < 1) ? 1 : likes;
@@ -214,7 +214,7 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                    intent.putExtra("url", mPhoto.getUrl());
+                    intent.putExtra("url", mPhotoModel.getUrl());
                     intent.putExtra("rotation", rotation);
                     mContext.startActivity(intent);
                 }
@@ -224,8 +224,8 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, CommentActivity.class);
-                    intent.putExtra("url", mPhoto.getUrl());
-                    intent.putExtra("photoUserID", mPhoto.getUser());
+                    intent.putExtra("url", mPhotoModel.getUrl());
+                    intent.putExtra("photoUserID", mPhotoModel.getUser());
                     intent.putExtra("currentUser", mUserId);
                     intent.putExtra("name", mUserName);
                     mContext.startActivity(intent);
@@ -264,15 +264,15 @@ public class PhotoCard {
                 }
             });
 
-            setUploader(mPhoto.getUser());
+            setUploader(mPhotoModel.getUser());
 
             avatarView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext,
-                            (FirebaseConstants.getUser().getUid().equals(mPhoto.getUser())) ?
+                            (FirebaseConstants.getUser().getUid().equals(mPhotoModel.getUser())) ?
                                     ProfileActivity.class : UserProfileActivity.class);
-                    intent.putExtra("uid", mPhoto.getUser());
+                    intent.putExtra("uid", mPhotoModel.getUser());
                     mContext.startActivity(intent);
                 }
             });
@@ -303,7 +303,7 @@ public class PhotoCard {
         //Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
         /*photoImageView.setContentDescription("Uploaded By "+ mUploaderName
-                +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");*/
+                +" "+" photo name "+ mPhotoModel.getOccasionSubtitle()+" ");*/
         togglePhotoAddOns();
 
     }
@@ -326,7 +326,7 @@ public class PhotoCard {
         //Log.d(LOG_TAG, "onSwipedOut");
         if (isReported != null && isReported) {
             isReported = false;
-            setReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+            setReport(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
         } else {
             setVote("dislikes");
             Analytics.registerSwipe(mContext, "left");
@@ -370,9 +370,9 @@ public class PhotoCard {
      */
     private void setVote(final String rating) {
         final String userID = mUserId;
-        final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
+        final String name = PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl());
         final DatabaseReference chosenPhoto = mPhotoReference.child(name);
-        if (!mUserId.equals(mPhoto.getUser())) {
+        if (!mUserId.equals(mPhotoModel.getUser())) {
             chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -476,11 +476,11 @@ public class PhotoCard {
     private int getRotation() {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mPhoto.getOrientation() != 0) {
+            if (mPhotoModel.getOrientation() != 0) {
                 rotation = 90;
             }
         } else if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (mPhoto.getOrientation() == 0) {
+            if (mPhotoModel.getOrientation() == 0) {
                 rotation = 90;
             }
         }
@@ -541,7 +541,7 @@ public class PhotoCard {
     public void addToFavorites() {
         final DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                 .child(mUserId).child(FirebaseConstants.USER_FAVORITES)
-                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+                .child(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

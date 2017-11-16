@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.anything;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class PhotoCardTest {
+public class PhotoModelCardTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
@@ -47,7 +47,7 @@ public class PhotoCardTest {
     }
 
     /**
-     * Checks tapping on the Photo.
+     * Checks tapping on the PhotoModel.
      * */
     @Test
     public void checkTap() {
