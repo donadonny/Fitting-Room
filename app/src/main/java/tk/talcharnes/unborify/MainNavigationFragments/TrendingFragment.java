@@ -74,7 +74,7 @@ public class TrendingFragment extends Fragment {
         userId = user.getUid();
         userName = user.getDisplayName();
 
-        // Report Fab button
+        // ReportModel Fab button
         refreshButton = rootView.findViewById(R.id.refreshBtn);
 
         refresh_textview = rootView.findViewById(R.id.refreshTitle);

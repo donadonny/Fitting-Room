@@ -96,7 +96,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                     userNameText.setText((name.length() > 18) ?
                                             name.substring(0, 15) + "...\n..." + name.substring(15)
                                             : name);
-                                    userJoinedText.setText(userModel.getDate_joined());
+                                    userJoinedText.setText(userModel.getDateJoined());
                                     String profileUri = userModel.getUri() + "";
                                     imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }

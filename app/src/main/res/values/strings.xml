@@ -130,7 +130,7 @@
 
     <string name="help_slide_2_title">Reporting</string>
     <string name="help_slide_2_desc">If you happen to find a photo that offends or violates our
-        terms of services: Click the report button and the photo will be reported and skipped so you can continue voting on other photos.</string>
+        terms of services: Click the reportModel button and the photo will be reported and skipped so you can continue voting on other photos.</string>
 
     <string name="help_slide_3_title">Add Your Own Photo</string>
     <string name="help_slide_3_desc">Don\'t just like or dislike photos from others. Add your own
@@ -161,7 +161,7 @@
     <string name="about_title_3_desc_10">Tango Agency for the Avatar View Library</string>
     <string name="about_title_3_desc_11">Jacek for the EasyImage Library</string>
     <string name="about_trademark">Something LLC. All rights reserved.</string>
-    <string name="report">report</string>
+    <string name="reportModel">reportModel</string>
     <string name="delete">delete</string>
     <string name="edit">edit</string>
     <string name="edit_comment">Edit Comment</string>

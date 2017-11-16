@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                                 if (userModel != null) {
                                     nameText.setText(userModel.getName());
                                     emailText.setText(userModel.getEmail());
-                                    joinedText.setText(userModel.getDate_joined());
+                                    joinedText.setText(userModel.getDateJoined());
                                     String profileUri = userModel.getUri() + "";
                                     imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }

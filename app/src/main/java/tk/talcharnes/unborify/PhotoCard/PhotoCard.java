@@ -53,9 +53,9 @@ import java.util.Locale;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
+import tk.talcharnes.unborify.Models.ReportModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.Models.Photo;
-import tk.talcharnes.unborify.Models.Report;
 import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
@@ -444,10 +444,10 @@ public class PhotoCard {
                             .format(new Date());
                     HashMap<String, String> reports = new HashMap<String, String>();
                     reports.put(mUserId, timeStamp);
-                    Report report = new Report(1, reports);
-                    mReportsRef.child(name).setValue(report);
+                    ReportModel reportModel = new ReportModel(1, reports);
+                    mReportsRef.child(name).setValue(reportModel);
                     mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
-                    Log.d(LOG_TAG, "A new report.");
+                    Log.d(LOG_TAG, "A new reportModel.");
                 }
             }
 
