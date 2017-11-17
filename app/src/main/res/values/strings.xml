@@ -1,6 +1,8 @@
 <resources>
     <!--App name-->
     <string name="app_name" translatable="false">InStyle</string>
+    <string name="facebook_app_id">160097344594238</string>
+    <string name="fb_login_protocol_scheme">fb160097344594238</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>
