@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -15,7 +16,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import java.security.MessageDigest;
 
+import    android.content.pm.PackageManager;
+import    android.content.pm.Signature;
+import    android.util.Base64;
+import    android.content.pm.PackageInfo;
+import android.content.Context;
+
+import java.security.NoSuchAlgorithmException;
+import com.facebook.FacebookSdk;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -45,10 +55,12 @@ public class UserCredentialsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.auth_ui_layout);
-
-        initialize();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+         initialize();
 
     }
+
 
     /**
      * Checks if the user is logged in. If not, then the user is prompt to log in.
@@ -107,7 +119,10 @@ public class UserCredentialsActivity extends AppCompatActivity {
                                             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
                                                     .build(),
                                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                                                    .build()))
+                                                    .build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
+                                                    .build()
+                                            ))
                                     .build(),
                             RC_SIGN_IN);
                     Log.d(TAG, "Starting up Firebase UI.");
