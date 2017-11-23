@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -16,16 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import java.security.MessageDigest;
 
-import    android.content.pm.PackageManager;
-import    android.content.pm.Signature;
-import    android.util.Base64;
-import    android.content.pm.PackageInfo;
-import android.content.Context;
-
-import java.security.NoSuchAlgorithmException;
-import com.facebook.FacebookSdk;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -148,6 +140,23 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 if (response == null) {
                     Log.d(TAG, "Login failed due to back press.");
                 } else {
+
+                    if (response == null) {
+                        // User pressed back button
+//                        showSnackbar(R.string.sign_in_cancelled);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+//                        showSnackbar(R.string.no_internet_connection);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+//                        showSnackbar(R.string.unknown_error);
+                        return;
+                    }
+
                     switch (response.getErrorCode()) {
                         case ErrorCodes.NO_NETWORK:
                             Log.d(TAG, "Login failed due to no network.");
