@@ -191,6 +191,7 @@
 
     <!-- Content Description -->
     <string name="description_submit_comment">Submit Comment</string>
+    <string name="nav_my_profile">My Profile</string>
 
     <string-array name="spinner_list_item_array">
         <item>All</item>

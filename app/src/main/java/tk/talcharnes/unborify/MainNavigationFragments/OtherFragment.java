@@ -9,17 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import tk.talcharnes.unborify.OtherFragmentActivities.About.AboutActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity;
-import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationsActivity;
+import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/29/17.
@@ -39,6 +42,17 @@ public class OtherFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), MyPhotosActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView profileView = rootView.findViewById(R.id.my_profile_button);
+        profileView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                String uid = FirebaseConstants.getUser().getUid();
+                intent.putExtra("uid", uid);
                 startActivity(intent);
             }
         });
