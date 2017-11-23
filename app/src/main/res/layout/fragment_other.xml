@@ -11,6 +11,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/my_profile_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="18dp"
@@ -19,6 +20,7 @@
         android:drawablePadding="25dp"
         android:drawableStart="@drawable/ic_profile"
         android:gravity="bottom"
+        android:text="@string/nav_my_profile"
         android:textSize="16sp"
         android:textStyle="bold" />
 
