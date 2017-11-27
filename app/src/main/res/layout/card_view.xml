@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/bb_darkBackgroundColor"
                 android:scaleType="fitCenter"
-                tools:src="@mipmap/ic_launcher"/>
+                tools:src="@mipmap/ic_launcher" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"

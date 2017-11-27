@@ -52,11 +52,12 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<String> urls = new ArrayList<String>();
-                GenericTypeIndicator<HashMap<String, String> > t =
-                        new GenericTypeIndicator<HashMap<String, String> >() {};
-                if(dataSnapshot.exists()) {
+                GenericTypeIndicator<HashMap<String, String>> t =
+                        new GenericTypeIndicator<HashMap<String, String>>() {
+                        };
+                if (dataSnapshot.exists()) {
                     HashMap<String, String> map = dataSnapshot.getValue(t);
-                    if(map != null) {
+                    if (map != null) {
                         for (Map.Entry<String, String> entry : map.entrySet()) {
                             urls.add(entry.getKey());
                         }

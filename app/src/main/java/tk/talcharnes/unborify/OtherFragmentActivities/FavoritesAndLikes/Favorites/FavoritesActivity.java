@@ -10,7 +10,7 @@ import tk.talcharnes.unborify.R;
  * Created by khuramchaudhry on 10/22/17.
  */
 
-public class FavoritesActivity  extends AppCompatActivity {
+public class FavoritesActivity extends AppCompatActivity {
 
     private static final String TAG = FavoritesActivity.class.getSimpleName();
 

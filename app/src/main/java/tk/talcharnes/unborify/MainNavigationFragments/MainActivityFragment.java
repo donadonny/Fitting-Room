@@ -64,6 +64,7 @@ public class MainActivityFragment extends Fragment {
     private Spinner spinner;
     private boolean firstTime = true;
     private boolean categoryMode = false;
+
     /**
      * Constructor.
      */
@@ -149,12 +150,12 @@ public class MainActivityFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                String chosen =  parent.getItemAtPosition(position).toString();
+                String chosen = parent.getItemAtPosition(position).toString();
                 oldestPostId = "";
                 Log.d(LOG_TAG, "category chosen: " + chosen);
                 mSwipeView.removeAllViews();
                 noImagesTextView.setVisibility(View.GONE);
-                if(firstTime) {
+                if (firstTime) {
                     if (chosen.equals("All")) {
                         getPhotos();
                         categoryMode = false;
@@ -183,7 +184,7 @@ public class MainActivityFragment extends Fragment {
                         mInterstitialAd.show();
                     }*/
                     Log.d(LOG_TAG, "Empty SwipeView");
-                    if(categoryMode) {
+                    if (categoryMode) {
                         noImagesTextView.setVisibility(View.VISIBLE);
                         noImagesTextView.setText(getActivity().getResources()
                                 .getString(R.string.no_image_title_6));

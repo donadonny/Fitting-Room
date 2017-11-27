@@ -1,108 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#FFF"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/my_profile_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="18dp"
+        android:drawablePadding="25dp"
+        android:drawableStart="@drawable/ic_profile"
+        android:gravity="bottom"
+        android:text="@string/nav_my_profile"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_photos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_my_photos"
         android:drawablePadding="25dp"
-        android:text="@string/nav_photos"
+        android:drawableStart="@drawable/ic_my_photos"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_photos"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_notifications"
         android:drawablePadding="25dp"
-        android:text="@string/nav_notifications"
+        android:drawableStart="@drawable/ic_notifications"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_notifications"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_help"
         android:drawablePadding="25dp"
-        android:text="@string/nav_help"
+        android:drawableStart="@drawable/ic_help"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_help"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_contact_us"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_contact_us"
         android:drawablePadding="25dp"
-        android:text="@string/nav_contact_us"
+        android:drawableStart="@drawable/ic_contact_us"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_contact_us"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_about_us"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_about"
         android:drawablePadding="25dp"
-        android:text="@string/nav_about_us"
+        android:drawableStart="@drawable/ic_about"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_about_us"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_likes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_likes"
         android:drawablePadding="25dp"
-        android:text="@string/nav_likes"
+        android:drawableStart="@drawable/ic_likes"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_likes"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_favorites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="18dp"
-        android:drawableStart="@drawable/ic_favorites"
         android:drawablePadding="25dp"
-        android:text="@string/nav_favorites"
+        android:drawableStart="@drawable/ic_favorites"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/nav_favorites"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nav_sign_out"
@@ -110,12 +128,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
-        android:drawableStart="@drawable/ic_sign_out"
         android:drawablePadding="25dp"
-        android:text="@string/sign_out"
+        android:drawableStart="@drawable/ic_sign_out"
         android:gravity="bottom"
-        android:textStyle="bold"
-        android:textSize="17sp"/>
+        android:text="@string/sign_out"
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
     <!--Button
         android:layout_width="match_parent"
@@ -131,3 +149,4 @@
         android:drawableStart="@drawable/ic_sign_out"/ -->
 
 </LinearLayout>
+</ScrollView>

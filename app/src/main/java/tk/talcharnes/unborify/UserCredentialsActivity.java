@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -45,10 +47,12 @@ public class UserCredentialsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.auth_ui_layout);
-
-        initialize();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+         initialize();
 
     }
+
 
     /**
      * Checks if the user is logged in. If not, then the user is prompt to log in.
@@ -107,7 +111,10 @@ public class UserCredentialsActivity extends AppCompatActivity {
                                             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
                                                     .build(),
                                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                                                    .build()))
+                                                    .build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
+                                                    .build()
+                                            ))
                                     .build(),
                             RC_SIGN_IN);
                     Log.d(TAG, "Starting up Firebase UI.");
@@ -133,6 +140,23 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 if (response == null) {
                     Log.d(TAG, "Login failed due to back press.");
                 } else {
+
+                    if (response == null) {
+                        // User pressed back button
+//                        showSnackbar(R.string.sign_in_cancelled);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+//                        showSnackbar(R.string.no_internet_connection);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+//                        showSnackbar(R.string.unknown_error);
+                        return;
+                    }
+
                     switch (response.getErrorCode()) {
                         case ErrorCodes.NO_NETWORK:
                             Log.d(TAG, "Login failed due to no network.");

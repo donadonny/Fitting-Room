@@ -5,7 +5,7 @@ import org.junit.Test;
 public class CommentsUnitTest {
 
     @Test
-    public void CommentsTest(){
+    public void CommentsTest() {
 
     }
 }

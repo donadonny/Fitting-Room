@@ -24,7 +24,6 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 9/29/17.
- *
  */
 
 
@@ -50,12 +49,13 @@ public class FollowingFragment extends Fragment {
 
         return rootView;
     }
+
     /**
      * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
      */
     private void initializeBasicSetup() {
         String uid = FirebaseConstants.getUser().getUid();
-        if(!uid.isEmpty()) {
+        if (!uid.isEmpty()) {
             Log.d(TAG, "Loading user Photos");
             FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .child(FirebaseConstants.USER_CONNECTIONS)
@@ -64,18 +64,19 @@ public class FollowingFragment extends Fragment {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             ArrayList<String> users = new ArrayList<String>();
                             GenericTypeIndicator<HashMap<String, String>> t =
-                                    new GenericTypeIndicator<HashMap<String, String> >() {};
-                            if(dataSnapshot.exists()) {
+                                    new GenericTypeIndicator<HashMap<String, String>>() {
+                                    };
+                            if (dataSnapshot.exists()) {
                                 HashMap<String, String> map = dataSnapshot.getValue(t);
-                                if(map != null) {
+                                if (map != null) {
                                     for (Map.Entry<String, String> entry : map.entrySet()) {
-                                        if(entry.getValue().equals("Following")) {
+                                        if (entry.getValue().equals("Following")) {
                                             users.add(entry.getKey());
                                         }
                                     }
                                 }
                             }
-                            if(users.size() < 1) {
+                            if (users.size() < 1) {
                                 noImageView.setVisibility(View.VISIBLE);
                             } else {
                                 noImageView.setVisibility(View.GONE);

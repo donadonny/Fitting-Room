@@ -29,7 +29,6 @@ import tk.talcharnes.unborify.Models.NotificationModel;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
- *
  */
 
 public class NotificationFragment extends Fragment {

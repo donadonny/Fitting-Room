@@ -46,38 +46,38 @@ public class UserPhotoFragment extends Fragment {
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         final int size = (int) Math.floor(windowSize.x / 300);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             String uid = getArguments().getString("uid");
-            if(uid != null && !uid.isEmpty()) {
+            if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
                 FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                         .orderByChild(PhotoModel.USER_KEY).equalTo(uid)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> urls = new ArrayList<String>();
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            urls.add(snapshot.getKey());
-                            Log.d(TAG, snapshot.getKey());
-                        }
-                        if(urls.size() < 1) {
-                            noImageView.setVisibility(View.VISIBLE);
-                        } else {
-                            noImageView.setVisibility(View.GONE);
-                            my_recycler_view.setLayoutManager(new GridLayoutManager(getActivity(),
-                                    size));
-                            my_recycler_view.setHasFixedSize(false);
-                            UserProfileAdapter adapter = new UserProfileAdapter(getActivity(),
-                                    FirebaseConstants.getUser().getUid(), urls, "Photos");
-                            my_recycler_view.setAdapter(adapter);
-                        }
-                    }
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                ArrayList<String> urls = new ArrayList<String>();
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    urls.add(snapshot.getKey());
+                                    Log.d(TAG, snapshot.getKey());
+                                }
+                                if (urls.size() < 1) {
+                                    noImageView.setVisibility(View.VISIBLE);
+                                } else {
+                                    noImageView.setVisibility(View.GONE);
+                                    my_recycler_view.setLayoutManager(new GridLayoutManager(getActivity(),
+                                            size));
+                                    my_recycler_view.setHasFixedSize(false);
+                                    UserProfileAdapter adapter = new UserProfileAdapter(getActivity(),
+                                            FirebaseConstants.getUser().getUid(), urls, "Photos");
+                                    my_recycler_view.setAdapter(adapter);
+                                }
+                            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                            }
+                        });
             }
         }
 

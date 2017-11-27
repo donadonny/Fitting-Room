@@ -4,7 +4,6 @@ package tk.talcharnes.unborify.Models;
  * Created by Tal on 9/3/2017.
  *
  * This class is an Object design for comments.
- *
  * Properties:
  *      commenterUid - this property contains the user id of the commenter.
  *      commentMessage - this property contains the comment message.

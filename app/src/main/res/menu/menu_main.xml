@@ -6,10 +6,10 @@
         android:id="@+id/action_my_photos"
         android:orderInCategory="99"
         android:title="@string/my_photos"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
         android:title="@string/sign_out"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

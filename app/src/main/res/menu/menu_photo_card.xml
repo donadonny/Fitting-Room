@@ -4,13 +4,13 @@
     <item
         android:id="@+id/action_report_photo"
         android:orderInCategory="99"
-        android:title="@string/reportModel"
-        app:showAsAction="never"/>
+        android:title="@string/action_report"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_favorite_photo"
         android:orderInCategory="99"
         android:title="@string/favorites"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
 </menu>

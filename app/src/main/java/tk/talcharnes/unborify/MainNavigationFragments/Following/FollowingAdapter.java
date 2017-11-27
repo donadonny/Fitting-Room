@@ -45,32 +45,33 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent,
                 false);
-        return new ItemRowHolder(v);    }
+        return new ItemRowHolder(v);
+    }
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
         String uid = userUids.get(position);
         StorageReference photoRef = FirebaseStorage.getInstance().getReference()
-                .child(FirebaseConstants.PROFILE_IMAGE).child(uid+".webp");
+                .child(FirebaseConstants.PROFILE_IMAGE).child(uid + ".webp");
         Log.d(TAG, photoRef.getPath());
         FirebaseConstants.loadImageUsingGlide(mContext, holder.userPhoto, photoRef);
         FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                 .child(FirebaseConstants.USERNAME)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                    holder.userName.setText(dataSnapshot.getValue().toString());
-                }
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            holder.userName.setText(dataSnapshot.getValue().toString());
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
 
-        if(!uid.isEmpty()) {
+        if (!uid.isEmpty()) {
             Log.d(TAG, "Loading user Photos");
             FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                     .orderByChild(PhotoModel.USER_KEY).equalTo(uid)
@@ -78,11 +79,11 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             ArrayList<String> urls = new ArrayList<String>();
-                            for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 urls.add(snapshot.getKey());
                                 Log.d(TAG, snapshot.getKey());
                             }
-                            if(urls.size() > 0) {
+                            if (urls.size() > 0) {
                                 holder.photoList.setLayoutManager(new
                                         LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL,
                                         false));
@@ -116,7 +117,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
 
         ItemRowHolder(View view) {
             super(view);
-            if(!userUids.isEmpty()) {
+            if (!userUids.isEmpty()) {
                 this.userPhoto = (AvatarView) view.findViewById(R.id.avatarImage);
                 this.userName = (TextView) view.findViewById(R.id.textview);
                 this.photoList = (RecyclerView) view.findViewById(R.id.my_recycler_view);

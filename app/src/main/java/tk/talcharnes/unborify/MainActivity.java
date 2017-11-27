@@ -20,16 +20,14 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import agency.tango.android.avatarview.IImageLoader;
-import agency.tango.android.avatarview.views.AvatarView;
 import tk.talcharnes.unborify.BottomBar.BottomBarAdapter;
 import tk.talcharnes.unborify.BottomBar.NoSwipePager;
+import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.Following.FollowingFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
-import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
 import tk.talcharnes.unborify.PhotoUpload.PhotoUploadActivity;
-import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
@@ -94,16 +92,6 @@ public class MainActivity extends AppCompatActivity {
         uid = user.getUid();
         Uri uri = user.getPhotoUrl();
         String uriString = (uri != null) ? uri.toString() : "";
-        AvatarView profileView = toolbar.findViewById(R.id.avatarImage);
-        imageLoader.loadImage(profileView, uid, userName);
-        profileView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("uid", uid);
-                startActivity(intent);
-            }
-        });
 
         spinner = (Spinner) toolbar.findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -179,9 +167,9 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         Log.d(TAG, "currentView: " + currentView);
-        if(currentView == 0) {
+        if (currentView == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
-        } else if(currentView == 2) {
+        } else if (currentView == 2) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
 

@@ -21,8 +21,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <fragment
-        android:name="tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationFragment"
         android:id="@+id/fragment"
+        android:name="tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

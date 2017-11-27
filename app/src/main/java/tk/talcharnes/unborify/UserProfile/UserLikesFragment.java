@@ -48,21 +48,21 @@ public class UserLikesFragment extends Fragment {
         final int size = (int) Math.floor(windowSize.x / 300);
 
         my_recycler_view.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             String uid = getArguments().getString("uid");
-            if(uid != null && !uid.isEmpty()) {
+            if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
 
                 FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                        .orderByChild("votes/"+uid).equalTo("likes")
+                        .orderByChild("votes/" + uid).equalTo("likes")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<String> urls = new ArrayList<String>();
-                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                     urls.add(snapshot.getKey());
                                 }
-                                if(urls.size() < 1) {
+                                if (urls.size() < 1) {
                                     noImageView.setVisibility(View.VISIBLE);
                                 } else {
                                     noImageView.setVisibility(View.GONE);

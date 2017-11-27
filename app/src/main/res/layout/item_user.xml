@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -8,21 +7,21 @@
         android:id="@+id/user_info"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/fab_size"
-        android:background="@drawable/circle"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/circle"
         android:orientation="horizontal">
 
         <agency.tango.android.avatarview.views.AvatarView
             android:id="@+id/avatarImage"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp"
+            android:gravity="start"
+            android:scaleType="centerCrop"
             app:av_border_color="@color/colorPrimary"
             app:av_border_width="4dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"
-            android:scaleType="centerCrop"
-            android:gravity="start"
             app:av_text_size_percentage="75" />
 
         <TextView
@@ -32,18 +31,18 @@
             android:layout_gravity="center"
             android:layout_marginEnd="20dp"
             android:text="@string/placeholder"
-            android:textColor="#FFF"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#FFF" />
 
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
-        android:layout_below="@+id/user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_below="@+id/user_info"
         android:layout_marginStart="20dp"
+        android:orientation="horizontal"
         android:scrollbars="none" />
 
 </RelativeLayout>

@@ -42,7 +42,7 @@ public class FirebaseConstants {
     public final static String INSTANCEID = "instanceId";
     public final static String USERNAME = "name";
     public final static String USER_CONNECTIONS = "user_connections";
-    public final static String USER_FAVORITES= "user_favorites";
+    public final static String USER_FAVORITES = "user_favorites";
     public final static String FAVORITE = "Favorite";
     public final static String URI = "uri";
     public final static String IMAGES = "images";
@@ -150,8 +150,8 @@ public class FirebaseConstants {
     }
 
     public static void loadImageUsingGlide(Context context, ImageView imageView,
-                                    StorageReference storageReference,
-                                    final ProgressBar progressBar) {
+                                           StorageReference storageReference,
+                                           final ProgressBar progressBar) {
         GlideApp.with(context)
                 .load(storageReference)
                 .transform(new MyTransformation(context, 0))
@@ -161,7 +161,7 @@ public class FirebaseConstants {
                     public boolean onLoadFailed(@Nullable GlideException e,
                                                 Object model, Target<Drawable> target,
                                                 boolean isFirstResource) {
-                        if(progressBar != null) {
+                        if (progressBar != null) {
                             progressBar.setVisibility(android.view.View.GONE);
                         }
                         return false;
@@ -171,7 +171,7 @@ public class FirebaseConstants {
                     public boolean onResourceReady(Drawable resource, Object model,
                                                    Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
-                        if(progressBar != null) {
+                        if (progressBar != null) {
                             progressBar.setVisibility(android.view.View.GONE);
                         }
                         return false;

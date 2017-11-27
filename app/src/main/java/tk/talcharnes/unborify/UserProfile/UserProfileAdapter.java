@@ -23,7 +23,6 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by khuramchaudhry on 10/19/17.
- *
  */
 
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.SingleItemRowHolder> {
@@ -40,7 +39,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         this.mContext = context;
         this.uid = uid;
         this.type = type;
-        if(type.equals("Photos")) {
+        if (type.equals("Photos")) {
             storageReference = FirebaseStorage.getInstance().getReference()
                     .child(FirebaseConstants.IMAGES);
         } else {
@@ -57,7 +56,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
     @Override
     public void onBindViewHolder(final SingleItemRowHolder holder, int i) {
-        StorageReference photoRef = storageReference.child(urlList.get(i)+".webp");
+        StorageReference photoRef = storageReference.child(urlList.get(i) + ".webp");
         Log.d(TAG, photoRef.getPath());
         FirebaseConstants.loadImageUsingGlide(mContext, holder.photo, photoRef,
                 holder.progressBar);
@@ -65,34 +64,34 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(urlList.get(i))
                 .child(FirebaseConstants.VOTES).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    String rating = String.valueOf(dataSnapshot.getValue());
-                    if(!type.equals("Photos")) {
-                        holder.userRating.setBackgroundColor(ContextCompat
-                                .getColor(mContext, R.color.bg_screen4));
-                        holder.userRating.setImageDrawable(ContextCompat
-                                .getDrawable(mContext, R.drawable.ic_tab_following));
-                    } else if(rating.equals("likes")) {
-                        holder.userRating.setBackgroundColor(ContextCompat
-                                .getColor(mContext, R.color.bg_screen2));
-                        holder.userRating.setImageDrawable(ContextCompat
-                                .getDrawable(mContext, R.drawable.ic_thumb_up_white_24dp));
-                    } else {
-                        holder.userRating.setBackgroundColor(ContextCompat
-                                .getColor(mContext, R.color.bg_screen1));
-                        holder.userRating.setImageDrawable(ContextCompat
-                                .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            String rating = String.valueOf(dataSnapshot.getValue());
+                            if (!type.equals("Photos")) {
+                                holder.userRating.setBackgroundColor(ContextCompat
+                                        .getColor(mContext, R.color.bg_screen4));
+                                holder.userRating.setImageDrawable(ContextCompat
+                                        .getDrawable(mContext, R.drawable.ic_tab_following));
+                            } else if (rating.equals("likes")) {
+                                holder.userRating.setBackgroundColor(ContextCompat
+                                        .getColor(mContext, R.color.bg_screen2));
+                                holder.userRating.setImageDrawable(ContextCompat
+                                        .getDrawable(mContext, R.drawable.ic_thumb_up_white_24dp));
+                            } else {
+                                holder.userRating.setBackgroundColor(ContextCompat
+                                        .getColor(mContext, R.color.bg_screen1));
+                                holder.userRating.setImageDrawable(ContextCompat
+                                        .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
 
     }
 
@@ -108,7 +107,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
         public SingleItemRowHolder(View view) {
             super(view);
-            if(!urlList.isEmpty()){
+            if (!urlList.isEmpty()) {
                 photo = (ImageView) view.findViewById(R.id.photoImageView);
                 userRating = (ImageView) view.findViewById(R.id.ratingImageView);
                 progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);

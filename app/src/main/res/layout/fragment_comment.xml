@@ -10,11 +10,11 @@
     tools:showIn="@layout/activity_comment">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/comments_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/comments_recyclerView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:id="@+id/add_comment"
@@ -24,18 +24,18 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/comment_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/comment_edittext"/>
+            android:layout_weight="1" />
 
         <ImageButton
+            android:id="@+id/submit_comment_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/fui_transparent"
             android:contentDescription="@string/description_submit_comment"
-            android:src="@drawable/send_button"
-            android:id="@+id/submit_comment_button"
-            android:background="@color/fui_transparent"/>
+            android:src="@drawable/send_button" />
     </LinearLayout>
 
 </RelativeLayout>

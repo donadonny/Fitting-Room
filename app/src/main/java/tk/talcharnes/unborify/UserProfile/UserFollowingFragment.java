@@ -51,9 +51,9 @@ public class UserFollowingFragment extends Fragment {
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         final int size = (int) Math.floor(windowSize.x / 300);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             String uid = getArguments().getString("uid");
-            if(uid != null && !uid.isEmpty()) {
+            if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
                 FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                         .child(FirebaseConstants.USER_CONNECTIONS)
@@ -61,19 +61,20 @@ public class UserFollowingFragment extends Fragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<String> users = new ArrayList<String>();
-                                GenericTypeIndicator<HashMap<String, String> > t =
-                                        new GenericTypeIndicator<HashMap<String, String> >() {};
-                                if(dataSnapshot.exists()) {
+                                GenericTypeIndicator<HashMap<String, String>> t =
+                                        new GenericTypeIndicator<HashMap<String, String>>() {
+                                        };
+                                if (dataSnapshot.exists()) {
                                     HashMap<String, String> map = dataSnapshot.getValue(t);
-                                    if(map != null) {
+                                    if (map != null) {
                                         for (Map.Entry<String, String> entry : map.entrySet()) {
-                                            if(entry.getValue().equals("Following")) {
+                                            if (entry.getValue().equals("Following")) {
                                                 users.add(entry.getKey());
                                             }
                                         }
                                     }
                                 }
-                                if(users.size() < 1) {
+                                if (users.size() < 1) {
                                     noImageView.setVisibility(View.VISIBLE);
                                 } else {
                                     noImageView.setVisibility(View.GONE);

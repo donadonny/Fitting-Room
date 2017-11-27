@@ -1,6 +1,8 @@
 <resources>
     <!--App name-->
     <string name="app_name" translatable="false">InStyle</string>
+    <string name="facebook_application_id" translatable="false">2071885073046788</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb2071885073046788</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>
@@ -29,6 +31,7 @@
     <string name="return_home">Return Home</string>
     <string name="share_text">Check out this awesome image from </string>
     <string name="favorites">Add to Favorites</string>
+    <string name="report">Report</string>
 
     <string name="no_image_title">Looks like there are no images in this category.
         Click on the camera button to add a image in this category.</string>
@@ -109,6 +112,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
+    <string name="action_report">Report</string>
     <string name="dislike">Dislike</string>
     <string name="like">like</string>
     <string name="picture">Picture</string>
@@ -189,6 +193,7 @@
 
     <!-- Content Description -->
     <string name="description_submit_comment">Submit Comment</string>
+    <string name="nav_my_profile">My Profile</string>
 
     <string-array name="spinner_list_item_array">
         <item>All</item>

@@ -86,7 +86,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        if(uid != null) {
+        if (uid != null) {
             FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .child(FirebaseConstants.USERNAME)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -106,8 +106,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                             usernameTextView.setText(R.string.anonymous_user);
                         }
                     });
-        }
-        else {
+        } else {
             usernameTextView.setText(R.string.anonymous_user);
         }
     }
@@ -185,7 +184,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     reportRef.removeValue();
                 }
             }
