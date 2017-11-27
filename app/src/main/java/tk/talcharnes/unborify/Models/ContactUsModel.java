@@ -1,7 +1,7 @@
 package tk.talcharnes.unborify.Models;
 
 /**
- * Created by Tal on 9/16/
+ * Created by Tal on 9/16/2017
  *
  * This class is an Object design for the 'Contact Us'.
  *

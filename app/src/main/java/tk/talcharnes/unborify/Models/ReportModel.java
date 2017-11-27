@@ -3,7 +3,7 @@ package tk.talcharnes.unborify.Models;
 import java.util.HashMap;
 
 /**
- * Created by khuramchaudhry on 8/26/17.
+ * Created by Khuram Chaudhry on 8/26/17.
  *
  * This is an object representation of the reporting used in the database. This object is used for
  *      reporting comments, photos, and among other things.

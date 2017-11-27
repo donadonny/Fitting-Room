@@ -1,7 +1,7 @@
 package tk.talcharnes.unborify.Models;
 
 /**
- * Created by khuramchaudhry on 9/21/17.
+ * Created by Khuram Chaudhry on 9/21/17.
  *
  * This class is an object that holds information about the users.
  *

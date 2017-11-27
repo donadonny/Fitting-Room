@@ -1,7 +1,7 @@
 package tk.talcharnes.unborify.Models;
 
 /**
- * Created by khuramchaudhry on 9/4/17.
+ * Created by Khuram Chaudhry on 9/4/17.
  *
  * This class is an object design for notifications to be used in FireBase DataBase and FireBase
  *      Functions.
