@@ -67,7 +67,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
         holder.mDealsDescritpion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                remove(position);
+             // open up new view in internal website with deal
             }
         });
         int year= Calendar.YEAR;

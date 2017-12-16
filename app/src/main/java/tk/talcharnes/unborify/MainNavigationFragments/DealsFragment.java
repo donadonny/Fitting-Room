@@ -22,16 +22,17 @@ import tk.talcharnes.unborify.R;
 public class DealsFragment extends Fragment{
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager mLayoutManager;
     private static final String TAG = DealsFragment.class.getSimpleName();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_deals, container, false);
-        layoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView = rootView.findViewById(R.id.deals);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+
         List<String> input = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             input.add("Test" + i);
