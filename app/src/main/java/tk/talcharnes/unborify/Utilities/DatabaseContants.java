@@ -25,6 +25,7 @@ public class DatabaseContants {
     public final static String USER_CONNECTIONS = "user_connections";
     public final static String PHOTOS = "Photos";
     public final static String COMMENTS = "Comments";
+    public final static String Votes = "Votes";
 
     public static DatabaseReference getRef() {
         return FirebaseDatabase.getInstance().getReference().child(MAIN);
@@ -46,6 +47,9 @@ public class DatabaseContants {
         return getRef().child(COMMENTS);
     }
 
+    public static DatabaseReference getVotesRef() {
+        return getRef().child(Votes);
+    }
 
     public static boolean checkRefValue(DataSnapshot dataSnapshot) {
         return (dataSnapshot.exists() && dataSnapshot.getValue() != null);

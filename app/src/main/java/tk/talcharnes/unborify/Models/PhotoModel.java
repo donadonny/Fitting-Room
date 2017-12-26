@@ -6,7 +6,7 @@ package tk.talcharnes.unborify.Models;
  * This object class represents photos.
  *
  * Properties:
- *      user - this holds the uid of the user who uploaded the photo.
+ *      userUid - this holds the uid of the userUid who uploaded the photo.
  *      occasionSubtitle - this holds the occasion behind the photo.
  *      category - this holds the fashion category the photo relates to.
  *      likes - this holds number of likes.
@@ -18,7 +18,7 @@ package tk.talcharnes.unborify.Models;
 
 public class PhotoModel {
 
-    public final static String USER_KEY = "user";
+    public final static String USER_KEY = "userUid";
     public final static String OCCASION_SUBTITLE_KEY = "occasionSubtitle";
     public static final String CATEGORY_KEY = "category";
     public static final String LIKES_KEY = "likes";
@@ -27,7 +27,7 @@ public class PhotoModel {
     public final static String ORIENTATION_KEY = "orientation";
     public static final String URL_KEY = "url";
 
-    private String user;
+    private String userUid;
     private String occasionSubtitle;
     private String category;
     private long likes;
@@ -46,9 +46,9 @@ public class PhotoModel {
     /**
      * Default Constructor.
      */
-    public PhotoModel(String user, String occasionSubtitle, String category, long likes, long dislikes,
+    public PhotoModel(String userUid, String occasionSubtitle, String category, long likes, long dislikes,
                       long reports, int orientation, String url) {
-        this.user = user;
+        this.userUid = userUid;
         this.occasionSubtitle = occasionSubtitle;
         this.category = category;
         this.likes = likes;
@@ -59,10 +59,10 @@ public class PhotoModel {
     }
 
     /**
-     * This class returns the user id.
+     * This class returns the userUid id.
      */
-    public String getUser() {
-        return user;
+    public String getUserUid() {
+        return userUid;
     }
 
     /**
@@ -118,10 +118,10 @@ public class PhotoModel {
     }
 
     /**
-     * This class sets the user property.
+     * This class sets the userUid property.
      */
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     /**

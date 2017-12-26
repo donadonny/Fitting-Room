@@ -80,7 +80,7 @@ public class ContactUsFragment extends Fragment {
                             messageTypes[spinnerPosition], FirebaseConstants.getUser().getEmail());
 
                     /*contactUsModel.setMessage(message);
-                    String email = FirebaseConstants.getUser().getEmail();
+                    String email = FirebaseConstants.getUserUid().getEmail();
                     contactUsModel.setEmail(email);
                     contactUsModel.setContactType(messageTypes[spinnerPosition]);*/
 

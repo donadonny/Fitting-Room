@@ -226,7 +226,7 @@ public class PhotoCard {
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, CommentActivity.class);
                     intent.putExtra("url", mPhotoModel.getUrl());
-                    intent.putExtra("photoUserID", mPhotoModel.getUser());
+                    intent.putExtra("photoUserID", mPhotoModel.getUserUid());
                     intent.putExtra("currentUser", mUserId);
                     intent.putExtra("name", mUserName);
                     mContext.startActivity(intent);
@@ -265,15 +265,15 @@ public class PhotoCard {
                 }
             });
 
-            setUploader(mPhotoModel.getUser());
+            setUploader(mPhotoModel.getUserUid());
 
             avatarView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext,
-                            (FirebaseConstants.getUser().getUid().equals(mPhotoModel.getUser())) ?
+                            (FirebaseConstants.getUser().getUid().equals(mPhotoModel.getUserUid())) ?
                                     ProfileActivity.class : UserProfileActivity.class);
-                    intent.putExtra("uid", mPhotoModel.getUser());
+                    intent.putExtra("uid", mPhotoModel.getUserUid());
                     mContext.startActivity(intent);
                 }
             });
@@ -373,7 +373,7 @@ public class PhotoCard {
         final String userID = mUserId;
         final String name = PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl());
         final DatabaseReference chosenPhoto = mPhotoReference.child(name);
-        if (!mUserId.equals(mPhotoModel.getUser())) {
+        if (!mUserId.equals(mPhotoModel.getUserUid())) {
             chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

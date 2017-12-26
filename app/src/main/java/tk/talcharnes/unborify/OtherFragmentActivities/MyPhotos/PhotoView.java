@@ -125,7 +125,7 @@ public class PhotoView {
             public void onClick(android.view.View view) {
                 Intent intent = new Intent(mContext, CommentActivity.class);
                 intent.putExtra("url", mPhotoModel.getUrl());
-                intent.putExtra("photoUserID", mPhotoModel.getUser());
+                intent.putExtra("photoUserID", mPhotoModel.getUserUid());
                 intent.putExtra("currentUser", mUserId);
                 intent.putExtra("name", mUserName);
                 mContext.startActivity(intent);
