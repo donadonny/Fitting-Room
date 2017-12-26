@@ -1,22 +1,22 @@
 <tabs>
     <tab
-        icon="@drawable/ic_tab_home"
+        icon="@drawable/ic_home_white_24dp"
         id="@+id/tab_home"
         title="Home" />
     <tab
-        icon="@drawable/ic_tab_trending"
+        icon="@drawable/ic_trending_up_white_24dp"
         id="@+id/tab_trending"
         title="Trending" />
     <tab
-        icon="@drawable/ic_tab_deals"
+        icon="@drawable/ic_shopping_cart_white_24dp"
         id="@+id/tab_deals"
         title="Deals" />
     <tab
-        icon="@drawable/ic_tab_following"
+        icon="@drawable/ic_group_white_24dp"
         id="@+id/tab_following"
         title="Following" />
     <tab
-        icon="@drawable/ic_tab_other"
+        icon="@drawable/ic_settings_white_24dp"
         id="@+id/tab_other"
         title="Other" />
 </tabs>

@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView userNameText, userJoinedText;
     private IImageLoader imageLoader;
     private Button followingButton;
+    private boolean isFollowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +115,20 @@ public class UserProfileActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                followingButton.setText(following);
-                                followingButton.setBackgroundColor(ContextCompat
-                                        .getColor(getApplicationContext(),
-                                                R.color.colorPrimaryDark));
-                                followingButton.setEnabled(false);
+                                    followingButton.setText(following);
+                        followingButton.setBackgroundColor(ContextCompat
+                                .getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                        followingButton.setPressed(true);
+                                isFollowing = true;
+                                }
+                                else {
+                                    isFollowing = false;
+                                    followingButton.setText(getString(R.string.follow));
+                        followingButton.setBackgroundColor(ContextCompat
+                                .getColor(getApplicationContext(), R.color.colorAccent));
+                                }
                             }
-                        }
+
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -130,14 +139,27 @@ public class UserProfileActivity extends AppCompatActivity {
             followingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                            .child(FirebaseConstants.getUser().getUid())
-                            .child(FirebaseConstants.USER_CONNECTIONS).child(uid)
-                            .setValue(following);
-                    followingButton.setText(following);
-                    followingButton.setBackgroundColor(ContextCompat
-                            .getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                    followingButton.setEnabled(false);
+                    if(isFollowing) {
+                        FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                                .child(FirebaseConstants.getUser().getUid())
+                                .child(FirebaseConstants.USER_CONNECTIONS).child(uid).removeValue();
+                        followingButton.setText(getString(R.string.follow));
+                        followingButton.setBackgroundColor(ContextCompat
+                                .getColor(getApplicationContext(), R.color.colorPrimary));
+                        Log.d("FOLLOWINGBUTTON ", "following active");
+                        isFollowing = false;
+                    }
+                    else {
+                        FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                                .child(FirebaseConstants.getUser().getUid())
+                                .child(FirebaseConstants.USER_CONNECTIONS).child(uid)
+                                .setValue(following);
+                        followingButton.setBackgroundColor(ContextCompat
+                                .getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                        followingButton.setText(following);
+                        Log.d("FOLLOWINGBUTTON ", " following not active");
+                        isFollowing = true;
+                    }
                 }
             });
         }

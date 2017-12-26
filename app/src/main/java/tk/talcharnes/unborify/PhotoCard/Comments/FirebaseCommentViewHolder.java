@@ -41,7 +41,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     private View mView;
     private Context mContext;
     private String mCommenterID;
-    private String mUrl;
+    private static String mUrl;
     private boolean mOriginalCommenter;
     private String mCommentString;
     private String photoUploader, mCurrentUser;
@@ -74,19 +74,19 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
         mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhotoUrl());
 
-        //usernameTextView.setText(commentModel.getCommenterUid());
-        setCommentorsName(mCommenterID, usernameTextView);
-        comment_textview.setText(mCommentString);
-        moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setUpMoreOptionsButton(view, commentModel, mOriginalCommenter);
-            }
-        });
-    }
+            //usernameTextView.setText(commentModel.getCommenter());
+            setCommentorsName(mCommenterID, usernameTextView);
+            comment_textview.setText(mCommentString);
+            moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setUpMoreOptionsButton(view, commentModel, mOriginalCommenter);
+                }
+            });
+        }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        if (uid != null) {
+        if (uid != null && mCommentString != null) {
             FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .child(FirebaseConstants.USERNAME)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -115,19 +115,24 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     public void onClick(View view) {
         final ArrayList<CommentModel> commentModels = new ArrayList<>();
 //      Reference correct section of database below
-        DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(mUrl).child(FirebaseConstants.COMMENTS);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    commentModels.add(snapshot.getValue(CommentModel.class));
-                }
+        if (mUrl != null && !mUrl.isEmpty()) {
+            DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                    .child(mUrl).child(FirebaseConstants.COMMENTS);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        CommentModel commentModel = snapshot.getValue(CommentModel.class);
+                        if (commentModel.getCommentString() != null) {
+                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentString());
+                            commentModels.add(snapshot.getValue(CommentModel.class));
+                        }
+                    }
 
-                int itemPosition = getLayoutPosition();
+                    int itemPosition = getLayoutPosition();
 
-                if (mOriginalCommenter) {
-                    showEditCommentDialog(commentModels.get(itemPosition));
-                }
+                    if (mOriginalCommenter) {
+                        showEditCommentDialog(commentModels.get(itemPosition));
+                    }
 //                int itemPosition = getLayoutPosition();
 
 //                Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
@@ -135,13 +140,14 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 //                intent.putExtra("restaurants", Parcels.wrap(restaurants));
 //
 //                mContext.startActivity(intent);
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
+        }
     }
 
     private void setUpMoreOptionsButton(View view, final CommentModel commentModel, boolean originalCommenter) {
@@ -178,6 +184,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     private void deleteComment(CommentModel commentModel) {
         DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
                 .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey());
+
         commentRef.removeValue();
         final DatabaseReference reportRef = FirebaseConstants.getRef()
                 .child(FirebaseConstants.REPORTS).child(commentModel.getCommentKey());
@@ -219,8 +226,9 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 } else if (newComment.length() < 5) {
                     edt.setError("CommentModel must be longer than 5 characters");
                 } else {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-                            .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey())
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.PHOTOS).child(mUrl)
+                            .child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey())
                             .child(FirebaseConstants.COMMENT_STRING);
 
                     ref.setValue(newComment);

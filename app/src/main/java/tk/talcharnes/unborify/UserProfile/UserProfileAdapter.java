@@ -72,7 +72,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen4));
                                 holder.userRating.setImageDrawable(ContextCompat
-                                        .getDrawable(mContext, R.drawable.ic_tab_following));
+                                        .getDrawable(mContext, R.drawable.ic_following));
                             } else if (rating.equals("likes")) {
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen2));

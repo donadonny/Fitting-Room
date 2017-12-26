@@ -18,7 +18,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
         android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_profile"
+        android:drawableStart="@drawable/ic_my_profile"
         android:gravity="bottom"
         android:text="@string/nav_my_profile"
         android:textSize="16sp"
