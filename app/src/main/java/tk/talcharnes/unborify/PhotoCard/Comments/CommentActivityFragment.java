@@ -16,7 +16,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 
 import tk.talcharnes.unborify.Models.CommentModel;
 import tk.talcharnes.unborify.Models.myNotifications;
@@ -42,6 +41,7 @@ public class CommentActivityFragment extends Fragment {
     private ImageButton mSubmitCommentImageButton;
     String mComment_key;
     CommentModel commentModel;
+    boolean isPhoto;
 
     public CommentActivityFragment() {
     }
@@ -55,6 +55,7 @@ public class CommentActivityFragment extends Fragment {
         mPhotoUploader = intent.getStringExtra("photoUserID");
         mUrl = intent.getStringExtra("url");
         mCurrentUser = intent.getStringExtra("currentUser");
+
 
         Log.d(LOG_TAG, "photoUserID: " + mPhotoUploader);
         Log.d(LOG_TAG, "url: " + mUrl);
@@ -76,11 +77,11 @@ public class CommentActivityFragment extends Fragment {
 
     private void setUpFirebaseAdapter() {
         Log.d(LOG_TAG, "Loading comments");
-        Query query = mCommentReference.orderByChild("commenter");
-        Log.d(LOG_TAG, query.getRef().toString());
+//        code below commented out as comments should be sorted by time, not commenter
+//        Query query = mCommentReference.orderByChild("commenter");
         FirebaseRecyclerOptions<CommentModel> options =
                 new FirebaseRecyclerOptions.Builder<CommentModel>()
-                        .setQuery(query, CommentModel.class)
+                        .setQuery(mCommentReference, CommentModel.class)
                         .build();
 
         mFirebaseAdapter = new FirebaseRecyclerAdapter<CommentModel, FirebaseCommentViewHolder>
@@ -123,6 +124,7 @@ public class CommentActivityFragment extends Fragment {
                     commentModel.setCommenter(mCurrentUser);
                     commentModel.setCommentString(mCommentEditText.getText().toString());
                     commentModel.setPhoto_Uploader(mPhotoUploader);
+                    commentModel.setPhoto(false);
 
                     Log.d(LOG_TAG, "New CommentModel:");
                     Log.d(LOG_TAG, "\tcommenter: " + commentModel.getCommenter());
