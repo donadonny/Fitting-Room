@@ -17,7 +17,7 @@ public class CommentModel {
 
     private String commenterUid;
     private String commentMessage;
-    private String date;
+    private long date;
     private String photoUrl;
     private String commentKey;
     private String photoUploaderUid;
@@ -32,7 +32,7 @@ public class CommentModel {
     /**
      * Default Constructor.
      */
-    public CommentModel(String commenterUid, String commentMessage, String date, String photoUrl,
+    public CommentModel(String commenterUid, String commentMessage, long date, String photoUrl,
                         String commentKey, String photoUploaderUid) {
         this.commenterUid = commenterUid;
         this.commentMessage = commentMessage;
@@ -52,14 +52,14 @@ public class CommentModel {
     /**
      * This class return the comment message.
      */
-    public String getCommentString() {
+    public String getCommentMessage() {
         return commentMessage;
     }
 
     /**
      * This class return the time the comment was made.
      */
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
@@ -94,14 +94,14 @@ public class CommentModel {
     /**
      * This class sets commentMessage with the comment message.
      */
-    public void setCommentString(String commentMessage) {
+    public void setCommentMessage(String commentMessage) {
         this.commentMessage = commentMessage;
     }
 
     /**
      * This class sets the date property with time the comment was created.
      */
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

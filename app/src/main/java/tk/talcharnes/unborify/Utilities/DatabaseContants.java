@@ -19,13 +19,15 @@ import tk.talcharnes.unborify.Models.PhotoModel;
 
 public class DatabaseContants {
 
+    public final static String MAIN = "Database_Restructure";
     public final static String USERS = "Users";
     public final static String USERNAME = "name";
     public final static String USER_CONNECTIONS = "user_connections";
     public final static String PHOTOS = "Photos";
+    public final static String COMMENTS = "Comments";
 
     public static DatabaseReference getRef() {
-        return FirebaseDatabase.getInstance().getReference();
+        return FirebaseDatabase.getInstance().getReference().child(MAIN);
     }
 
     public static DatabaseReference getUserRef() {
@@ -39,6 +41,11 @@ public class DatabaseContants {
     public static DatabaseReference getPhotoRef() {
         return getRef().child(PHOTOS);
     }
+
+    public static DatabaseReference getCommentRef() {
+        return getRef().child(COMMENTS);
+    }
+
 
     public static boolean checkRefValue(DataSnapshot dataSnapshot) {
         return (dataSnapshot.exists() && dataSnapshot.getValue() != null);

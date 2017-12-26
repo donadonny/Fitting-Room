@@ -30,10 +30,12 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import tk.talcharnes.unborify.Models.CommentModel;
 import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.Utilities.Utils;
@@ -235,6 +237,29 @@ public class MainActivityFragment extends Fragment {
                         String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
                         photoReference.child(photoModel.getUrl().replace(".webp", "")).child("category")
                                 .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
+                        /*DatabaseReference ref = photoReference.child(photoModel.getUrl().replace(".webp", "")).child(FirebaseConstants.COMMENTS);
+
+//                        System.out.println();
+
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    oldCommentModel oldComment = child.getValue(oldCommentModel.class);
+                                    CommentModel comment = new CommentModel(oldComment.getCommenter(),
+                                            oldComment.getCommentString(), System.currentTimeMillis(),
+                                            oldComment.getPhoto_url(), oldComment.getComment_key(),
+                                            oldComment.getPhoto_Uploader());
+                                    DatabaseContants.getCommentRef().child(""+oldComment.getComment_key()).setValue(comment);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });*/
+
                         if(photoModel != null) {
                             if(list.size() == 0) {
                                 oldestPostId = PhotoUtilities.removeWebPFromUrl(photoModel.getUrl());

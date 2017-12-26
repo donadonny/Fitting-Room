@@ -62,7 +62,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
         mCurrentUser = currentUser;
         mCommenterID = commentModel.getCommenterUid();
-        mCommentString = commentModel.getCommentString();
+        mCommentString = commentModel.getCommentMessage();
         if (mCommenterID != null && mCurrentUser != null) {
             if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
                 mOriginalCommenter = mCommenterID.equals(currentUser);
@@ -122,8 +122,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         CommentModel commentModel = snapshot.getValue(CommentModel.class);
-                        if (commentModel.getCommentString() != null) {
-                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentString());
+                        if (commentModel.getCommentMessage() != null) {
+                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentMessage());
                             commentModels.add(snapshot.getValue(CommentModel.class));
                         }
                     }

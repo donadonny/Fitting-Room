@@ -21,6 +21,7 @@ import com.google.firebase.database.Query;
 import tk.talcharnes.unborify.Models.CommentModel;
 import tk.talcharnes.unborify.Models.NotificationModel;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
@@ -40,8 +41,8 @@ public class CommentActivityFragment extends Fragment {
     private String mPhotoUploader, mUrl, mCurrentUser;
     private EditText mCommentEditText;
     private ImageButton mSubmitCommentImageButton;
-    String mComment_key;
-    CommentModel commentModel;
+    private String mComment_key;
+    private CommentModel commentModel;
 
     public CommentActivityFragment() {
     }
@@ -61,8 +62,7 @@ public class CommentActivityFragment extends Fragment {
         Log.d(LOG_TAG, "currentUser: " + mCurrentUser);
 
 //        Fix reference here
-        mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(PhotoUtilities.removeWebPFromUrl(mUrl)).child(FirebaseConstants.COMMENTS);
+        mCommentReference = DatabaseContants.getCommentRef();
         mRecyclerView = rootView.findViewById(R.id.comments_recyclerView);
         mCommentEditText = (EditText) rootView.findViewById(R.id.comment_edittext);
         mSubmitCommentImageButton = (ImageButton) rootView.findViewById(R.id.submit_comment_button);
@@ -76,7 +76,7 @@ public class CommentActivityFragment extends Fragment {
 
     private void setUpFirebaseAdapter() {
         Log.d(LOG_TAG, "Loading comments");
-        Query query = mCommentReference.orderByChild("commenter");
+        Query query = mCommentReference.orderByChild("photoUrl").equalTo(mUrl);
         Log.d(LOG_TAG, query.getRef().toString());
         FirebaseRecyclerOptions<CommentModel> options =
                 new FirebaseRecyclerOptions.Builder<CommentModel>()
@@ -121,12 +121,13 @@ public class CommentActivityFragment extends Fragment {
                     commentModel = new CommentModel();
                     commentModel.setPhotoUrl(mUrl);
                     commentModel.setCommenterUid(mCurrentUser);
-                    commentModel.setCommentString(mCommentEditText.getText().toString());
+                    commentModel.setCommentMessage(mCommentEditText.getText().toString());
                     commentModel.setPhotoUploaderUid(mPhotoUploader);
+                    commentModel.setDate(System.currentTimeMillis());
 
                     Log.d(LOG_TAG, "New CommentModel:");
                     Log.d(LOG_TAG, "\tcommenter: " + commentModel.getCommenterUid());
-                    Log.d(LOG_TAG, "\tcommentModel message: " + commentModel.getCommentString());
+                    Log.d(LOG_TAG, "\tcommentModel message: " + commentModel.getCommentMessage());
                     Log.d(LOG_TAG, "\tcommentModel url: " + commentModel.getPhotoUrl());
                     Log.d(LOG_TAG, "\tcommentModel photo uploader: " + commentModel.getPhotoUploaderUid());
 
@@ -149,7 +150,7 @@ public class CommentActivityFragment extends Fragment {
                                         .child(FirebaseConstants.NOTIFICATION);
 
                                 NotificationModel myNotification = new NotificationModel(false, mUrl,
-                                        commentModel.getCommentString(), mCurrentUser);
+                                        commentModel.getCommentMessage(), mCurrentUser);
 
                                 userNotificationRef.push().setValue(myNotification);
                             }
