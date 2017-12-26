@@ -21,6 +21,8 @@ public class CommentModel {
     private String photo_url;
     private String comment_key;
     private String photo_Uploader;
+    private boolean isPhoto;
+    private int orientation;
 
     /**
      * This class returns commenter uid.
@@ -106,4 +108,19 @@ public class CommentModel {
         this.photo_Uploader = photo_Uploader;
     }
 
+    public boolean isPhoto() {
+        return isPhoto;
+    }
+
+    public void setPhoto(boolean photo) {
+        isPhoto = photo;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
 }
