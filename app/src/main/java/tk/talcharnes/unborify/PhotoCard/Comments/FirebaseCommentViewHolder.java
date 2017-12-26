@@ -41,7 +41,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     private View mView;
     private Context mContext;
     private String mCommenterID;
-    private String mUrl;
+    private static String mUrl;
     private boolean mOriginalCommenter;
     private String mCommentString;
     private String photoUploader, mCurrentUser;
@@ -55,38 +55,42 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void bindComment(final CommentModel commentModel, String currentUser) {
-        Log.d(TAG, "Loading CommentModel: " + commentModel.getComment_key());
-        TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
-        TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
-        ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
+//        if (commentModel.getPhoto_url() != null) {
+            Log.d(TAG, "Loading CommentModel: " + commentModel.getComment_key());
+            TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
+            TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
+            ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
-        mCurrentUser = currentUser;
-        mCommenterID = commentModel.getCommenter();
-        mCommentString = commentModel.getCommentString();
-        if (mCommenterID != null && mCurrentUser != null) {
-            if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
-                mOriginalCommenter = mCommenterID.equals(currentUser);
+            mCurrentUser = currentUser;
+            mCommenterID = commentModel.getCommenter();
+            mCommentString = commentModel.getCommentString();
+            if (mCommenterID != null && mCurrentUser != null) {
+                if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
+                    mOriginalCommenter = mCommenterID.equals(currentUser);
+                }
+            } else {
+                mOriginalCommenter = false;
             }
-        } else {
-            mOriginalCommenter = false;
+            photoUploader = commentModel.getPhoto_Uploader();
+
+            if(commentModel.getPhoto_url() != null) {
+                mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url());
+            }
+
+            //usernameTextView.setText(commentModel.getCommenter());
+            setCommentorsName(mCommenterID, usernameTextView);
+            comment_textview.setText(mCommentString);
+            moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setUpMoreOptionsButton(view, commentModel, mOriginalCommenter);
+                }
+            });
         }
-        photoUploader = commentModel.getPhoto_Uploader();
-
-        mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url());
-
-        //usernameTextView.setText(commentModel.getCommenter());
-        setCommentorsName(mCommenterID, usernameTextView);
-        comment_textview.setText(mCommentString);
-        moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setUpMoreOptionsButton(view, commentModel, mOriginalCommenter);
-            }
-        });
-    }
+//    }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
-        if (uid != null) {
+        if (uid != null && mCommentString != null) {
             FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
                     .child(FirebaseConstants.USERNAME)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -115,19 +119,24 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     public void onClick(View view) {
         final ArrayList<CommentModel> commentModels = new ArrayList<>();
 //      Reference correct section of database below
-        DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(mUrl).child(FirebaseConstants.COMMENTS);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    commentModels.add(snapshot.getValue(CommentModel.class));
-                }
+        if (mUrl != null && !mUrl.isEmpty()) {
+            DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                    .child(mUrl).child(FirebaseConstants.COMMENTS);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        CommentModel commentModel = snapshot.getValue(CommentModel.class);
+                        if (commentModel.getCommentString() != null) {
+                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentString());
+                            commentModels.add(snapshot.getValue(CommentModel.class));
+                        }
+                    }
 
-                int itemPosition = getLayoutPosition();
+                    int itemPosition = getLayoutPosition();
 
-                if (mOriginalCommenter) {
-                    showEditCommentDialog(commentModels.get(itemPosition));
-                }
+                    if (mOriginalCommenter) {
+                        showEditCommentDialog(commentModels.get(itemPosition));
+                    }
 //                int itemPosition = getLayoutPosition();
 
 //                Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
@@ -135,13 +144,14 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 //                intent.putExtra("restaurants", Parcels.wrap(restaurants));
 //
 //                mContext.startActivity(intent);
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
+        }
     }
 
     private void setUpMoreOptionsButton(View view, final CommentModel commentModel, boolean originalCommenter) {
@@ -177,7 +187,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     private void deleteComment(CommentModel commentModel) {
         DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key());
+                .child(PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url())).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key());
         commentRef.removeValue();
         final DatabaseReference reportRef = FirebaseConstants.getRef()
                 .child(FirebaseConstants.REPORTS).child(commentModel.getComment_key());
@@ -220,7 +230,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                     edt.setError("CommentModel must be longer than 5 characters");
                 } else {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-                            .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key())
+                            .child(PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url())).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key())
                             .child(FirebaseConstants.COMMENT_STRING);
 
                     ref.setValue(newComment);
