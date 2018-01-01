@@ -57,6 +57,7 @@ public class CommentActivityFragment extends Fragment {
         mUrl = intent.getStringExtra("url");
         mCurrentUser = intent.getStringExtra("currentUser");
 
+
         Log.d(LOG_TAG, "photoUserID: " + mPhotoUploader);
         Log.d(LOG_TAG, "url: " + mUrl);
         Log.d(LOG_TAG, "currentUser: " + mCurrentUser);
@@ -78,9 +79,11 @@ public class CommentActivityFragment extends Fragment {
         Log.d(LOG_TAG, "Loading comments");
         Query query = mCommentReference.orderByChild("photoUrl").equalTo(mUrl);
         Log.d(LOG_TAG, query.getRef().toString());
+//        code below commented out as comments should be sorted by time, not commenter
+//        Query query = mCommentReference.orderByChild("commenter");
         FirebaseRecyclerOptions<CommentModel> options =
                 new FirebaseRecyclerOptions.Builder<CommentModel>()
-                        .setQuery(query, CommentModel.class)
+                        .setQuery(mCommentReference, CommentModel.class)
                         .build();
 
         mFirebaseAdapter = new FirebaseRecyclerAdapter<CommentModel, FirebaseCommentViewHolder>

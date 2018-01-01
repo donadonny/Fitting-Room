@@ -197,21 +197,18 @@
 
     <string-array name="spinner_list_item_array">
         <item>All</item>
-        <item>Trendy</item>
         <item>Casual</item>
-        <item>Exotic</item>
-        <item>Vibrant</item>
-        <item>Sexy</item>
-        <item>Preppy</item>
-        <item>Elegant</item>
-        <item>Bohemian</item>
-        <item>Punk</item>
-        <item>Artsy</item>
-        <item>Professional</item>
-        <item>Gothic</item>
-        <item>Rocker</item>
-        <item>Classic</item>
-        <item>Sporty</item>
+        <item>Business Casual</item>
+        <item>Wedding</item>
+        <item>Formal</item>
+        <item>Dance</item>
+        <item>Party</item>
+        <item>Work</item>
+        <item>Business</item>
+        <item>Sports</item>
+        <item>Religious</item>
+        <item>Concert</item>
+        <item>Other</item>
     </string-array>
 
 </resources>

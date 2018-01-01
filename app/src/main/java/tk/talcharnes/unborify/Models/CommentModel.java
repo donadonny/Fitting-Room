@@ -21,6 +21,7 @@ public class CommentModel {
     private String photoUrl;
     private String commentKey;
     private String photoUploaderUid;
+    private Integer orientation;
 
     /**
      * Required empty Constructor for FireBase.
@@ -126,4 +127,11 @@ public class CommentModel {
         this.photoUploaderUid = photoUploaderUid;
     }
 
+    public Integer getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Integer orientation) {
+        this.orientation = orientation;
+    }
 }

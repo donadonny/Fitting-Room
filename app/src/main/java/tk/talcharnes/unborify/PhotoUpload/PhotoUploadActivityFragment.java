@@ -39,6 +39,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -55,6 +57,7 @@ import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import tk.talcharnes.unborify.Models.PhotoModel;
+import tk.talcharnes.unborify.Models.CommentModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.Analytics;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -247,6 +250,25 @@ public class PhotoUploadActivityFragment extends Fragment {
                         0, 0, 0, rotation, photoName + ".webp");
 
                 FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(photoName).setValue(photoModel);
+
+//                add possibility to view photo in comments screen/recyclerview
+
+               final DatabaseReference mCommentReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                        .child(photoName).child(FirebaseConstants.COMMENTS);
+                final CommentModel commentModel = new CommentModel();
+                commentModel.setPhotoUrl(photoName);
+                commentModel.setCommenterUid(user);
+                commentModel.setOrientation(rotation);
+                mCommentReference.push().setValue(commentModel, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                String mComment_key = databaseReference.getKey();
+                                commentModel.setCommentKey(mComment_key);
+                                mCommentReference.child(mComment_key).child(FirebaseConstants.COMMENT_KEY)
+                                        .setValue(mComment_key);
+                            }
+                        });
 
                 Utils.photosUploadedCounter++;
                 if (Utils.photosUploadedCounter % 2 == 0) {
