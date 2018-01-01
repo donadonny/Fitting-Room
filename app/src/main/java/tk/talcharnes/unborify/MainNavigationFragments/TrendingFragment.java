@@ -29,6 +29,7 @@ import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -54,7 +55,7 @@ public class TrendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_trending, container, false);
-        photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
+        photoReference = DatabaseContants.getPhotoRef();
         reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
         initializeBasicSetup();

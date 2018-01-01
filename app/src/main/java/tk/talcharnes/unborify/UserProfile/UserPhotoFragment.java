@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -38,7 +39,7 @@ public class UserPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_user_following, container, false);
+        rootView = inflater.inflate(R.layout.fragment_user_photos, container, false);
 
         my_recycler_view = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         noImageView = (TextView) rootView.findViewById(R.id.noImagesTitle);
@@ -50,7 +51,7 @@ public class UserPhotoFragment extends Fragment {
             String uid = getArguments().getString("uid");
             if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
-                FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                DatabaseContants.getPhotoRef()
                         .orderByChild(PhotoModel.USER_KEY).equalTo(uid)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
