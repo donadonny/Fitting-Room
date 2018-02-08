@@ -162,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     private void showEditDialog() {
         String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setTitle("What do you like to change?")
+        builder.setTitle("What would you like to change?")
                 .setItems(array, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
@@ -201,7 +201,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      */
     private void showChoosePictureDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setTitle("What do you like to do?");
+        builder.setTitle("What would you like to do?");
         final String[] options = {"Take Picture", "Pick from Gallery"};
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
