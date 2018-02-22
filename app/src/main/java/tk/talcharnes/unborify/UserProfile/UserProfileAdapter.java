@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -80,7 +79,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
                                 holder.photo.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Toast.makeText(mContext, "TESTINGGGGG", Toast.LENGTH_SHORT).show();
+                                        openCommentActivity(urlList.get(i), FirebaseConstants.getUser().getUid());
                                     }
                                 });
                             } else if (rating.equals("likes")) {
@@ -101,6 +100,13 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
                                         .getColor(mContext, R.color.bg_screen1));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
+                                holder.photo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        openCommentActivity(urlList.get(i), FirebaseConstants.getUser().getUid());
+                                    }
+                                });
                             }
                         }
                     }
