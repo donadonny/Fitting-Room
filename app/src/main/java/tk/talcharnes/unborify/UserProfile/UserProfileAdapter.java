@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify.UserProfile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,6 +20,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
@@ -27,7 +30,7 @@ import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.SingleItemRowHolder> {
 
-    public static final String TAG = UserProfileAdapter.class.getSimpleName();
+    public static final String LOG_TAG = UserProfileAdapter.class.getSimpleName();
 
     private Context mContext;
     private String uid, type;
@@ -55,9 +58,10 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final SingleItemRowHolder holder, int i) {
-        StorageReference photoRef = storageReference.child(urlList.get(i) + ".webp");
-        Log.d(TAG, photoRef.getPath());
+    public void onBindViewHolder(final SingleItemRowHolder holder, final int i) {
+        final String url = urlList.get(i) + ".webp";
+        final StorageReference photoRef = storageReference.child(url);
+        Log.d(LOG_TAG, photoRef.getPath());
         FirebaseConstants.loadImageUsingGlide(mContext, holder.photo, photoRef,
                 holder.progressBar);
 
@@ -73,11 +77,25 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
                                         .getColor(mContext, R.color.bg_screen4));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_following));
+                                holder.photo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Toast.makeText(mContext, "TESTINGGGGG", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             } else if (rating.equals("likes")) {
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen2));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_up_white_24dp));
+                                holder.photo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        openCommentActivity(urlList.get(i), FirebaseConstants.getUser().getUid());
+                                    }
+                                });
+
                             } else {
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen1));
@@ -92,6 +110,24 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
                     }
                 });
+
+    }
+    private void openCommentActivity( String url, String currentUser){
+        String deleteThisPartOfUrlAndEverythingBeforeToGetUser = "_byUser_";
+        int index =
+                url.indexOf(deleteThisPartOfUrlAndEverythingBeforeToGetUser);
+        String photoUserID = url.substring(index);
+        Log.d(LOG_TAG, "photoUserID = " + photoUserID);
+
+
+        Intent intent = new Intent(mContext, CommentActivity.class);
+
+       intent.putExtra("photoUserID", photoUserID);
+        intent.putExtra("url", url);
+        intent.putExtra("currentUser", currentUser);
+
+        mContext.startActivity(intent);
+
 
     }
 
