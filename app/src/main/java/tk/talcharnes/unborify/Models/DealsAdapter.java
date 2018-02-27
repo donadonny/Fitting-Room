@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -77,5 +78,12 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return values.size();
+    }
+
+
+    public ArrayList<String> generateZipcodes(int radius){
+        ArrayList<String> zipcodes= new ArrayList<>();
+
+     return zipcodes;
     }
 }
