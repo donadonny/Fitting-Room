@@ -41,14 +41,14 @@ import java.io.IOException;
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Models.User;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
  * Created by khuramchaudhry on 9/2/17.
- * This activity displays and handles User profile.
+ * This activity displays and handles UserModel profile.
  */
 
 public class ProfileActivity extends AppCompatActivity implements changeNameDialogFragment
@@ -105,13 +105,13 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                User user = dataSnapshot.getValue(User.class);
-                                if (user != null) {
-                                    nameText.setText(user.getName());
-                                    emailText.setText(user.getEmail());
-                                    joinedText.setText(user.getDate_joined());
-                                    String profileUri = user.getUri() + "";
-                                    imageLoader.loadImage(avatarView, uid, user.getName());
+                                UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                if (userModel != null) {
+                                    nameText.setText(userModel.getName());
+                                    emailText.setText(userModel.getEmail());
+                                    joinedText.setText(userModel.getDateJoined());
+                                    String profileUri = userModel.getUri() + "";
+                                    imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }
                             }
                         }
@@ -160,9 +160,9 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      * profile which includes changing their name, picture, and password.
      */
     private void showEditDialog() {
-        String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
+        String[] array = {"Change Name", "Change Password", "Change Profile PhotoModel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setTitle("What do you like to change?")
+        builder.setTitle("What would you like to change?")
                 .setItems(array, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
@@ -201,7 +201,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
      */
     private void showChoosePictureDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setTitle("What do you like to do?");
+        builder.setTitle("What would you like to do?");
         final String[] options = {"Take Picture", "Pick from Gallery"};
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
@@ -338,7 +338,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Log.d(TAG, "User profile updated.");
+                                    Log.d(TAG, "UserModel profile updated.");
                                 }
                             }
                         });

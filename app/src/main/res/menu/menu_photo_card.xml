@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_report_photo"
         android:orderInCategory="99"
-        android:title="@string/report"
+        android:title="@string/action_report"
         app:showAsAction="never" />
 
     <item

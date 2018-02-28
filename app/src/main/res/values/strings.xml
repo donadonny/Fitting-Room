@@ -25,7 +25,7 @@
     <string name="refresh">Refresh</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
-    <string name="refresh_title">Click the refresh button to load new photos</string>
+    <string name="refresh_title">Click the refresh button to load new photos.</string>
     <string name="refresh_title_2">Click the refresh button to reload photos</string>
     <string name="retake_photo">Retake Photo</string>
     <string name="return_home">Return Home</string>
@@ -42,7 +42,7 @@
     <string name="no_image_title_6">Looks like there no more photos. Come back to this category
         later.</string>
     <string name="no_image_title_7">Looks like you haven\'t liked any photos.</string>
-    <string name="no_image_title_8">Looks like you aren\'t following anybody..</string>
+    <string name="no_image_title_8">Looks like you aren\'t following anybody.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>
@@ -51,7 +51,7 @@
     <string name="title_activity_likes">Likes</string>
     <string name="title_activity_favorites">Favorites</string>
 
-    <!-- Photo Upload Strings -->
+    <!-- Upload Strings -->
     <string name="success_title">Success!</string>
     <string name="success_message">Your photo is uploaded. </string>
     <string name="failure_title">Oh no!</string>
@@ -111,11 +111,12 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
+    <string name="action_report">Report</string>
     <string name="dislike">Dislike</string>
     <string name="like">like</string>
     <string name="picture">Picture</string>
     <string name="expand_picture">Expand Picture</string>
-    <string name="commentModels">Comments</string>
+    <string name="comments">Comments</string>
     <string name="picture_options">Picture Options</string>
     <string name="rating_bar">Rating</string>
 
@@ -132,7 +133,8 @@
 
     <string name="help_slide_2_title">Reporting</string>
     <string name="help_slide_2_desc">If you happen to find a photo that offends or violates our
-        terms of services: Click the report button and the photo will be reported and skipped so you can continue voting on other photos.</string>
+        terms of services: Click the report button and the photo will be reported and skipped so
+        you can continue voting on other photos.</string>
 
     <string name="help_slide_3_title">Add Your Own Photo</string>
     <string name="help_slide_3_desc">Don\'t just like or dislike photos from others. Add your own
@@ -195,21 +197,18 @@
 
     <string-array name="spinner_list_item_array">
         <item>All</item>
-        <item>Trendy</item>
         <item>Casual</item>
-        <item>Exotic</item>
-        <item>Vibrant</item>
-        <item>Sexy</item>
-        <item>Preppy</item>
-        <item>Elegant</item>
-        <item>Bohemian</item>
-        <item>Punk</item>
-        <item>Artsy</item>
-        <item>Professional</item>
-        <item>Gothic</item>
-        <item>Rocker</item>
-        <item>Classic</item>
-        <item>Sporty</item>
+        <item>Business Casual</item>
+        <item>Wedding</item>
+        <item>Formal</item>
+        <item>Dance</item>
+        <item>Party</item>
+        <item>Work</item>
+        <item>Business</item>
+        <item>Sports</item>
+        <item>Religious</item>
+        <item>Concert</item>
+        <item>Other</item>
     </string-array>
 
 </resources>

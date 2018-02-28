@@ -25,10 +25,11 @@ import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
-import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
@@ -54,7 +55,7 @@ public class TrendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_trending, container, false);
-        photoReference = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS);
+        photoReference = DatabaseContants.getPhotoRef();
         reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
         initializeBasicSetup();
@@ -73,7 +74,7 @@ public class TrendingFragment extends Fragment {
         userId = user.getUid();
         userName = user.getDisplayName();
 
-        // Report Fab button
+        // ReportModel Fab button
         refreshButton = rootView.findViewById(R.id.refreshBtn);
 
         refresh_textview = rootView.findViewById(R.id.refreshTitle);
@@ -136,25 +137,24 @@ public class TrendingFragment extends Fragment {
 
         Query query;
 
-        query = photoReference.orderByChild(Photo.LIKES_KEY).limitToLast(24);
+        query = photoReference.orderByChild(PhotoModel.LIKES_KEY).limitToLast(24);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    List<Photo> photos = new ArrayList<>();
+                    List<PhotoModel> photoModels = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                        Photo photo = child.getValue(Photo.class);
-
-                        if (photo != null) {
-                            photos.add(photo);
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
+                        if(photoModel != null) {
+                            photoModels.add(photoModel);
                         }
                     }
 
-                    int count = photos.size();
-                    while (count > 0) {
-                        mSwipeView.addView(new PhotoCard(mContext, photos.get(count - 1), mSwipeView,
+                    int count = photoModels.size();
+                    while(count > 0) {
+                        mSwipeView.addView(new PhotoCard(mContext, photoModels.get(count-1), mSwipeView,
                                 userId, userName, photoReference, reportRef));
                         if (count - 1 % 8 == 0) {
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
@@ -162,7 +162,7 @@ public class TrendingFragment extends Fragment {
                         }
                         count--;
                     }
-                    photos.clear();
+                    photoModels.clear();
 
                     Log.d(TAG, "Retrieved data");
                     mSwipeView.refreshDrawableState();

@@ -10,7 +10,7 @@ import com.mindorks.placeholderview.annotations.infinite.LoadMore;
 
 import java.util.List;
 
-import tk.talcharnes.unborify.Models.Photo;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 
 /**
@@ -23,10 +23,10 @@ public class LoadMoreView {
     public static final int LOAD_VIEW_SET_COUNT = 8;
 
     private InfinitePlaceHolderView mLoadMoreView;
-    private List<Photo> mFeedList;
+    private List<PhotoModel> mFeedList;
     private String mUserId, mUserName;
 
-    public LoadMoreView(InfinitePlaceHolderView loadMoreView, List<Photo> feedList, String userId,
+    public LoadMoreView(InfinitePlaceHolderView loadMoreView, List<PhotoModel> feedList, String userId,
                         String userName) {
         this.mLoadMoreView = loadMoreView;
         this.mFeedList = feedList;

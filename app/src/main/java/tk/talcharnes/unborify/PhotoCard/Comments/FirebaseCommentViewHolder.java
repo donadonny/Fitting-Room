@@ -2,6 +2,7 @@ package tk.talcharnes.unborify.PhotoCard.Comments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,10 +23,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
 import tk.talcharnes.unborify.Models.CommentModel;
+import tk.talcharnes.unborify.PhotoCard.ZoomPhotoActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
@@ -55,27 +61,19 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     public void bindComment(final CommentModel commentModel, String currentUser) {
-//        if (commentModel.getPhoto_url() != null) {
-            Log.d(TAG, "Loading CommentModel: " + commentModel.getComment_key());
-            TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
-            TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
-            ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
+        if (commentModel.getOrientation() == null) {
+        Log.d(TAG, "Loading CommentModel: " + commentModel.getCommentKey());
+        TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
+        TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
+        ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
-            mCurrentUser = currentUser;
-            mCommenterID = commentModel.getCommenter();
-            mCommentString = commentModel.getCommentString();
-            if (mCommenterID != null && mCurrentUser != null) {
-                if (!mCommenterID.isEmpty() && !mCurrentUser.isEmpty()) {
-                    mOriginalCommenter = mCommenterID.equals(currentUser);
-                }
-            } else {
-                mOriginalCommenter = false;
-            }
-            photoUploader = commentModel.getPhoto_Uploader();
+        mCurrentUser = currentUser;
+        mCommenterID = commentModel.getCommenterUid();
+        mCommentString = commentModel.getCommentMessage();
+        mOriginalCommenter = (mCommenterID != null && mCommenterID.equals(currentUser));
+        photoUploader = commentModel.getPhotoUploaderUid();
 
-            if(commentModel.getPhoto_url() != null) {
-                mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url());
-            }
+        mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhotoUrl());
 
             //usernameTextView.setText(commentModel.getCommenter());
             setCommentorsName(mCommenterID, usernameTextView);
@@ -87,7 +85,33 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 }
             });
         }
-//    }
+        else {
+            mView.findViewById(R.id.comment_relative_layout).setVisibility(View.GONE);
+            mView.findViewById(R.id.comment_photo_view).setVisibility(View.VISIBLE);
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                    .child(FirebaseConstants.IMAGES).child(commentModel.getPhotoUrl() + ".webp");
+            Log.d(FirebaseCommentViewHolder.class.getSimpleName(), "REFERENCE" + storageRef.toString());
+
+            final int orientation = commentModel.getOrientation();
+            Log.d(FirebaseCommentViewHolder.class.getSimpleName(), "photo comment orientation" + orientation);
+
+            ProgressBar progressBar = mView.findViewById(R.id.progress_bar);
+            progressBar.setVisibility(View.VISIBLE);
+            FirebaseConstants.loadImageUsingGlide(mContext, (ImageView) mView.findViewById(R.id.comment_photo_view), storageRef,
+                    progressBar, orientation);
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
+                    intent.putExtra("url", commentModel.getPhotoUrl()+ ".webp");
+                     intent.putExtra("rotation", orientation);
+                     mContext.startActivity(intent);
+
+                }
+            });
+
+        }
+    }
 
     public void setCommentorsName(String uid, final TextView usernameTextView) {
         if (uid != null && mCommentString != null) {
@@ -126,8 +150,8 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         CommentModel commentModel = snapshot.getValue(CommentModel.class);
-                        if (commentModel.getCommentString() != null) {
-                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentString());
+                        if (commentModel.getCommentMessage() != null) {
+                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentMessage());
                             commentModels.add(snapshot.getValue(CommentModel.class));
                         }
                     }
@@ -162,7 +186,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 switch (item.getItemId()) {
                     case R.id.action_report_comment:
                         FirebaseConstants.setReport(TAG, mView.getContext(),
-                                commentModel.getComment_key(), mCurrentUser);
+                                commentModel.getCommentKey(), mCurrentUser);
                         return true;
                     case R.id.action_delete_comment:
                         deleteComment(commentModel);
@@ -187,10 +211,11 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     private void deleteComment(CommentModel commentModel) {
         DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
-                .child(PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url())).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key());
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey());
+
         commentRef.removeValue();
         final DatabaseReference reportRef = FirebaseConstants.getRef()
-                .child(FirebaseConstants.REPORTS).child(commentModel.getComment_key());
+                .child(FirebaseConstants.REPORTS).child(commentModel.getCommentKey());
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -229,8 +254,9 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
                 } else if (newComment.length() < 5) {
                     edt.setError("CommentModel must be longer than 5 characters");
                 } else {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FirebaseConstants.PHOTOS)
-                            .child(PhotoUtilities.removeWebPFromUrl(commentModel.getPhoto_url())).child(FirebaseConstants.COMMENTS).child(commentModel.getComment_key())
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.PHOTOS).child(mUrl)
+                            .child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey())
                             .child(FirebaseConstants.COMMENT_STRING);
 
                     ref.setValue(newComment);

@@ -20,10 +20,10 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+import tk.talcharnes.unborify.Models.NotificationModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.Models.myNotifications;
 
 /**
  * Created by khuramchaudhry on 9/17/17.
@@ -32,9 +32,9 @@ import tk.talcharnes.unborify.Models.myNotifications;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ItemRowHolder> {
 
     private Context mContext;
-    private List<myNotifications> dataList;
+    private List<NotificationModel> dataList;
 
-    NotificationAdapter(Context context, List<myNotifications> dataList) {
+    NotificationAdapter(Context context, List<NotificationModel> dataList) {
         this.mContext = context;
         this.dataList = dataList;
     }
@@ -48,7 +48,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(final NotificationAdapter.ItemRowHolder holder, int position) {
-        final myNotifications notification = dataList.get(position);
+        final NotificationModel notification = dataList.get(position);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                 .child(FirebaseConstants.IMAGES).child(notification.getPhotoUrl());
         FirebaseConstants.loadImageUsingGlide(mContext, holder.imageView, storageRef,

@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
-import tk.talcharnes.unborify.Models.ContactUsObject;
+import tk.talcharnes.unborify.Models.ContactUsModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
@@ -76,15 +76,15 @@ public class ContactUsFragment extends Fragment {
             public void onClick(View view) {
                 String message = contact_us_message_editText.getText().toString();
                 if (messageGood(message) && spinnerNotEmpty()) {
-                    ContactUsObject contactUsObject = new ContactUsObject(message,
+                    ContactUsModel contactUsModel = new ContactUsModel(message,
                             messageTypes[spinnerPosition], FirebaseConstants.getUser().getEmail());
 
-                    /*contactUsObject.setMessage(message);
-                    String email = FirebaseConstants.getUser().getEmail();
-                    contactUsObject.setEmail(email);
-                    contactUsObject.setContact_type(messageTypes[spinnerPosition]);*/
+                    /*contactUsModel.setMessage(message);
+                    String email = FirebaseConstants.getUserUid().getEmail();
+                    contactUsModel.setEmail(email);
+                    contactUsModel.setContactType(messageTypes[spinnerPosition]);*/
 
-                    mDatabaseReference.push().setValue(contactUsObject);
+                    mDatabaseReference.push().setValue(contactUsModel);
                     // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
                     spinner.setSelection(0);
                     contact_us_message_editText.setText("");

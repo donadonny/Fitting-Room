@@ -53,10 +53,10 @@ import java.util.Locale;
 
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
+import tk.talcharnes.unborify.Models.ReportModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
-import tk.talcharnes.unborify.Models.Photo;
-import tk.talcharnes.unborify.Models.Report;
-import tk.talcharnes.unborify.Models.User;
+import tk.talcharnes.unborify.Models.PhotoModel;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.UserProfile.UserProfileActivity;
@@ -114,7 +114,7 @@ public class PhotoCard {
     @View(R.id.photo_card_options)
     private ImageButton photo_card_options;
 
-    private Photo mPhoto;
+    private PhotoModel mPhotoModel;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
     private String mUserId, mUserName;
@@ -126,11 +126,11 @@ public class PhotoCard {
     private StorageReference storageRef;
 
 
-    public PhotoCard(Context context, Photo photo, SwipePlaceHolderView swipeView, String userId,
+    public PhotoCard(Context context, PhotoModel photoModel, SwipePlaceHolderView swipeView, String userId,
                      String userName, DatabaseReference photoReference,
                      DatabaseReference reportsRef) {
         mContext = context;
-        mPhoto = photo;
+        mPhotoModel = photoModel;
         mSwipeView = swipeView;
         mUserId = userId;
         mUserName = userName;
@@ -148,12 +148,12 @@ public class PhotoCard {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            User user = dataSnapshot.getValue(User.class);
-                            if (user != null && usernameTextView != null && user.getName() != null) {
-                                usernameTextView.setText(user.getName());
-                                imageLoader.loadImage(avatarView, uid, user.getName());
-                                photoImageView.setContentDescription("Uploaded By " + user.getName()
-                                        + " " + " photo name " + mPhoto.getOccasion_subtitle() + " ");
+                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                            if (userModel != null && usernameTextView != null && userModel.getName() != null) {
+                                usernameTextView.setText(userModel.getName());
+                                imageLoader.loadImage(avatarView, uid, userModel.getName());
+                                photoImageView.setContentDescription("Uploaded By "+ userModel.getName()
+                                        +" "+" photo name "+ mPhotoModel.getOccasionSubtitle()+" ");
                             }
                         }
                     }
@@ -173,7 +173,7 @@ public class PhotoCard {
     private void onResolved() {
         Log.d(LOG_TAG, "mUserId: " + mUserId);
         Log.d(LOG_TAG, "mUserName: " + mUserName);
-        final String url = mPhoto.getUrl();
+        final String url = mPhotoModel.getUrl();
         Log.d(LOG_TAG, "url: " + url);
         imageLoader = new GlideLoader2();
         if (url != null && !url.isEmpty()) {
@@ -182,15 +182,15 @@ public class PhotoCard {
                     .child(FirebaseConstants.IMAGES).child(url);
 
             FirebaseConstants.loadImageUsingGlide(mContext, photoImageView, storageRef,
-                    progressBar, mPhoto.getOrientation());
+                    progressBar, mPhotoModel.getOrientation());
 
-            String occasionTitle = mPhoto.getOccasion_subtitle();
+            String occasionTitle = mPhotoModel.getOccasionSubtitle();
             nameTextView.setText(occasionTitle);
             Log.d(LOG_TAG, "\toccasion subtitle: " + occasionTitle);
-            Log.d(LOG_TAG, "\tcategory: " + mPhoto.getCategory());
-            float likes = Float.parseFloat("" + mPhoto.getLikes());
+            Log.d(LOG_TAG, "\tcategory: " + mPhotoModel.getCategory());
+            float likes = Float.parseFloat("" + mPhotoModel.getLikes());
             Log.d(LOG_TAG, "\tlikes: " + likes);
-            float dislikes = Float.parseFloat("" + mPhoto.getDislikes());
+            float dislikes = Float.parseFloat("" + mPhotoModel.getDislikes());
             Log.d(LOG_TAG, "\tdislikes: " + dislikes);
 //            dislikes = (dislikes < 1) ? 1 : dislikes;
 //            likes = (likes < 1) ? 1 : likes;
@@ -215,7 +215,7 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                    intent.putExtra("url", mPhoto.getUrl());
+                    intent.putExtra("url", mPhotoModel.getUrl());
                     intent.putExtra("rotation", rotation);
                     mContext.startActivity(intent);
                 }
@@ -225,8 +225,8 @@ public class PhotoCard {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext, CommentActivity.class);
-                    intent.putExtra("url", mPhoto.getUrl());
-                    intent.putExtra("photoUserID", mPhoto.getUser());
+                    intent.putExtra("url", mPhotoModel.getUrl());
+                    intent.putExtra("photoUserID", mPhotoModel.getUserUid());
                     intent.putExtra("currentUser", mUserId);
                     intent.putExtra("name", mUserName);
                     mContext.startActivity(intent);
@@ -265,15 +265,15 @@ public class PhotoCard {
                 }
             });
 
-            setUploader(mPhoto.getUser());
+            setUploader(mPhotoModel.getUserUid());
 
             avatarView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     Intent intent = new Intent(mContext,
-                            (FirebaseConstants.getUser().getUid().equals(mPhoto.getUser())) ?
+                            (FirebaseConstants.getUser().getUid().equals(mPhotoModel.getUserUid())) ?
                                     ProfileActivity.class : UserProfileActivity.class);
-                    intent.putExtra("uid", mPhoto.getUser());
+                    intent.putExtra("uid", mPhotoModel.getUserUid());
                     mContext.startActivity(intent);
                 }
             });
@@ -304,7 +304,7 @@ public class PhotoCard {
         //Log.d("EVENT", "profileImageView click");
         //mSwipeView.addView(this);
         /*photoImageView.setContentDescription("Uploaded By "+ mUploaderName
-                +" "+" photo name "+ mPhoto.getOccasion_subtitle()+" ");*/
+                +" "+" photo name "+ mPhotoModel.getOccasionSubtitle()+" ");*/
         togglePhotoAddOns();
 
     }
@@ -327,7 +327,7 @@ public class PhotoCard {
         //Log.d(LOG_TAG, "onSwipedOut");
         if (isReported != null && isReported) {
             isReported = false;
-            setReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+            setReport(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
         } else {
             setVote("dislikes");
             Analytics.registerSwipe(mContext, "left");
@@ -371,9 +371,9 @@ public class PhotoCard {
      */
     private void setVote(final String rating) {
         final String userID = mUserId;
-        final String name = PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl());
+        final String name = PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl());
         final DatabaseReference chosenPhoto = mPhotoReference.child(name);
-        if (!mUserId.equals(mPhoto.getUser())) {
+        if (!mUserId.equals(mPhotoModel.getUserUid())) {
             chosenPhoto.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -381,7 +381,7 @@ public class PhotoCard {
                         String uRating = (dataSnapshot.child(FirebaseConstants.VOTES)
                                 .child(userID).getValue() + "");
                         if (uRating.equals(rating)) {
-                            Log.d(LOG_TAG, "The User already " + rating + " the photo.");
+                            Log.d(LOG_TAG, "The UserModel already " + rating + " the photo.");
                         } else {
                             String rating2 = (rating.equals("likes")) ? "dislikes" : "likes";
                             long ratingValue = (long) dataSnapshot.child(rating).getValue();
@@ -395,7 +395,7 @@ public class PhotoCard {
                         final long ratingValue = (long) dataSnapshot.child(rating).getValue();
                         chosenPhoto.child(rating).setValue(ratingValue + 1);
                         chosenPhoto.child(FirebaseConstants.VOTES).child(userID).setValue(rating);
-                        Log.d(LOG_TAG, "The User " + rating + " the photo.");
+                        Log.d(LOG_TAG, "The UserModel " + rating + " the photo.");
                     }
                 }
 
@@ -405,7 +405,7 @@ public class PhotoCard {
                 }
             });
         } else {
-            Log.d(LOG_TAG, "User trying to vote on own photo");
+            Log.d(LOG_TAG, "UserModel trying to vote on own photo");
         }
     }
 
@@ -426,7 +426,7 @@ public class PhotoCard {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     if (snapshot.child(FirebaseConstants.REPORTED_BY).child(mUserId).exists()) {
-                        Log.d(LOG_TAG, "User already reported photo.");
+                        Log.d(LOG_TAG, "UserModel already reported photo.");
                     } else {
                         long numReports = (long) snapshot.child(FirebaseConstants.NUM_REPORTS)
                                 .getValue();
@@ -445,10 +445,10 @@ public class PhotoCard {
                             .format(new Date());
                     HashMap<String, String> reports = new HashMap<String, String>();
                     reports.put(mUserId, timeStamp);
-                    Report report = new Report(1, reports);
-                    mReportsRef.child(name).setValue(report);
+                    ReportModel reportModel = new ReportModel(1, reports);
+                    mReportsRef.child(name).setValue(reportModel);
                     mPhotoReference.child(name).child(FirebaseConstants.PHOTO_REPORTS).setValue(1);
-                    Log.d(LOG_TAG, "A new report.");
+                    Log.d(LOG_TAG, "A new reportModel.");
                 }
             }
 
@@ -477,11 +477,11 @@ public class PhotoCard {
     private int getRotation() {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mPhoto.getOrientation() != 0) {
+            if (mPhotoModel.getOrientation() != 0) {
                 rotation = 90;
             }
         } else if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (mPhoto.getOrientation() == 0) {
+            if (mPhotoModel.getOrientation() == 0) {
                 rotation = 90;
             }
         }
@@ -542,7 +542,7 @@ public class PhotoCard {
     public void addToFavorites() {
         final DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
                 .child(mUserId).child(FirebaseConstants.USER_FAVORITES)
-                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+                .child(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

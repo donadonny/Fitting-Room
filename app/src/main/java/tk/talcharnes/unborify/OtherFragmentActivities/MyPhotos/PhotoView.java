@@ -39,8 +39,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import tk.talcharnes.unborify.Models.CommentModel;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
-import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
@@ -79,15 +79,15 @@ public class PhotoView {
     @View(R.id.progress_bar)
     private ProgressBar progressBar;
 
-    private Photo mPhoto;
+    private PhotoModel mPhotoModel;
     private Context mContext;
     private String mUserId, mUserName;
     private InfinitePlaceHolderView placeHolderView;
 
-    public PhotoView(Context context, Photo photo, String userId, String userName,
+    public PhotoView(Context context, PhotoModel photoModel, String userId, String userName,
                      InfinitePlaceHolderView mLoadMoreView) {
         mContext = context;
-        mPhoto = photo;
+        mPhotoModel = photoModel;
         mUserId = userId;
         mUserName = userName;
         placeHolderView = mLoadMoreView;
@@ -95,8 +95,8 @@ public class PhotoView {
 
     @Resolve
     private void onResolved() {
-        long likes = mPhoto.getLikes();
-        long dislikes = mPhoto.getDislikes();
+        long likes = mPhotoModel.getLikes();
+        long dislikes = mPhotoModel.getDislikes();
         dislikes = (dislikes < 1) ? 1 : dislikes;
         likes = (likes < 1) ? 1 : likes;
         float totalVotes = likes + dislikes;
@@ -110,22 +110,22 @@ public class PhotoView {
 
         ratingBar.setRating(rating / 20f);
 
-        occasionTextView.setText(mPhoto.getOccasion_subtitle());
+        occasionTextView.setText(mPhotoModel.getOccasionSubtitle());
 
-        String urlString = mPhoto.getUrl();
+        String urlString = mPhotoModel.getUrl();
         if (urlString != null && !urlString.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child("images").child(urlString);
             FirebaseConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar,
-                    mPhoto.getOrientation());
+                    mPhotoModel.getOrientation());
         }
 
         commentsButton.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
                 Intent intent = new Intent(mContext, CommentActivity.class);
-                intent.putExtra("url", mPhoto.getUrl());
-                intent.putExtra("photoUserID", mPhoto.getUser());
+                intent.putExtra("url", mPhotoModel.getUrl());
+                intent.putExtra("photoUserID", mPhotoModel.getUserUid());
                 intent.putExtra("currentUser", mUserId);
                 intent.putExtra("name", mUserName);
                 mContext.startActivity(intent);
@@ -136,8 +136,8 @@ public class PhotoView {
             @Override
             public void onClick(android.view.View view) {
                 Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                intent.putExtra("url", mPhoto.getUrl());
-                intent.putExtra("rotation", getRotation(mPhoto.getOrientation()));
+                intent.putExtra("url", mPhotoModel.getUrl());
+                intent.putExtra("rotation", getRotation(mPhotoModel.getOrientation()));
                 mContext.startActivity(intent);
             }
         });
@@ -217,16 +217,16 @@ public class PhotoView {
 
     private void deletePhoto() {
 
-        Log.d(TAG, "Deleting: " + mPhoto.getUrl());
+        Log.d(TAG, "Deleting: " + mPhotoModel.getUrl());
 
         DatabaseReference photoDBReference = FirebaseConstants.getRef()
                 .child(FirebaseConstants.PHOTOS)
-                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+                .child(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().
-                child("images").child(mPhoto.getUrl());
+                child("images").child(mPhotoModel.getUrl());
 
-        deleteReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
+        deleteReport(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()));
 
         final DatabaseReference commentsRef = photoDBReference.child(FirebaseConstants.COMMENTS);
         commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -235,8 +235,8 @@ public class PhotoView {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         CommentModel commentModel = child.getValue(CommentModel.class);
-                        if (commentModel != null) {
-                            deleteReport(commentModel.getComment_key());
+                        if(commentModel != null) {
+                            deleteReport(commentModel.getCommentKey());
                         }
                     }
                 }
@@ -279,12 +279,12 @@ public class PhotoView {
         edt.setHint("Edit Occasion");
         dialogBuilder.setView(dialogView);
 
-        String occasionString = mPhoto.getOccasion_subtitle();
+        String occasionString = mPhotoModel.getOccasionSubtitle();
         if (occasionString != null && !occasionString.isEmpty()) {
             edt.setText(occasionString);
             Log.d(TAG, "Current Occasion String: " + occasionString);
         }
-        dialogBuilder.setTitle("Edit Photo Occasion");
+        dialogBuilder.setTitle("Edit PhotoModel Occasion");
 
         dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -303,7 +303,7 @@ public class PhotoView {
                     Log.d(TAG, "New Occasion String: " + newOccasion);
                     DatabaseReference photoDBReference = FirebaseConstants.getRef()
                             .child(FirebaseConstants.PHOTOS)
-                            .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()))
+                            .child(PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl()))
                             .child(FirebaseConstants.OCCASION_SUBTITLE);
 
                     occasionTextView.setText(newOccasion);

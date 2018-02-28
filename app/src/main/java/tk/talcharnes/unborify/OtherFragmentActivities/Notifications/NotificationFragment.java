@@ -25,7 +25,7 @@ import java.util.List;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.SimpleDividerItemDecoration;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.Models.myNotifications;
+import tk.talcharnes.unborify.Models.NotificationModel;
 
 /**
  * Created by khuramchaudhry on 8/31/17.
@@ -76,9 +76,9 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    List<myNotifications> notifications = new ArrayList<myNotifications>();
+                    List<NotificationModel> notifications = new ArrayList<NotificationModel>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        notifications.add(snapshot.getValue(myNotifications.class));
+                        notifications.add(snapshot.getValue(NotificationModel.class));
                     }
                     NotificationAdapter adapter = new NotificationAdapter(getActivity(), notifications);
                     notification_recycle_view.setAdapter(adapter);
