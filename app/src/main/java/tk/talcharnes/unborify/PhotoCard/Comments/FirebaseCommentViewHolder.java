@@ -42,7 +42,7 @@ import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private final String TAG = FirebaseCommentViewHolder.class.getSimpleName();
+    private final String LOG_TAG = FirebaseCommentViewHolder.class.getSimpleName();
 
     private View mView;
     private Context mContext;
@@ -62,7 +62,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     public void bindComment(final CommentModel commentModel, final String currentUser) {
         if (!commentModel.isPhoto()) {
-            Log.d(TAG, "Loading CommentModel: " + commentModel.getComment_key());
+            Log.d(LOG_TAG, "Loading CommentModel: " + commentModel.getComment_key());
             TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
             TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
             ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
@@ -94,10 +94,12 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
             });
         }
         else {
+
             mView.findViewById(R.id.comment_relative_layout).setVisibility(View.GONE);
             mView.findViewById(R.id.comment_photo_view).setVisibility(View.VISIBLE);
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child(FirebaseConstants.IMAGES).child(commentModel.getPhoto_url() + ".webp");
+            Log.d(LOG_TAG, "storageref = " + storageRef.toString());
             Log.d(FirebaseCommentViewHolder.class.getSimpleName(), "REFERENCE" + storageRef.toString());
 
             final int orientation = commentModel.getOrientation();
@@ -193,7 +195,7 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_report_comment:
-                        FirebaseConstants.setReport(TAG, mView.getContext(),
+                        FirebaseConstants.setReport(LOG_TAG, mView.getContext(),
                                 commentModel.getComment_key(), mCurrentUser);
                         return true;
                     case R.id.action_delete_comment:

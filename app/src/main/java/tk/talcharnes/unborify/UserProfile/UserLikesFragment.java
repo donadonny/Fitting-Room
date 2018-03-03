@@ -72,6 +72,7 @@ public class UserLikesFragment extends Fragment {
                                     UserProfileAdapter adapter = new UserProfileAdapter(getActivity(),
                                             FirebaseConstants.getUser().getUid(), urls, "Photos");
                                     my_recycler_view.setAdapter(adapter);
+
                                 }
 
                             }

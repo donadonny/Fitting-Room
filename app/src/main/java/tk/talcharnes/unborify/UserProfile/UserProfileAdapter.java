@@ -122,8 +122,13 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         String deleteThisPartOfUrlAndEverythingBeforeToGetUser = "_byUser_";
         int index =
                 url.indexOf(deleteThisPartOfUrlAndEverythingBeforeToGetUser);
-        String photoUserID = url.substring(index);
+        String photoUserID = url.substring(index+8);
         Log.d(LOG_TAG, "photoUserID = " + photoUserID);
+        Log.d(LOG_TAG, "originalurl = " + url);
+        if(!url.contains(".webp")){
+            url = url+".webp";
+            Log.d(LOG_TAG, "New URL = " + url);
+        }
 
 
         Intent intent = new Intent(mContext, CommentActivity.class);
@@ -133,7 +138,6 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         intent.putExtra("currentUser", currentUser);
 
         mContext.startActivity(intent);
-
 
     }
 
