@@ -3,26 +3,19 @@ package tk.talcharnes.unborify.MainNavigationFragments.Following;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
-
 import agency.tango.android.avatarview.views.AvatarView;
-import tk.talcharnes.unborify.Models.PhotoModel;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.UserProfile.UserProfileAdapter;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
@@ -76,7 +69,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
             StorageConstants.loadProfileImage(mContext, holder.userPhoto, uid);
 
             // Grabbing user's name from the database.
-            DatabaseContants.getUserRef().child(uid).child(DatabaseContants.USERNAME)
+            DatabaseContants.getUserRef(uid).child(UserModel.NAME_KEY)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +98,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
                                 false));
                         holder.photoList.setHasFixedSize(false);
                         UserProfileAdapter adapter = new UserProfileAdapter(mContext,
-                                FirebaseConstants.getUser().getUid(), urls, "Photos");
+                                DatabaseContants.getCurrentUser().getUid(), urls, true);
                         holder.photoList.setAdapter(adapter);
                     }
                 }

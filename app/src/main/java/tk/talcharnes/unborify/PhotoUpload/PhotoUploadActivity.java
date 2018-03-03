@@ -20,7 +20,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
     private final static String TAG = PhotoUploadActivity.class.getSimpleName();
 
-    public static String chosen;
+    private static String category = "";
 
     /**
      * Initializes basic initialization of components.
@@ -37,8 +37,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        Spinner spinner = (Spinner) findViewById(R.id.toolbar)
-                .findViewById(R.id.category_spinner);
+        Spinner spinner = (Spinner) toolbar.findViewById(R.id.category_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(PhotoUploadActivity.this,
                 R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
@@ -49,7 +48,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                chosen = parent.getItemAtPosition(position).toString();
+                category = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -57,6 +56,13 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * This method returns the category that the user chose.
+     */
+    public static String getCategory() {
+        return category;
     }
 
 }

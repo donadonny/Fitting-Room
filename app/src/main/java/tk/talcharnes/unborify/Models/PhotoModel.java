@@ -11,7 +11,6 @@ package tk.talcharnes.unborify.Models;
  *      category - this holds the fashion category the photo relates to.
  *      likes - this holds number of likes.
  *      dislike - this holds number of dislikes.
- *      reports - this holds number of reports.
  *      orientation - this holds a integer representation of the photo orientation.
  *      url - this holds the url of photo uploaded to FireBase Storage, also the photo id.
  */
@@ -32,7 +31,6 @@ public class PhotoModel {
     private String category;
     private long likes;
     private long dislikes;
-    private long reports;
     private int orientation;
     private String url;
 
@@ -44,16 +42,15 @@ public class PhotoModel {
     }
 
     /**
-     * Default Constructor.
+     * Custom Constructor.
      */
     public PhotoModel(String userUid, String occasionSubtitle, String category, long likes, long dislikes,
-                      long reports, int orientation, String url) {
+                      int orientation, String url) {
         this.userUid = userUid;
         this.occasionSubtitle = occasionSubtitle;
         this.category = category;
         this.likes = likes;
         this.dislikes = dislikes;
-        this.reports = reports;
         this.orientation = orientation;
         this.url = url;
     }
@@ -94,13 +91,6 @@ public class PhotoModel {
      */
     public long getDislikes() {
         return dislikes;
-    }
-
-    /**
-     * This class returns the number of reports the photo has.
-     */
-    public long getReports() {
-        return reports;
     }
 
     /**
@@ -150,13 +140,6 @@ public class PhotoModel {
      */
     public void setDislikes(long dislikes) {
         this.dislikes = dislikes;
-    }
-
-    /**
-     * This class sets the reports property.
-     */
-    public void setReports(long reports) {
-        this.reports = reports;
     }
 
     /**

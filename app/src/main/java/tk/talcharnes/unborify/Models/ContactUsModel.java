@@ -27,7 +27,7 @@ public class ContactUsModel {
     }
 
     /**
-     * Default Constructor.
+     * Custom Constructor.
      */
     public ContactUsModel(String message, String contactType, String email) {
         this.message = message;

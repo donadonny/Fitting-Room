@@ -7,7 +7,8 @@ import android.support.v7.widget.Toolbar;
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by khuramchaudhry on 9/29/17.
+ * Created by Khuram Chaudhry on 9/29/17.
+ * This activity with its fragment displays an help screen.
  */
 
 public class HelpActivity extends AppCompatActivity {

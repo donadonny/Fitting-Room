@@ -14,26 +14,30 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
- * Created by khuramchaudhry on 10/19/17.
+ * Created by Khuram Chaudhry on 10/19/17.
+ * This Activity displays the user information.
  */
 
 public class UserProfileActivity extends AppCompatActivity {
+
+    private static final String TAG = UserProfileActivity.class.getSimpleName();
+    private final int FOLLOWING_COLOR = R.color.colorPrimaryDark,
+            FOLLOW_COLOR = R.color.colorAccent, FOLLOWING_TEXT = R.string.following,
+            FOLLOW_TEXT = R.string.follow;
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -44,17 +48,53 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button followingButton;
     private boolean isFollowing;
 
+    /**
+     * This Adapter holds the different fragments for the Activity tabs.
+     */
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
+    /**
+     * Initializes basic initialization of components.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-
         initializeViews();
-
         initializeToolbarSettings();
-
+        initializeUserSettings();
     }
 
+    /**
+     * This function initializes the UI elements for the Activity.
+     */
     private void initializeViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,21 +111,29 @@ public class UserProfileActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    /**
+     * This function sets up the toolbar.
+     */
     private void initializeToolbarSettings() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+    }
 
+    /**
+     * This function sets up user info and the following button.
+     */
+    private void initializeUserSettings() {
         imageLoader = new GlideLoader2();
 
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             final String uid = intent.getStringExtra("uid");
-            final String following = getResources().getString(R.string.following);
 
-            FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+            DatabaseContants.getUserRef(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
@@ -95,8 +143,9 @@ public class UserProfileActivity extends AppCompatActivity {
                                     userNameText.setText((name.length() > 18) ?
                                             name.substring(0, 15) + "...\n..." + name.substring(15)
                                             : name);
-                                    userJoinedText.setText(userModel.getDateJoined());
-                                    String profileUri = userModel.getUri() + "";
+                                    String dateJoined = DatabaseContants.convertTime(
+                                            userModel.getDateJoined());
+                                    userJoinedText.setText(dateJoined);
                                     imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }
                             }
@@ -104,72 +153,68 @@ public class UserProfileActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            Log.d(TAG, databaseError.getMessage());
                         }
                     });
 
-            FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                    .child(FirebaseConstants.getUser().getUid())
-                    .child(FirebaseConstants.USER_CONNECTIONS).child(uid)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+            isFollowing = false;
+
+            final DatabaseReference followingRef = DatabaseContants.getUserFollowingRef().child(uid);
+
+            followingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                    followingButton.setText(following);
-                        followingButton.setBackgroundColor(ContextCompat
-                                .getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                        followingButton.setPressed(true);
+                                setFollowingButton(FOLLOWING_TEXT, FOLLOWING_COLOR);
                                 isFollowing = true;
-                                }
-                                else {
-                                    isFollowing = false;
-                                    followingButton.setText(getString(R.string.follow));
-                        followingButton.setBackgroundColor(ContextCompat
-                                .getColor(getApplicationContext(), R.color.colorAccent));
-                                }
+                            } else {
+                                setFollowingButton(FOLLOW_TEXT, FOLLOW_COLOR);
                             }
-
+                        }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            Log.d(TAG, databaseError.getMessage());
                         }
-                    });
+            });
 
             followingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(isFollowing) {
-                        FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                                .child(FirebaseConstants.getUser().getUid())
-                                .child(FirebaseConstants.USER_CONNECTIONS).child(uid).removeValue();
-                        followingButton.setText(getString(R.string.follow));
-                        followingButton.setBackgroundColor(ContextCompat
-                                .getColor(getApplicationContext(), R.color.colorPrimary));
-                        Log.d("FOLLOWINGBUTTON ", "following active");
-                        isFollowing = false;
+                        followingRef.child(uid).removeValue();
+                        setFollowingButton(FOLLOW_TEXT, FOLLOW_COLOR);
                     }
                     else {
-                        FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                                .child(FirebaseConstants.getUser().getUid())
-                                .child(FirebaseConstants.USER_CONNECTIONS).child(uid)
-                                .setValue(following);
-                        followingButton.setBackgroundColor(ContextCompat
-                                .getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                        followingButton.setText(following);
-                        Log.d("FOLLOWINGBUTTON ", " following not active");
-                        isFollowing = true;
+                        followingRef.setValue(getString(FOLLOWING_TEXT));
+                        setFollowingButton(FOLLOWING_TEXT, FOLLOWING_COLOR);
                     }
+                    isFollowing = !isFollowing;
                 }
             });
         }
     }
 
+    /**
+     * This function sets the following button's text and color.
+     */
+    private void setFollowingButton(int buttonText, int buttonColor) {
+        followingButton.setText(getString(buttonText));
+        followingButton.setBackgroundColor(ContextCompat
+                .getColor(getApplicationContext(), buttonColor));
+
+    }
+
+    /**
+     * This function adds the fragments to the ViewPager.
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
+
         if (intent.getExtras() != null) {
             bundle.putString("uid", intent.getStringExtra("uid"));
         }
@@ -189,32 +234,4 @@ public class UserProfileActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
 }

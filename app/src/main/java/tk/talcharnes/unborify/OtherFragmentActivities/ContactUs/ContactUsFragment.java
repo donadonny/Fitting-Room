@@ -1,136 +1,124 @@
 package tk.talcharnes.unborify.OtherFragmentActivities.ContactUs;
 
+import android.app.Activity;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.google.firebase.database.DatabaseReference;
-
 import tk.talcharnes.unborify.Models.ContactUsModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 
 /**
- * Created by khuramchaudhry on 8/31/17.
+ * Created by Khuram Chaudhry on 8/31/17.
+ * This fragment displays the contact us page and handles the user interactions.
  */
 
 public class ContactUsFragment extends Fragment {
 
-    private DatabaseReference mDatabaseReference;
-    private EditText contact_us_message_editText;
-    private Button submit_contact_us_button;
+    public static final String CONTACT_TYPE_TIP = "Tip", CONTACT_TYPE_BUG = "Bug" ,
+            CONTACT_TYPE_OTHER = "Other";
+
+    private View rootView;
+    private Activity activity;
+    private EditText messageText;
     private Spinner spinner;
-    private String[] messageTypes;
-    private int spinnerPosition;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
-        View rootview = inflater.inflate(R.layout.fragment_contact_us, container, false);
-        contact_us_message_editText = rootview.findViewById(R.id.contact_us_message_editText);
-        submit_contact_us_button = rootview.findViewById(R.id.submit_contact_us_button);
-        spinner = rootview.findViewById(R.id.contact_type_spinner);
-        spinnerPosition = 0;
+        rootView = inflater.inflate(R.layout.fragment_contact_us, container, false);
+        activity = getActivity();
 
-        messageTypes = new String[]{getString(R.string.select), FirebaseConstants.CONTACT_TYPE_TIP,
-                FirebaseConstants.CONTACT_TYPE_BUG, FirebaseConstants.CONTACT_TYPE_OTHER};
+        initialize();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        return rootView;
+    }
+
+    /**
+     * Initializes the basic components.
+     */
+    public void initialize() {
+        messageText = rootView.findViewById(R.id.contact_us_message_editText);
+        Button submit_contact_us_button = rootView.findViewById(R.id.submit_contact_us_button);
+        spinner = rootView.findViewById(R.id.contact_type_spinner);
+
+        final String[] messageTypes = new String[]{getString(R.string.select), CONTACT_TYPE_TIP,
+                CONTACT_TYPE_BUG, CONTACT_TYPE_OTHER};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
                 android.R.layout.simple_spinner_item, messageTypes);
-// Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
+
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                spinnerPosition = i;
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                spinnerPosition = 0;
-            }
-        });
-
-
-        mDatabaseReference = FirebaseConstants.getRef().child(FirebaseConstants.CONTACT_US);
-
 
         submit_contact_us_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = contact_us_message_editText.getText().toString();
-                if (messageGood(message) && spinnerNotEmpty()) {
-                    ContactUsModel contactUsModel = new ContactUsModel(message,
-                            messageTypes[spinnerPosition], FirebaseConstants.getUser().getEmail());
+                if (validateUserInput()) {
+                    ContactUsModel contactUsModel = new ContactUsModel(messageText.getText()
+                            .toString(), messageTypes[spinner.getSelectedItemPosition()],
+                            DatabaseContants.getCurrentUser().getEmail());
 
-                    /*contactUsModel.setMessage(message);
-                    String email = FirebaseConstants.getUserUid().getEmail();
-                    contactUsModel.setEmail(email);
-                    contactUsModel.setContactType(messageTypes[spinnerPosition]);*/
+                    DatabaseContants.getContactRef().push().setValue(contactUsModel);
 
-                    mDatabaseReference.push().setValue(contactUsModel);
-                    // TODO: Go to main activity fragment. If that destroys current fragment, remove next 2 lines
                     spinner.setSelection(0);
-                    contact_us_message_editText.setText("");
+                    messageText.setText("");
+
                     showSuccessDialog();
                 }
             }
         });
 
-
-        return rootview;
     }
 
+    /**
+     * This method display a display telling the user that his/her message has been sent.
+     */
     private void showSuccessDialog() {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Light_Dialog);
-        } else {
-            builder = new AlertDialog.Builder(getActivity());
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Success")
                 .setMessage("Your message has been sent. Click ok to return to the main screen.")
-                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getActivity().finish();
+                        activity.finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 })
                 .show();
-
     }
 
-    private boolean messageGood(String message) {
+    /**
+     * This method check if the user entered a valid message and choose a category.
+     */
+    private boolean validateUserInput() {
+        String message = messageText.getText().toString();
+
         if (message.isEmpty()) {
-            contact_us_message_editText.setError(getString(R.string.message_empty_error));
+            messageText.setError(getString(R.string.message_empty_error));
             return false;
         } else if (message.length() < 10) {
-            contact_us_message_editText.setError("Message too short, please add more details");
+            messageText.setError("Message too short, please add more details");
             return false;
-        } else return true;
-    }
-
-    private boolean spinnerNotEmpty() {
-        if (spinnerPosition != 0) {
-            return true;
-        } else {
-            Toast.makeText(getContext(), "Please choose a subject", Toast.LENGTH_SHORT).show();
+        } else if (spinner.getSelectedItemPosition() < 1) {
+            Toast.makeText(activity, "Please choose a subject", Toast.LENGTH_LONG).show();
             return false;
         }
+       return true;
     }
 }

@@ -9,15 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
-
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
+ * Created by Tal.
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
@@ -44,7 +42,6 @@ public class ZoomPhotoActivity extends AppCompatActivity {
 
     private final Handler mHideHandler = new Handler();
     private View mContentView;
-    private ProgressBar progressBar;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -103,9 +100,6 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         }
     };
 
-    private String url;
-    private int rotation;
-
     /**
      * Initializes basic initialization of components.
      */
@@ -116,12 +110,12 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_zoom_photo);
 
         Intent intent = getIntent();
-        url = intent.getStringExtra("url");
-        rotation = intent.getIntExtra("rotation", 0);
+        String url = intent.getStringExtra("url");
+        int rotation = intent.getIntExtra("rotation", 0);
         mVisible = true;
         // mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.photo_view);
-        progressBar = findViewById(R.id.progress_bar);
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,11 +125,10 @@ public class ZoomPhotoActivity extends AppCompatActivity {
 
 
         PhotoView photoView = (PhotoView) mContentView;
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                .child(FirebaseConstants.IMAGES).child(url);
+        StorageReference storageReference = StorageConstants.getImageRef(url);
 
-        FirebaseConstants.loadImageUsingGlide(getApplicationContext(), photoView, storageReference,
-                progressBar);
+        StorageConstants.loadImageUsingGlide(getApplicationContext(), photoView,
+                storageReference, progressBar);
 
         // Set up the user interaction to manually show or hide the system UI.
         getWindow().getDecorView().findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
@@ -188,7 +181,9 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() !=  null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
         // Schedule a runnable to display UI elements after a delay

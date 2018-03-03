@@ -29,7 +29,7 @@ public class NotificationModel {
     }
 
     /**
-     * Default Constructor.
+     * Custom Constructor.
      */
     public NotificationModel(Boolean read, String photoUrl, String message, String senderID) {
         this.read = read;
