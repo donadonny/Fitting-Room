@@ -42,11 +42,11 @@ public class UserLikesFragment extends Fragment {
         my_recycler_view = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         noImageView = (TextView) rootView.findViewById(R.id.noImagesTitle);
 
-        final int size = 300;
+        final int size = 2;
 
         my_recycler_view.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
         if (getArguments() != null) {
-            String uid = getArguments().getString("uid");
+            final String uid = getArguments().getString("uid");
             if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
 
@@ -66,9 +66,10 @@ public class UserLikesFragment extends Fragment {
                                             getActivity(), size));
                                     my_recycler_view.setHasFixedSize(false);
                                     UserProfileAdapter adapter = new UserProfileAdapter(
-                                            getActivity(), DatabaseContants.getCurrentUser()
+                                            getActivity(), uid, DatabaseContants.getCurrentUser()
                                             .getUid(), urls, true);
                                     my_recycler_view.setAdapter(adapter);
+
                                 }
 
                             }

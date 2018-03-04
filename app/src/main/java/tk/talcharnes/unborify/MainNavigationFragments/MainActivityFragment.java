@@ -75,7 +75,7 @@ public class MainActivityFragment extends Fragment {
     private boolean firstTime = true;
     private boolean categoryMode = false;
     private Activity activity;
-    
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

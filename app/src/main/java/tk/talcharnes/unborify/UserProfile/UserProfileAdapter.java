@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify.UserProfile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import java.util.List;
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.StorageConstants;
@@ -26,10 +28,11 @@ import tk.talcharnes.unborify.Utilities.StorageConstants;
 public class UserProfileAdapter
         extends RecyclerView.Adapter<UserProfileAdapter.SingleItemRowHolder> {
 
-    public static final String TAG = UserProfileAdapter.class.getSimpleName();
+    public static final String LOG_TAG = UserProfileAdapter.class.getSimpleName();
 
     private Context mContext;
     private String uid;
+    private String cuid;
     private List<String> urlList;
     private boolean fashionPhotos;
     private StorageReference storageReference;
@@ -56,15 +59,18 @@ public class UserProfileAdapter
     /**
      * RecyclerView Constructor.
      * @param context - The Application Context of the main Activity.
-     * @param uid - The user id of the current user.
+     * @param uid - The user id of the profile user.
+     * @param cuid - The user id of the current user.
      * @param urls - The list of photo urls.
      * @param fashionPhotos -  A boolean value that tells the Adapter to display fashion photos if
      *          true and profile photos if false.
      */
-    public UserProfileAdapter(Context context, String uid, List<String> urls, boolean fashionPhotos) {
+    public UserProfileAdapter(Context context, String uid, String cuid, List<String> urls,
+                              boolean fashionPhotos) {
         this.urlList = urls;
         this.mContext = context;
         this.uid = uid;
+        this.cuid = cuid;
         this.fashionPhotos = fashionPhotos;
         storageReference = StorageConstants.getRef().child(((fashionPhotos) ?
                 StorageConstants.IMAGES : StorageConstants.PROFILE_IMAGE));
@@ -86,10 +92,9 @@ public class UserProfileAdapter
     @Override
     public void onBindViewHolder(final SingleItemRowHolder holder, int i) {
         StorageReference photoRef = storageReference.child(urlList.get(i) + ".webp");
-        Log.d(TAG, photoRef.getPath());
-        StorageConstants.loadImageUsingGlide(mContext, holder.photo, photoRef,
-                holder.progressBar);
-
+        Log.d(LOG_TAG, photoRef.getPath());
+        StorageConstants.loadImageUsingGlide(mContext, holder.photo, photoRef, holder.progressBar);
+        final int index = holder.getAdapterPosition();
         DatabaseContants.getVotesRef().child(urlList.get(i)).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -101,11 +106,23 @@ public class UserProfileAdapter
                                         .getColor(mContext, R.color.bg_screen2));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_up_white_24dp));
+                                holder.photo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        openCommentActivity(urlList.get(index));
+                                    }
+                                });
                             } else if (rating.equals("dislikes")) {
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen1));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
+                                holder.photo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        openCommentActivity(urlList.get(index));
+                                    }
+                                });
                             }
                         } else {
                             if(fashionPhotos) {
@@ -121,10 +138,23 @@ public class UserProfileAdapter
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, databaseError.getDetails());
+                        Log.d(LOG_TAG, databaseError.getDetails());
                     }
                 });
 
+    }
+
+    private void openCommentActivity(String url) {
+        if(!url.contains(".webp")){
+            url = url + ".webp";
+        }
+
+        Intent intent = new Intent(mContext, CommentActivity.class);
+        intent.putExtra("photoUserID", uid);
+        intent.putExtra("url", url);
+        intent.putExtra("currentUser", cuid);
+
+        mContext.startActivity(intent);
     }
 
     /**

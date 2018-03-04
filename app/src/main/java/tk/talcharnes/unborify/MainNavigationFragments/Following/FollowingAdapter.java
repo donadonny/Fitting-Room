@@ -59,7 +59,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
 
         // Getting the current uid from the list of uids.
-        String uid = userUids.get(position);
+        final String uid = userUids.get(position);
 
         // Checks if the uid is not empty before filling up the data. Conditionals protects against
         //    a bug in which the an empty uid was received from the database.
@@ -97,7 +97,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
                                 LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL,
                                 false));
                         holder.photoList.setHasFixedSize(false);
-                        UserProfileAdapter adapter = new UserProfileAdapter(mContext,
+                        UserProfileAdapter adapter = new UserProfileAdapter(mContext, uid,
                                 DatabaseContants.getCurrentUser().getUid(), urls, true);
                         holder.photoList.setAdapter(adapter);
                     }

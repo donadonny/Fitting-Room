@@ -212,5 +212,14 @@
         <item>Concert</item>
         <item>Other</item>
     </string-array>
-
+    <!---Deals Page-->
+    <string name="permission_location_rationale">We need your general location to provide you with the closets deals!</string>
+    <string name="permission_Location_denied">Location has been turned off deals will not show up.</string>
+    <string name="permission_camera_neverask">You can turn location on in the settings of your phone for this app to view deals.</string>
+    <string name="location_settings">Location Settings</string>
+    <string name="distance">Select the unit and how far you would like to see deals!</string>
+    <string name="deals_option">Deals Options</string>
+    <string name="Km">Km</string>
+    <string name="Mi">Mi</string>
+    <string name="save">Save</string>
 </resources>
