@@ -99,6 +99,14 @@ public class UserProfileAdapter
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(fashionPhotos) {
+                            holder.photo.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    openCommentActivity(urlList.get(index));
+                                }
+                            });
+                        }
                         if (dataSnapshot.exists()) {
                             String rating = String.valueOf(dataSnapshot.getValue());
                             if (rating.equals("likes")) {
@@ -106,23 +114,11 @@ public class UserProfileAdapter
                                         .getColor(mContext, R.color.bg_screen2));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_up_white_24dp));
-                                holder.photo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        openCommentActivity(urlList.get(index));
-                                    }
-                                });
                             } else if (rating.equals("dislikes")) {
                                 holder.userRating.setBackgroundColor(ContextCompat
                                         .getColor(mContext, R.color.bg_screen1));
                                 holder.userRating.setImageDrawable(ContextCompat
                                         .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
-                                holder.photo.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        openCommentActivity(urlList.get(index));
-                                    }
-                                });
                             }
                         } else {
                             if(fashionPhotos) {

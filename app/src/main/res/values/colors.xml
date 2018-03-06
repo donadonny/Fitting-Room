@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryLight">#BBDEFB</color>
-    <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorPrimaryLight">#4f648b</color>
+    <color name="colorPrimary">#223A5E</color>
+    <color name="colorPrimaryDark">#001434</color>
     <color name="primary_light">#B3E5FC</color>
     <color name="colorAccent">#FF4081</color>
     <color name="primary_text">#212121</color>
@@ -50,7 +50,7 @@
         <item>@color/dot_dark_screen4</item>
     </array>
 
-    blue, green, yellow, orange, red
+    <!-- blue, green, yellow, orange, red -->
 
     <!-- Rating colors -->
     <color name="rating_color_1">#4FC3F7</color>
@@ -87,6 +87,5 @@
         <item>@color/rating_shadow_color_5</item>
         <item>@color/rating_shadow_color_6</item>
     </array>
-
 
 </resources>
