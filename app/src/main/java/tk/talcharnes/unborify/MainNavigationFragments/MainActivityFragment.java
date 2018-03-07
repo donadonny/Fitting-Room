@@ -2,6 +2,7 @@ package tk.talcharnes.unborify.MainNavigationFragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,12 +10,16 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.firebase.ui.auth.User;
 import com.google.android.gms.ads.AdListener;
@@ -49,6 +54,7 @@ import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
+import tk.talcharnes.unborify.PhotoUpload.PhotoUploadActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.FirebaseConstants;
@@ -71,7 +77,7 @@ public class MainActivityFragment extends Fragment {
     private TextView refresh_textview, noImagesTextView;
     private Context mContext;
     private boolean refresh;
-    private Spinner spinner;
+    //private Spinner spinner;
     private boolean firstTime = true;
     private boolean categoryMode = false;
     private Activity activity;
@@ -82,7 +88,9 @@ public class MainActivityFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         photoReference = DatabaseContants.getPhotoRef();
         oldestPostId = "";
-        
+
+        setHasOptionsMenu(true);
+
         activity = getActivity();
 
         initializeBasicSetup();
@@ -122,7 +130,7 @@ public class MainActivityFragment extends Fragment {
         noImagesTextView = rootView.findViewById(R.id.noImagesTitle);
 
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
-        spinner = (Spinner) activity.findViewById(R.id.toolbar).findViewById(R.id.spinner);
+        //spinner = (Spinner) activity.findViewById(R.id.toolbar).findViewById(R.id.spinner);
     }
 
     @Override
@@ -244,7 +252,7 @@ public class MainActivityFragment extends Fragment {
 
         getPhotos();
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 String chosen = parent.getItemAtPosition(position).toString();
@@ -266,7 +274,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
+        });*/
 
         firstTime = false;
 
@@ -355,6 +363,39 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * This function handles the items clicked on the toolbar.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_picture) {
+            Log.d(LOG_TAG, "Starting up the photo upload Activity.");
+            takePic();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * This function handles the action with the picture icon on the toolbar is clicked.
+     */
+    public void takePic() {
+        Intent intent = new Intent(activity, PhotoUploadActivity.class);
+        startActivity(intent);
     }
 
     private void getPhotos(String category) {
