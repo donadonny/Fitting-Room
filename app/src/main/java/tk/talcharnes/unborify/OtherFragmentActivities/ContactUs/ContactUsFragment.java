@@ -3,11 +3,13 @@ package tk.talcharnes.unborify.OtherFragmentActivities.ContactUs;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +36,7 @@ public class ContactUsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_contact_us, container, false);
@@ -76,6 +78,17 @@ public class ContactUsFragment extends Fragment {
                     messageText.setText("");
 
                     showSuccessDialog();
+                }
+            }
+        });
+
+        messageText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(activity != null) {
+                    activity.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                            .SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams
+                            .SOFT_INPUT_ADJUST_PAN);
                 }
             }
         });

@@ -4,149 +4,130 @@
     android:background="#FFF"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFF"
-    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/my_profile_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_my_profile"
-        android:gravity="bottom"
-        android:text="@string/nav_my_profile"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_photos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_my_photos"
-        android:gravity="bottom"
-        android:text="@string/nav_photos"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_notifications"
-        android:gravity="bottom"
-        android:text="@string/nav_notifications"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_help"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_help"
-        android:gravity="bottom"
-        android:text="@string/nav_help"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_contact_us"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_contact_us"
-        android:gravity="bottom"
-        android:text="@string/nav_contact_us"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_about_us"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_about"
-        android:gravity="bottom"
-        android:text="@string/nav_about_us"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_likes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_likes"
-        android:gravity="bottom"
-        android:text="@string/nav_likes"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_favorites"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_favorites"
-        android:gravity="bottom"
-        android:text="@string/nav_favorites"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_sign_out"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="18dp"
-        android:drawablePadding="25dp"
-        android:drawableStart="@drawable/ic_sign_out"
-        android:gravity="bottom"
-        android:text="@string/sign_out"
-        android:textSize="17sp"
-        android:textStyle="bold" />
-
-    <!--Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="25dp"
-        android:layout_gravity="center_horizontal"
         android:background="#FFF"
-        android:text="@string/add_photo"
-        android:drawablePadding="25dp"
-        android:gravity="start|center"
-        android:textStyle="bold"
-        android:textSize="17sp"
-        android:drawableStart="@drawable/ic_sign_out"/ -->
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/my_profile_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_my_profile"
+            android:gravity="start|center"
+            android:text="@string/nav_my_profile"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_my_photos"
+            android:gravity="start|center"
+            android:text="@string/nav_photos"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_notifications"
+            android:gravity="start|center"
+            android:text="@string/nav_notifications"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_help"
+            android:gravity="start|center"
+            android:text="@string/nav_help"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_contact_us"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_contact_us"
+            android:gravity="start|center"
+            android:text="@string/nav_contact_us"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_about_us"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_about"
+            android:gravity="start|center"
+            android:text="@string/nav_about_us"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_likes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_likes"
+            android:gravity="start|center"
+            android:text="@string/nav_likes"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_favorites"
+            android:gravity="start|center"
+            android:text="@string/nav_favorites"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nav_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="25dp"
+            android:drawableStart="@drawable/ic_sign_out"
+            android:gravity="start|center"
+            android:text="@string/sign_out"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 </ScrollView>

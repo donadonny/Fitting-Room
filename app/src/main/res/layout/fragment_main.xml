@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:background="#FDFDFD" />
+        android:background="@color/colorPrimaryLighter" />
 
     <TextView
         android:id="@+id/noImagesTitle"
