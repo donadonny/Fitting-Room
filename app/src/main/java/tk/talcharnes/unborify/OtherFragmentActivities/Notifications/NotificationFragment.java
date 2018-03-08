@@ -70,7 +70,6 @@ public class NotificationFragment extends Fragment {
         notificationRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
         notificationRecycleView.setHasFixedSize(false);
-        notificationRecycleView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
 
         DatabaseContants.getCurrentUserNotificationRef()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
