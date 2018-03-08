@@ -174,7 +174,7 @@
         </activity>
 
         <activity
-            android:name=".OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity"
+            android:name=".OtherFragmentActivities.LIkes.LikesActivity"
             android:label="@string/title_activity_likes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -185,7 +185,7 @@
         </activity>
 
         <activity
-            android:name=".OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity"
+            android:name=".OtherFragmentActivities.Favorites.FavoritesActivity"
             android:label="@string/title_activity_favorites"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"

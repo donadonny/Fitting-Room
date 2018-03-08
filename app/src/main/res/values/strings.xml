@@ -43,6 +43,8 @@
         later.</string>
     <string name="no_image_title_7">Looks like you haven\'t liked any photos.</string>
     <string name="no_image_title_8">Looks like you aren\'t following anybody.</string>
+    <string name="no_image_title_9">You have no Photos. :(</string>
+    <string name="no_image_title_10">Looks like you haven\'t added any photos to favorites.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>

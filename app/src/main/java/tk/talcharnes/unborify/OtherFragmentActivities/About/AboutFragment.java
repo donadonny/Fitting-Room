@@ -18,5 +18,29 @@ public class AboutFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about, container, false);
+
+        /*         final HorizontalInfiniteCycleViewPager horizontalInfiniteCycleViewPager =
+                (HorizontalInfiniteCycleViewPager) view.findViewById(R.id.hicvp);
+
+        DatabaseContants.getFavoritesRef(DatabaseContants.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> urls = new ArrayList<String>();
+
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        urls.add(snapshot.getKey());
+                    }
+                }
+                horizontalInfiniteCycleViewPager.setAdapter(new HorizontalPagerAdapter(
+                        getActivity(), urls));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage() );
+            }
+        }); */
     }
 }

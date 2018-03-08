@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes;
+package tk.talcharnes.unborify.OtherFragmentActivities.LIkes;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.Favorites.FavoritesActivity;
 import tk.talcharnes.unborify.R;
 
 /**

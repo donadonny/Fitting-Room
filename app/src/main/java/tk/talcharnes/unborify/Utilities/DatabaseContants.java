@@ -1,6 +1,11 @@
 package tk.talcharnes.unborify.Utilities;
 
+import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -11,12 +16,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.mindorks.placeholderview.InfinitePlaceHolderView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
 import tk.talcharnes.unborify.Models.PhotoModel;
+import tk.talcharnes.unborify.LoadPhotoView.LoadMoreView;
+import tk.talcharnes.unborify.LoadPhotoView.PhotoView;
+import tk.talcharnes.unborify.R;
 
 /**
  * Created by Khuram Chaudhry on 11/27/17.
@@ -147,5 +158,108 @@ public class DatabaseContants {
         Log.d(TAG, "Error Code: " + databaseError.getCode());
         Log.d(TAG, databaseError.getMessage());
         Log.d(TAG, databaseError.getDetails());
+    }
+
+    public static void retrievePhotosFromDatabase(String tag, Activity activity, View view, Query query,
+                                                  InfinitePlaceHolderView iPlaceHolderView, 
+                                                  int errorMessage, boolean canEdit) {
+        final String userId = getCurrentUser().getUid();
+        final String userName = getCurrentUser().getDisplayName();
+        
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ArrayList<PhotoModel> photoList = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
+                        if (photoModel != null) {
+                            photoList.add(photoModel);
+                        }
+                    }
+                    Collections.reverse(photoList);
+
+                    for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
+                        iPlaceHolderView.addView(new PhotoView(activity, photoList.get(i),
+                                userId, userName, iPlaceHolderView, true));
+                    }
+                    if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
+                        iPlaceHolderView.setLoadMoreResolver(new LoadMoreView(iPlaceHolderView,
+                                photoList, userId, userName, canEdit));
+                    }
+                } else {
+                    setDefaultView(activity, view, errorMessage);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                setDefaultView(activity, view, errorMessage);
+                logDatabaseError(tag, databaseError);
+            }
+        });
+    }
+
+    public static void retrievePhotosFromDatabaseUsingUrl(String tag, Activity activity, View view, Query query,
+                                                  InfinitePlaceHolderView iPlaceHolderView,
+                                                  int errorMessage, boolean canEdit) {
+        final String userId = getCurrentUser().getUid();
+        final String userName = getCurrentUser().getDisplayName();
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ArrayList<String> photoList = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        String url = child.getKey();
+                        photoList.add(url);
+                    }
+                    Collections.reverse(photoList);
+
+                    for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
+                        getPhotoRef(photoList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                PhotoModel photoModel = dataSnapshot.getValue(PhotoModel.class);
+                                if(photoModel != null) {
+                                    iPlaceHolderView.addView(new PhotoView(activity, photoModel,
+                                            userId, userName, iPlaceHolderView, canEdit));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                logDatabaseError(tag, databaseError);
+                            }
+                        });
+                    }
+                    if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
+                        iPlaceHolderView.setLoadMoreResolver(new LoadMoreView(iPlaceHolderView,
+                                photoList, userId, userName));
+                    }
+                } else {
+                    setDefaultView(activity, view, errorMessage);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                setDefaultView(activity, view, errorMessage);
+                logDatabaseError(tag, databaseError);
+            }
+        });
+    }
+
+    /**
+     * The method set the view if there is no photos belonging to the user.
+     */
+    private static void setDefaultView(Activity activity, View rootView, int errorMessage) {
+        LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.activity_main);
+        TextView textView = new TextView(activity);
+        textView.setText(activity.getString(errorMessage));
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setLayoutParams(new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT));
+        linearLayout.addView(textView);
     }
 }

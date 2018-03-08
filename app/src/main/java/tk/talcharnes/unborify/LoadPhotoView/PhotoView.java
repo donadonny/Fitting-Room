@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
+package tk.talcharnes.unborify.LoadPhotoView;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,7 +42,7 @@ import tk.talcharnes.unborify.Utilities.StorageConstants;
  */
 
 @Layout(R.layout.my_photo_card)
-class PhotoView {
+public class PhotoView {
 
     private static final String TAG = PhotoView.class.getSimpleName();
 
@@ -74,14 +74,16 @@ class PhotoView {
     private Context mContext;
     private String mUserId, mUserName;
     private InfinitePlaceHolderView placeHolderView;
+    private boolean canEditPhotoList = false;
 
-    PhotoView(Context context, PhotoModel photoModel, String userId, String userName,
-              InfinitePlaceHolderView mLoadMoreView) {
+    public PhotoView(Context context, PhotoModel photoModel, String userId, String userName,
+                     InfinitePlaceHolderView mLoadMoreView, boolean canEditPhotoList) {
         mContext = context;
         mPhotoModel = photoModel;
         mUserId = userId;
         mUserName = userName;
         placeHolderView = mLoadMoreView;
+        this.canEditPhotoList = canEditPhotoList;
     }
 
     @Resolve
@@ -170,12 +172,17 @@ class PhotoView {
 
             }
         });
-        menuButton.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View view) {
-                showPopup(view);
-            }
-        });
+
+        if(canEditPhotoList) {
+            menuButton.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                        showPopup(view);
+                }
+            });
+        } else {
+            menuButton.setVisibility(android.view.View.GONE);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes;
+package tk.talcharnes.unborify.OtherFragmentActivities.About;
 
 import android.content.Context;
 import android.content.Intent;

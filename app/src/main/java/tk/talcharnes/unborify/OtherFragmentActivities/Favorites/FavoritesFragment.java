@@ -1,4 +1,4 @@
-package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
+package tk.talcharnes.unborify.OtherFragmentActivities.Favorites;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,35 +7,32 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.google.firebase.auth.FirebaseUser;
 import com.mindorks.placeholderview.InfinitePlaceHolderView;
-import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 
 /**
- * Created by Khuram Chaudhry on 9/29/17.
- * This fragment gets the user's photos from the database.
+ * Created by Khuram Chaudhry on 10/22/17.
+ * This fragment retrieves the list of user's favorite photos.
  */
-public class MyPhotosFragment extends Fragment {
 
-    private static final String LOG_TAG = MyPhotosFragment.class.getSimpleName();
+public class FavoritesFragment extends Fragment {
+
+    private static final String TAG = FavoritesFragment.class.getSimpleName();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_my_photos, container, false);
+
+        View rootview = inflater.inflate(R.layout.fragment_favorites, container, false);
         InfinitePlaceHolderView mLoadMoreView = (InfinitePlaceHolderView) rootview.findViewById(R.id.loadMoreView);
 
         mLoadMoreView.getBuilder().setHasFixedSize(false).setItemViewCacheSize(10)
                 .setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        FirebaseUser user = DatabaseContants.getCurrentUser();
-        String userId = user.getUid();
-
-        DatabaseContants.retrievePhotosFromDatabase(LOG_TAG, getActivity(), rootview,
-                DatabaseContants.getPhotoRef().orderByChild(PhotoModel.USER_KEY).equalTo(userId),
-                mLoadMoreView, R.string.no_image_title_9,true);
+        DatabaseContants.retrievePhotosFromDatabaseUsingUrl(TAG, getActivity(), rootview,
+                DatabaseContants.getFavoritesRef(DatabaseContants.getCurrentUser().getUid()),
+                mLoadMoreView, R.string.no_image_title_10,false);
 
         return rootview;
     }
