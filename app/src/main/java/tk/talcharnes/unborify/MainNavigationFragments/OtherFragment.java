@@ -77,7 +77,8 @@ public class OtherFragment extends Fragment {
                             String uid = DatabaseContants.getCurrentUser().getUid();
                             intent.putExtra("uid", uid);
                         }
-                        startActivity(intent);
+                        intent.putExtra("fragmentNumber", 4);
+                        startActivityForResult(intent, 0);
                     }
                 }
             });

@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/profile_header_image"
+        android:src="@drawable/contact_us_background"
         android:scaleType="fitXY"/>
 
     <TextView

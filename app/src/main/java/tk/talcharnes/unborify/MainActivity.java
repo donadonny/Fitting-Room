@@ -34,8 +34,9 @@ import tk.talcharnes.unborify.Utilities.DatabaseContants;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static int fragment_id = R.id.nav_home;
-    public static int previous_fragment_id = fragment_id;
+    private int fragment_id = R.id.nav_home;
+    private int previous_fragment_id = fragment_id;
+    private final int RESULT_CODE = 0;
 
     private Toolbar toolbar;
     private NoSwipePager viewPager;
@@ -120,5 +121,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_CODE && data != null) {
+            int fragmentNum = data.getIntExtra("fragmentNumber", 0);
+            fragment_id = R.id.tab_other;
+            viewPager.setCurrentItem(fragmentNum);
+        }
+    }
 }
