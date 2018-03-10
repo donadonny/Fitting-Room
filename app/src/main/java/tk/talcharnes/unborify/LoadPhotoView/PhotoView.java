@@ -41,7 +41,7 @@ import tk.talcharnes.unborify.Utilities.StorageConstants;
  * This class sets up the information for the user's photo. Also allows user to edit and delete.
  */
 
-@Layout(R.layout.my_photo_card)
+@Layout(R.layout.card_mini_photo_view)
 public class PhotoView {
 
     private static final String TAG = PhotoView.class.getSimpleName();

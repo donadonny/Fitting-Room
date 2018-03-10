@@ -66,7 +66,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
         if(!uid.isEmpty()) {
 
             // Setting the user profile image.
-            StorageConstants.loadProfileImage(mContext, holder.userPhoto, uid);
+            StorageConstants.loadImageUsingGlide(mContext, holder.userPhoto,
+                    StorageConstants.getUserPhotoRef(uid), null, 0);
 
             // Grabbing user's name from the database.
             DatabaseContants.getUserRef(uid).child(UserModel.NAME_KEY)

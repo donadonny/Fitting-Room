@@ -93,7 +93,7 @@ public class UserProfileAdapter
     public void onBindViewHolder(final SingleItemRowHolder holder, int i) {
         StorageReference photoRef = storageReference.child(urlList.get(i) + ".webp");
         Log.d(LOG_TAG, photoRef.getPath());
-        StorageConstants.loadImageUsingGlide(mContext, holder.photo, photoRef, holder.progressBar);
+        StorageConstants.loadImageUsingGlide(mContext, holder.photo, photoRef, holder.progressBar, 0);
         final int index = holder.getAdapterPosition();
         DatabaseContants.getVotesRef().child(urlList.get(i)).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {

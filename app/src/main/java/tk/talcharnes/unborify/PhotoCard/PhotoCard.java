@@ -59,7 +59,7 @@ import tk.talcharnes.unborify.Utilities.StorageConstants;
  *  user to rate, report, and favorite the image.
  */
 @NonReusable
-@Layout(R.layout.photo_card_view)
+@Layout(R.layout.card_photo_view)
 public class PhotoCard {
 
     private final String TAG = PhotoCard.class.getSimpleName();
@@ -115,7 +115,7 @@ public class PhotoCard {
      */
     @Resolve
     private void onResolved() {
-        imageLoader = new GlideLoader2();
+        imageLoader = new GlideLoader2(mUserName);
 
         final String url = mPhotoModel.getUrl();
 

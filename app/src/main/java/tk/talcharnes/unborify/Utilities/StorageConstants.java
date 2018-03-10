@@ -39,65 +39,13 @@ public class StorageConstants {
         return getRef().child(IMAGES).child(url);
     }
 
-    public static void loadProfileImage(Context context, ImageView imageView, String uid) {
-        loadImageUsingGlide(context, imageView, getUserPhotoRef(uid));
-    }
-
-    public static void loadImageUsingGlide(Context context, ImageView imageView,
-                                           StorageReference storageReference) {
-        GlideApp.with(context)
-                .load(storageReference)
-                .transform(new MyTransformation(context, 0))
-                .placeholder(R.mipmap.ic_launcher)
-                .into(imageView);
-    }
-
-    public static void loadImageUsingGlide(Context context, ImageView imageView,
-                                           StorageReference storageReference,
-                                           final ProgressBar progressBar) {
-        GlideApp.with(context)
-                .load(storageReference)
-                .transform(new MyTransformation(context, 0))
-                .placeholder(R.mipmap.ic_launcher)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e,
-                                                Object model, Target<Drawable> target,
-                                                boolean isFirstResource) {
-                        if (progressBar != null) {
-                            progressBar.setVisibility(android.view.View.GONE);
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource,
-                                                   boolean isFirstResource) {
-                        if (progressBar != null) {
-                            progressBar.setVisibility(android.view.View.GONE);
-                        }
-                        return false;
-                    }
-
-                })
-                .into(imageView);
-    }
-
     public static void loadImageUsingGlide(Context context, ImageView imageView,
                                            StorageReference storageReference,
                                            final ProgressBar progressBar, int rotation) {
-        if (context.getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
-            if (rotation != 0) {
-                rotation = 0;
-            }
-        } else if (context.getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_PORTRAIT) {
-            if (rotation != 0) {
-                rotation = 0;
-            }
-        }
+
+        int orientation = context.getResources().getConfiguration().orientation;
+        rotation = ((orientation == Configuration.ORIENTATION_LANDSCAPE ||
+                orientation == Configuration.ORIENTATION_PORTRAIT)  && rotation != 0) ? 0 : rotation;
         GlideApp.with(context)
                 .load(storageReference)
                 .transform(new MyTransformation(context, rotation))
@@ -106,7 +54,9 @@ public class StorageConstants {
                     public boolean onLoadFailed(@Nullable GlideException e,
                                                 Object model, Target<Drawable> target,
                                                 boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
                         return false;
                     }
 
@@ -114,7 +64,9 @@ public class StorageConstants {
                     public boolean onResourceReady(Drawable resource, Object model,
                                                    Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
-                        progressBar.setVisibility(android.view.View.GONE);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
                         return false;
                     }
 

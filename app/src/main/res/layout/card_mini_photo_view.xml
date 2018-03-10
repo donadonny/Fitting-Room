@@ -14,10 +14,67 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/card_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:background="@android:color/black"
+            tools:src="@drawable/smiley" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/zoom_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/card_image_view"
+            android:layout_marginStart="42dp"
+            android:background="@color/semi_transparent_background"
+            android:src="@drawable/ic_action_zoom" />
+
+        <ImageButton
+            android:id="@+id/comments_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/card_image_view"
+            android:layout_marginTop="40dp"
+            android:background="@color/semi_transparent_background"
+            android:src="@drawable/comments_button" />
+
+        <ImageButton
+            android:id="@+id/share_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/card_image_view"
+            android:layout_marginTop="80dp"
+            android:background="@color/semi_transparent_background"
+            android:src="@drawable/ic_action_share" />
+
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingbar"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_above="@+id/card_title"
+            android:background="#80000000"
+            app:srb_borderColor="#000"
+            app:srb_fillColor="@color/colorPrimary"
+            app:srb_isIndicator="true"
+            app:srb_numberOfStars="5"
+            app:srb_rating="0"
+            app:srb_starSize="25dp"
+            app:srb_stepSize="0.1" />
+
         <LinearLayout
             android:id="@+id/card_title"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
             <TextView
@@ -41,64 +98,6 @@
                 android:src="@drawable/more_options" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/card_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_title"
-            android:layout_marginBottom="35dp"
-            android:background="@android:color/black"
-            tools:src="@drawable/smiley" />
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/zoom_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/card_image_view"
-            android:layout_marginTop="42dp"
-            android:background="@color/semi_transparent_background"
-            android:src="@drawable/ic_action_zoom" />
-
-        <ImageButton
-            android:id="@+id/comments_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/card_image_view"
-            android:layout_alignStart="@+id/card_image_view"
-            android:layout_marginTop="42dp"
-            android:background="@color/semi_transparent_background"
-            android:src="@drawable/comments_button" />
-
-        <ImageButton
-            android:id="@+id/share_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/card_image_view"
-            android:layout_alignEnd="@+id/card_image_view"
-            android:layout_marginTop="42dp"
-            android:background="@color/semi_transparent_background"
-            android:src="@drawable/ic_action_share" />
-
-        <com.iarcuschin.simpleratingbar.SimpleRatingBar
-            android:id="@+id/ratingbar"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true"
-            app:srb_borderColor="#000"
-            app:srb_fillColor="@color/colorPrimary"
-            app:srb_isIndicator="true"
-            app:srb_numberOfStars="5"
-            app:srb_rating="0"
-            app:srb_starSize="25dp"
-            app:srb_stepSize="0.1" />
 
     </RelativeLayout>
 
