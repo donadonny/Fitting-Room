@@ -39,7 +39,7 @@ public class GlideLoader2 extends ImageLoaderBase {
                           @NonNull String avatarUrl) {
 
         Glide.with(avatarView.getContext())
-                .load(FirebaseStorage.getInstance().getReference(avatarUrl))
+                .load(StorageConstants.getUserPhotoRef(avatarUrl))
                 .transition(new DrawableTransitionOptions().crossFade())
                 .apply(new RequestOptions().placeholder(avatarPlaceholder).fitCenter())
                 .listener(new RequestListener<Drawable>() {

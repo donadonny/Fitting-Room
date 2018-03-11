@@ -196,8 +196,7 @@ public class PhotoCard {
         avatarView.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
-                Intent intent = new Intent(mContext, (mUserId.equals(mPhotoModel.getUserUid())) ?
-                                ProfileActivity.class : UserProfileActivity.class);
+                Intent intent = new Intent(mContext, UserProfileActivity.class);
                 intent.putExtra("uid", mPhotoModel.getUserUid());
                 mContext.startActivity(intent);
             }

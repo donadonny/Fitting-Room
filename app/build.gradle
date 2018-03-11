@@ -74,6 +74,8 @@ dependencies {
     // facebook
     //compile 'com.facebook.android:facebook-login:4.28.0'
     //compile 'com.facebook.android:facebook-login:[4,5)'
+    implementation 'com.facebook.android:facebook-login:4.31.0'
+
     // Custom Libraries
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.roughike:bottom-bar:2.3.1'
