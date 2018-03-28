@@ -19,7 +19,6 @@ import tk.talcharnes.unborify.OtherFragmentActivities.LIkes.LikesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationsActivity;
-import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.UserProfile.UserProfileActivity;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;

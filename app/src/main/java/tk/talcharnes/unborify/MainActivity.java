@@ -7,22 +7,17 @@ import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import tk.talcharnes.unborify.BottomBar.BottomBarAdapter;
 import tk.talcharnes.unborify.BottomBar.NoSwipePager;
-import tk.talcharnes.unborify.MainNavigationFragments.DealsFragment;
+import tk.talcharnes.unborify.MainNavigationFragments.Deals.DealsFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.Following.FollowingFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.MainActivityFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.OtherFragment;
 import tk.talcharnes.unborify.MainNavigationFragments.TrendingFragment;
-import tk.talcharnes.unborify.PhotoUpload.PhotoUploadActivity;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 
 /**

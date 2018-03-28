@@ -62,7 +62,7 @@ public class UserProfileActivity extends AppCompatActivity implements changeName
         .onNameChangeListener {
 
     private static final String TAG = UserProfileActivity.class.getSimpleName();
-    private final int REQUEST_CAMERA = 0, SELECT_FILE = 1, PERMISSIONS_REQUEST = 123;;
+    private final int PERMISSIONS_REQUEST = 123;;
 
     private final int FOLLOWING_TEXT = R.string.following, FOLLOW_TEXT = R.string.follow;
 
@@ -153,7 +153,7 @@ public class UserProfileActivity extends AppCompatActivity implements changeName
             if(uid.equals(DatabaseContants.getCurrentUser().getUid())) {
                 settingButton.setVisibility(View.VISIBLE);
                 cameraButton.setVisibility(View.VISIBLE);
-                followingButton.setVisibility(View.INVISIBLE);
+                followingButton.setEnabled(false);
             }
             DatabaseContants.getUserRef(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -188,7 +188,8 @@ public class UserProfileActivity extends AppCompatActivity implements changeName
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
+                            if (dataSnapshot.exists() ||
+                                    uid.equals(DatabaseContants.getCurrentUser().getUid())) {
                                 setFollowingButton(FOLLOWING_TEXT);
                                 isFollowing = true;
                             } else {

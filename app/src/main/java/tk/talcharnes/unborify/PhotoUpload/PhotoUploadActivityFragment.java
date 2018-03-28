@@ -65,6 +65,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST = 123;
 
     private ImageView userImageToUploadView;
+    private TextView imageTextView;
     private Button submitButton;
     private EditText photo_description_edit_text;
     private String photoDescription;
@@ -96,6 +97,7 @@ public class PhotoUploadActivityFragment extends Fragment {
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
+        imageTextView = (TextView) rootView.findViewById(R.id.imageViewText);
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         initialize();
 
@@ -221,6 +223,7 @@ public class PhotoUploadActivityFragment extends Fragment {
 
                             Log.d(LOG_TAG, "Successfully picked an image, source: " + source.name());
                             try {
+                                imageTextView.setVisibility(View.GONE);
                                 File compressedFile = new Compressor(activity).compressToFile(imageFile);
                                 int size = (int) compressedFile.length();
                                 bytes = new byte[size];

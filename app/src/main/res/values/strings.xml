@@ -224,4 +224,7 @@
     <string name="Km">Km</string>
     <string name="Mi">Mi</string>
     <string name="save">Save</string>
+    <string name="metric_text">Choose the metric for the distance </string>
+    <string name="distance_text">Maximum Distance! </string>
+
 </resources>

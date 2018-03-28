@@ -1,6 +1,8 @@
 package tk.talcharnes.unborify.Utilities;
 
 import android.app.Activity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,6 +30,7 @@ import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.LoadPhotoView.LoadMoreView;
 import tk.talcharnes.unborify.LoadPhotoView.PhotoView;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.UserProfile.UserProfileAdapter;
 
 /**
  * Created by Khuram Chaudhry on 11/27/17.
@@ -44,6 +47,7 @@ public class DatabaseContants {
     public final static String PHOTOS = "Photos";
     public final static String COMMENTS = "Comments";
     public final static String VOTES = "Votes";
+    public final static String DEALS = "Deals";
     public final static String FAVORITES = "Favorites";
     public final static String REPORTS = "Reports";
     public final static String NOTIFICATIONS = "Notifications";
@@ -65,6 +69,10 @@ public class DatabaseContants {
 
     public static DatabaseReference getCurrentUserRef() {
         return getRef().child(USERS).child(getCurrentUser().getUid());
+    }
+
+    public static DatabaseReference getUserNameRef(String uid) {
+        return getRef().child(USERS).child(uid).child(USERNAME);
     }
 
     public static DatabaseReference getTokenRef() {
@@ -119,19 +127,12 @@ public class DatabaseContants {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    public static DatabaseReference getDealsRef() {
+        return getRef().child(DEALS);
+    }
+
     public static boolean checkRefValue(DataSnapshot dataSnapshot) {
         return (dataSnapshot.exists() && dataSnapshot.getValue() != null);
-    }
-
-    public static void getData(DatabaseReference databaseReference,
-                               ValueEventListener valueEventListener) {
-        databaseReference.addListenerForSingleValueEvent(valueEventListener);
-
-    }
-
-    public static void getUserPhotos(String uid, ValueEventListener valueEventListener) {
-        getPhotoRef().orderByChild(PhotoModel.USER_KEY).equalTo(uid)
-                .addListenerForSingleValueEvent(valueEventListener);
     }
 
     public static void setToken() {
@@ -181,7 +182,7 @@ public class DatabaseContants {
 
                     for (int i = 0; i < LoadMoreView.LOAD_VIEW_SET_COUNT && i < photoList.size(); i++) {
                         iPlaceHolderView.addView(new PhotoView(activity, photoList.get(i),
-                                userId, userName, iPlaceHolderView, true));
+                                userId, userName, iPlaceHolderView, canEdit));
                     }
                     if (photoList.size() > LoadMoreView.LOAD_VIEW_SET_COUNT) {
                         iPlaceHolderView.setLoadMoreResolver(new LoadMoreView(iPlaceHolderView,
@@ -241,6 +242,39 @@ public class DatabaseContants {
                     setDefaultView(activity, view, errorMessage);
                 }
             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                setDefaultView(activity, view, errorMessage);
+                logDatabaseError(tag, databaseError);
+            }
+        });
+    }
+
+    public static void retriveProfilePhotosFromDatabase(String tag, Activity activity, View view,
+                                                        Query query, RecyclerView recyclerView,
+                                                        int errorMessage) {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ArrayList<String> photoList = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        String url = child.getKey();
+                        photoList.add(url);
+                    }
+                    if(photoList.size() == 0) {
+                        setDefaultView(activity, view, errorMessage);
+                    } else {
+                        UserProfileAdapter adapter = new UserProfileAdapter(photoList);
+
+                        recyclerView.setLayoutManager(new LinearLayoutManager(activity,
+                                LinearLayoutManager.HORIZONTAL, false));
+                        recyclerView.setHasFixedSize(false);
+                        recyclerView.setAdapter(adapter);
+                    }
+                }
+            }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 setDefaultView(activity, view, errorMessage);

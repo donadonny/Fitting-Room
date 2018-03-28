@@ -37,13 +37,18 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_below="@+id/user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/user_info"
-        android:layout_marginStart="20dp"
-        android:orientation="horizontal"
-        android:scrollbars="none" />
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <com.mindorks.placeholderview.InfinitePlaceHolderView
+        android:id="@+id/loadMoreView"
+        android:layout_below="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

@@ -18,7 +18,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="170dp">
+            android:layout_height="190dp">
 
             <ImageView
                 android:id="@+id/header_cover_image"
@@ -76,7 +76,6 @@
             android:id="@+id/user_profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="Name"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -87,7 +86,7 @@
             android:id="@+id/user_date_joined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:text="MMM-DD-YYYY"
             android:textColor="@color/black"
             android:textAlignment="center"
@@ -97,7 +96,7 @@
             android:id="@+id/following_btn"
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/custom_button"
             android:textColor="@color/white"
