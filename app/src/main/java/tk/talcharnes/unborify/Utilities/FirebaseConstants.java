@@ -28,15 +28,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import tk.talcharnes.unborify.Models.ReportModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Models.Report;
 
 /**
  * Created by Tal on 9/4/2017.
  */
 
 public class FirebaseConstants {
-    public final static String COMMENTS = "Comments";
+    /*public final static String COMMENTS = "Comments";
     public final static String PHOTOS = "Photos";
     public final static String USERS = "Users";
     public final static String INSTANCEID = "instanceId";
@@ -115,7 +115,7 @@ public class FirebaseConstants {
                                 .format(new Date());
                         reportRef.child(NUM_REPORTS).setValue(numReports + 1);
                         reportRef.child(REPORTED_BY).child(userID).setValue(timeStamp);
-                        Log.d(TAG, "User made a report. Another report was added.");
+                        Log.d(TAG, "UserModel made a report. Another report was added.");
                         Toast.makeText(context, "A report was made.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -123,10 +123,10 @@ public class FirebaseConstants {
                             .format(new Date());
                     HashMap<String, String> reports = new HashMap<String, String>();
                     reports.put(userID, timeStamp);
-                    Report report = new Report(1, reports);
-                    reportRef.setValue(report);
-                    Log.d(TAG, "User made a report. A new report was made.");
-                    Toast.makeText(context, "A report was made.", Toast.LENGTH_SHORT).show();
+                    ReportModel reportModel = new ReportModel(1, reports);
+                    reportRef.setValue(reportModel);
+                    Log.d(TAG, "UserModel made a reportModel. A new reportModel was made.");
+                    Toast.makeText(context, "A reportModel was made.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -217,6 +217,6 @@ public class FirebaseConstants {
 
                 })
                 .into(imageView);
-    }
+    }*/
 
 }

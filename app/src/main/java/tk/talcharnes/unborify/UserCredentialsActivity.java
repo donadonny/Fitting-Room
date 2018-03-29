@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -15,19 +12,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Locale;
-
-import tk.talcharnes.unborify.Models.User;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Models.UserModel;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 
 /**
- * Created by khuramchaudhry on 9/23/17.
+ * Created by Khuram Chaudhry on 9/23/17.
  * This activity handles basic User authorization with email or Google Api.
  */
 
@@ -36,7 +29,6 @@ public class UserCredentialsActivity extends AppCompatActivity {
     private static final String TAG = UserCredentialsActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 1;
 
-    // For Firebase Auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -46,48 +38,38 @@ public class UserCredentialsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.auth_ui_layout);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-         initialize();
+        initialize();
 
     }
-
 
     /**
      * Checks if the user is logged in. If not, then the user is prompt to log in.
      */
     private void initialize() {
-        //For firebase auth
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = DatabaseContants.getCurrentUser();
 
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
 
-                    FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(user.getUid())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                    final DatabaseReference userRef = DatabaseContants.getCurrentUserRef();
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.exists()) {
                                         Log.d(TAG, "New User");
-                                        Calendar c = Calendar.getInstance();
-                                        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy",
-                                                Locale.getDefault());
-                                        String formattedDate = df.format(c.getTime());
-                                        User databaseUser = new User(user.getDisplayName(),
-                                                user.getEmail(), null, formattedDate);
-                                        FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                                                .child(user.getUid()).setValue(databaseUser);
+                                        long time =  Calendar.getInstance().getTime().getTime();
 
-                                        String token = FirebaseInstanceId.getInstance().getToken();
-                                        FirebaseConstants.setToken(token);
-                                        Log.d(TAG, "Token: " + token);
+                                        UserModel newUser = new UserModel(user.getDisplayName(),
+                                                user.getEmail(), null, time);
+                                        userRef.setValue(newUser);
+
+                                        DatabaseContants.setToken();
                                     }
                                 }
 
@@ -140,23 +122,6 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 if (response == null) {
                     Log.d(TAG, "Login failed due to back press.");
                 } else {
-
-                    if (response == null) {
-                        // User pressed back button
-//                        showSnackbar(R.string.sign_in_cancelled);
-                        return;
-                    }
-
-                    if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-//                        showSnackbar(R.string.no_internet_connection);
-                        return;
-                    }
-
-                    if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-//                        showSnackbar(R.string.unknown_error);
-                        return;
-                    }
-
                     switch (response.getErrorCode()) {
                         case ErrorCodes.NO_NETWORK:
                             Log.d(TAG, "Login failed due to no network.");
@@ -164,7 +129,6 @@ public class UserCredentialsActivity extends AppCompatActivity {
                         default:
                             Log.d(TAG, "Login failed due to unknown error.");
                             break;
-
                     }
                 }
         }

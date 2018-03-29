@@ -4,37 +4,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.List;
-
+import tk.talcharnes.unborify.Models.NotificationModel;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
-import tk.talcharnes.unborify.Models.myNotifications;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
- * Created by khuramchaudhry on 9/17/17.
+ * Created by Khuram Chaudhry on 9/17/17.
+ * This class sets up each notification to a visual card.
  */
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ItemRowHolder> {
 
-    private Context mContext;
-    private List<myNotifications> dataList;
+    public static final String TAG = NotificationAdapter.class.getSimpleName();
 
-    NotificationAdapter(Context context, List<myNotifications> dataList) {
+    private Context mContext;
+    private List<NotificationModel> dataList;
+
+    NotificationAdapter(Context context, List<NotificationModel> dataList) {
         this.mContext = context;
         this.dataList = dataList;
     }
@@ -48,14 +50,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(final NotificationAdapter.ItemRowHolder holder, int position) {
-        final myNotifications notification = dataList.get(position);
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference()
-                .child(FirebaseConstants.IMAGES).child(notification.getPhotoUrl());
-        FirebaseConstants.loadImageUsingGlide(mContext, holder.imageView, storageRef,
+        final NotificationModel notification = dataList.get(position);
+
+        StorageReference storageRef = StorageConstants.getImageRef(notification.getPhotoUrl());
+        StorageConstants.loadImageUsingGlide(mContext, holder.imageView, storageRef,
                 holder.progressBar, 0);
+
         holder.message.setText(notification.getMessage());
-        FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(notification.getSenderID())
-                .child(FirebaseConstants.USERNAME)
+
+        DatabaseContants.getUserRef(notification.getSenderID()).child(UserModel.NAME_KEY)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -66,13 +69,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(TAG, databaseError.getMessage());
                     }
                 });
+
         holder.notificationCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser user = FirebaseConstants.getUser();
+                FirebaseUser user = DatabaseContants.getCurrentUser();
                 Intent intent = new Intent(mContext, CommentActivity.class);
                 intent.putExtra("url", notification.getPhotoUrl());
                 intent.putExtra("photoUserID", user.getUid());

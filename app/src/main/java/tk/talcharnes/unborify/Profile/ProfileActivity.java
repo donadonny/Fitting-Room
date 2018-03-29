@@ -17,19 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,17 +35,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import id.zelory.compressor.Compressor;
+import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Models.User;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
+import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
- * Created by khuramchaudhry on 9/2/17.
+ * Created by Khuram Chaudhry on 9/2/17.
  * This activity displays and handles User profile.
  */
 
@@ -55,10 +53,10 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         .onNameChangeListener {
 
     private final static String TAG = ProfileActivity.class.getSimpleName();
+    private final int REQUEST_CAMERA = 0, SELECT_FILE = 1;
 
     private Toolbar toolbar;
     private TextView nameText, emailText, joinedText;
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Bitmap thumbnail;
     private String uid;
     private IImageLoader imageLoader;
@@ -73,11 +71,10 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         setContentView(R.layout.activity_profile);
 
         initialize();
-
     }
 
     /**
-     * This function initializes basic stuff.
+     * This method initializes basic stuff.
      */
     public void initialize() {
         imageLoader = new GlideLoader2();
@@ -100,18 +97,19 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         if (intent.getExtras() != null) {
             uid = intent.getStringExtra("uid");
 
-            FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+            DatabaseContants.getUserRef(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                User user = dataSnapshot.getValue(User.class);
-                                if (user != null) {
-                                    nameText.setText(user.getName());
-                                    emailText.setText(user.getEmail());
-                                    joinedText.setText(user.getDate_joined());
-                                    String profileUri = user.getUri() + "";
-                                    imageLoader.loadImage(avatarView, uid, user.getName());
+                                UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                if (userModel != null) {
+                                    nameText.setText(userModel.getName());
+                                    emailText.setText(userModel.getEmail());
+                                    String dateJoined = DatabaseContants
+                                            .convertTime(userModel.getDateJoined());
+                                    joinedText.setText(dateJoined);
+                                    imageLoader.loadImage(avatarView, uid, userModel.getName());
                                 }
                             }
                         }
@@ -125,20 +123,20 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function handles hidden menu on the toolbar.
+     * This method handles hidden menu on the toolbar.
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        if (FirebaseConstants.getUser().getUid().equals(uid)) {
+        if (DatabaseContants.getCurrentUser().getUid().equals(uid)) {
             getMenuInflater().inflate(R.menu.menu_profile, menu);
         }
         return true;
     }
 
     /**
-     * This function handles the items clicked on the toolbar.
+     * This method handles the items clicked on the toolbar.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -156,11 +154,11 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function shows a dialog of options for the Users on what they wish to edit on their
+     * This method shows a dialog of options for the Users on what they wish to edit on their
      * profile which includes changing their name, picture, and password.
      */
     private void showEditDialog() {
-        String[] array = {"Change Name", "Change Password", "Change Profile Photo"};
+        String[] array = {"Change Name", "Change Password", "Change Profile PhotoModel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("What would you like to change?")
                 .setItems(array, new DialogInterface.OnClickListener() {
@@ -197,7 +195,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function shows a dialog of options for the Users on how they want to take an image.
+     * This method shows a dialog of options for the Users on how they want to take an image.
      */
     private void showChoosePictureDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
@@ -228,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function brings up the camera.
+     * This method brings up the camera.
      */
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -236,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function brings up the gallery.
+     * This method brings up the gallery.
      */
     private void galleryIntent() {
         Intent intent = new Intent();
@@ -246,7 +244,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function handles results of the gallery or camera intent.
+     * This method handles results of the gallery or camera intent.
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -261,7 +259,10 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                     e.printStackTrace();
                 }
             } else if (requestCode == REQUEST_CAMERA) {
-                thumbnail = (Bitmap) data.getExtras().get("data");
+                Bundle bundle = data.getExtras();
+                if(bundle != null) {
+                    thumbnail = (Bitmap) bundle.get("data");
+                }
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -276,26 +277,28 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This function saves the profile image to the device.
+     * This method saves the profile image to the device.
      */
     private byte[] saveImage(byte[] filedata) throws IOException {
-        File mainDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/FittingRoom_Data");
+        File mainDirectory = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/FittingRoom_Data");
         if (!mainDirectory.exists()) {
             if (!mainDirectory.mkdirs()) {
-                Toast.makeText(ProfileActivity.this, "Please allow Fitting to save data to device."
-                        , Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfileActivity.this,
+                        "Please allow Fitting to save data to device.", Toast.LENGTH_LONG)
+                        .show();
             }
         }
 
-        File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/FittingRoom_Data/", "profileImage.webp");
+        File destination = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/FittingRoom_Data/", "profileImage.webp");
         FileOutputStream fo;
         try {
             fo = new FileOutputStream(destination);
             fo.write(filedata);
             fo.close();
-            Toast.makeText(ProfileActivity.this, "Image Successfully Saved!!", Toast.LENGTH_LONG)
+            Toast.makeText(ProfileActivity.this, "Image Successfully Saved!!",
+                    Toast.LENGTH_LONG)
                     .show();
         } catch (FileNotFoundException e) {
             Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -305,18 +308,17 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         int size = (int) compressedImageFile.length();
         byte[] bytes = new byte[size];
         BufferedInputStream buf = new BufferedInputStream(new FileInputStream(compressedImageFile));
-        int i = buf.read(bytes, 0, bytes.length);
+        int bytesRead = buf.read(bytes, 0, bytes.length);
         buf.close();
         return bytes;
     }
 
     /**
-     * This function uploads the image to FireBase Storage.
+     * This method uploads the image to FireBase Storage.
      */
     private void uploadImage(byte[] data) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference profileImageRef = storageRef.child("profileImages/" + FirebaseConstants.getUser().getUid() + ".webp");
+        final FirebaseUser user = DatabaseContants.getCurrentUser();
+        StorageReference profileImageRef = StorageConstants.getUserPhotoRef(user.getUid());
         UploadTask uploadTask = profileImageRef.putBytes(data);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -327,13 +329,14 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                // taskSnapshot.getMetadata() contains file metadata such as size,
+                // content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                         .setPhotoUri(downloadUrl)
                         .build();
 
-                FirebaseConstants.getUser().updateProfile(profileUpdates)
+               user.updateProfile(profileUpdates)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -343,9 +346,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
                             }
                         });
                 String profileUri = (downloadUrl != null) ? downloadUrl.toString() : "";
-                FirebaseConstants.getRef().child(FirebaseConstants.USERS)
-                        .child(FirebaseConstants.getUser().getUid())
-                        .child(FirebaseConstants.URI).setValue(profileUri);
+                DatabaseContants.getCurrentUserRef().child(UserModel.URI_KEY).setValue(profileUri);
                 imageLoader.loadImage(avatarView, profileUri, nameText.getText().toString());
 
             }
@@ -353,7 +354,7 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
     }
 
     /**
-     * This is an interface function which retrieves results from the changeNameDialog.
+     * This is an interface method which retrieves results from the changeNameDialog.
      */
     @Override
     public void onChange(String name) {

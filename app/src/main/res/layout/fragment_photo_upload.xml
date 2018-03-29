@@ -45,11 +45,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:contentDescription="@string/user_photo"
             android:gravity="top"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_add_a_photo_black_48dp"
-            android:tooltipText="Add photo" />
+            android:tooltipText="Add photo"
+            tools:targetApi="o" />
 
     </android.support.v7.widget.CardView>
 

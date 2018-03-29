@@ -18,40 +18,31 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
-import tk.talcharnes.unborify.Models.CommentModel;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
-import tk.talcharnes.unborify.Models.Photo;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 import tk.talcharnes.unborify.PhotoCard.ZoomPhotoActivity;
+import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
- * Created by khuramchaudhry on 9/21/17.
+ * Created by Khuram Chaudhry on 9/21/17.
+ * This class sets up the information for the user's photo. Also allows user to edit and delete.
  */
 
 @Layout(R.layout.my_photo_card)
-public class PhotoView {
+class PhotoView {
 
     private static final String TAG = PhotoView.class.getSimpleName();
 
@@ -79,15 +70,15 @@ public class PhotoView {
     @View(R.id.progress_bar)
     private ProgressBar progressBar;
 
-    private Photo mPhoto;
+    private PhotoModel mPhotoModel;
     private Context mContext;
     private String mUserId, mUserName;
     private InfinitePlaceHolderView placeHolderView;
 
-    public PhotoView(Context context, Photo photo, String userId, String userName,
-                     InfinitePlaceHolderView mLoadMoreView) {
+    PhotoView(Context context, PhotoModel photoModel, String userId, String userName,
+              InfinitePlaceHolderView mLoadMoreView) {
         mContext = context;
-        mPhoto = photo;
+        mPhotoModel = photoModel;
         mUserId = userId;
         mUserName = userName;
         placeHolderView = mLoadMoreView;
@@ -95,8 +86,26 @@ public class PhotoView {
 
     @Resolve
     private void onResolved() {
-        long likes = mPhoto.getLikes();
-        long dislikes = mPhoto.getDislikes();
+        occasionTextView.setText(mPhotoModel.getOccasionSubtitle());
+
+        String urlString = mPhotoModel.getUrl();
+        if (urlString != null && !urlString.isEmpty()) {
+            StorageReference storageRef = StorageConstants.getImageRef(urlString);
+            StorageConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar,
+                    mPhotoModel.getOrientation());
+        }
+
+        setRatingBar();
+
+        setListeners();
+    }
+
+    /**
+     * This method sets the photo rating.
+     */
+    private void setRatingBar() {
+        long likes = mPhotoModel.getLikes();
+        long dislikes = mPhotoModel.getDislikes();
         dislikes = (dislikes < 1) ? 1 : dislikes;
         likes = (likes < 1) ? 1 : likes;
         float totalVotes = likes + dislikes;
@@ -109,23 +118,18 @@ public class PhotoView {
         ratingBar.setBorderColor(shadowColor[index]);
 
         ratingBar.setRating(rating / 20f);
+    }
 
-        occasionTextView.setText(mPhoto.getOccasion_subtitle());
-
-        String urlString = mPhoto.getUrl();
-        if (urlString != null && !urlString.isEmpty()) {
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
-                    .child("images").child(urlString);
-            FirebaseConstants.loadImageUsingGlide(mContext, imageView, storageRef, progressBar,
-                    mPhoto.getOrientation());
-        }
-
+    /**
+     * This method displays the popup menu and handles the user interactions on the menu.
+     */
+    private void setListeners() {
         commentsButton.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
                 Intent intent = new Intent(mContext, CommentActivity.class);
-                intent.putExtra("url", mPhoto.getUrl());
-                intent.putExtra("photoUserID", mPhoto.getUser());
+                intent.putExtra("url", mPhotoModel.getUrl());
+                intent.putExtra("photoUserID", mPhotoModel.getUserUid());
                 intent.putExtra("currentUser", mUserId);
                 intent.putExtra("name", mUserName);
                 mContext.startActivity(intent);
@@ -136,8 +140,8 @@ public class PhotoView {
             @Override
             public void onClick(android.view.View view) {
                 Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                intent.putExtra("url", mPhoto.getUrl());
-                intent.putExtra("rotation", getRotation(mPhoto.getOrientation()));
+                intent.putExtra("url", mPhotoModel.getUrl());
+                intent.putExtra("rotation", getRotation(mPhotoModel.getOrientation()));
                 mContext.startActivity(intent);
             }
         });
@@ -174,6 +178,10 @@ public class PhotoView {
         });
     }
 
+    /**
+     * This method returns the degrees to rotate based the orientation.
+     * @param orientation - integer of photo's orientation.
+     */
     private int getRotation(int orientation) {
         int rotation = 0;
         if (mContext.getResources().getConfiguration().orientation ==
@@ -190,6 +198,9 @@ public class PhotoView {
         return rotation;
     }
 
+    /**
+     * This method displays the popup menu and handles the user interactions on the menu.
+     */
     private void showPopup(android.view.View v) {
         PopupMenu popup = new PopupMenu(mContext, v);
         MenuInflater inflater = popup.getMenuInflater();
@@ -205,134 +216,81 @@ public class PhotoView {
                         deletePhoto();
                         return true;
                     case R.id.action_edit_photo:
-                        showEditStringDialog();
+                        showEditDialog();
                         return true;
                     default:
                         return false;
                 }
-                //return false;
             }
         });
     }
 
+    /**
+     * This method deletes the photo, its comments, reports, and its image in the storage.
+     */
     private void deletePhoto() {
+        String url = PhotoUtilities.removeWebPFromUrl(mPhotoModel.getUrl());
 
-        Log.d(TAG, "Deleting: " + mPhoto.getUrl());
+        DatabaseReference photoRef = DatabaseContants.getPhotoRef(url);
+        StorageReference storageReference = StorageConstants.getImageRef(mPhotoModel.getUrl());
 
-        DatabaseReference photoDBReference = FirebaseConstants.getRef()
-                .child(FirebaseConstants.PHOTOS)
-                .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
-
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().
-                child("images").child(mPhoto.getUrl());
-
-        deleteReport(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()));
-
-        final DatabaseReference commentsRef = photoDBReference.child(FirebaseConstants.COMMENTS);
-        commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        CommentModel commentModel = child.getValue(CommentModel.class);
-                        if (commentModel != null) {
-                            deleteReport(commentModel.getComment_key());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        photoDBReference.removeValue();
+        DatabaseContants.getReportRef(url).removeValue();
+        DatabaseContants.getCommentRef().child(url).removeValue();
+        photoRef.removeValue();
         storageReference.delete();
         placeHolderView.removeView(this);
     }
 
-    private void deleteReport(String key) {
-        final DatabaseReference reportRef = FirebaseConstants.getRef()
-                .child(FirebaseConstants.REPORTS).child(key);
-        reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    reportRef.removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void showEditStringDialog() {
+    /**
+     * This method brings up a dialog to edit the occasion subtitle and updates the database.
+     */
+    private void showEditDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        final android.view.View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
-        final EditText edt = dialogView.findViewById(R.id.comment_edit_dialog_box);
-        edt.setHint("Edit Occasion");
-        dialogBuilder.setView(dialogView);
 
-        String occasionString = mPhoto.getOccasion_subtitle();
-        if (occasionString != null && !occasionString.isEmpty()) {
-            edt.setText(occasionString);
-            Log.d(TAG, "Current Occasion String: " + occasionString);
-        }
-        dialogBuilder.setTitle("Edit Photo Occasion");
+        final android.view.View dialogView = LayoutInflater.from(mContext).
+                inflate(R.layout.dialog_edit_comment, null);
 
-        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String newOccasion = edt.getText().toString();
-                if (newOccasion.isEmpty() ||
-                        newOccasion.equals("")
-                        || newOccasion == null) {
+        final EditText editText = dialogView.findViewById(R.id.comment_edit_dialog_box);
+        editText.setHint("Edit Occasion");
+        editText.setText(mPhotoModel.getOccasionSubtitle());
 
-                    edt.setError(mContext.getString(R.string.occasion_cannot_be_empty_string));
-                    Toast.makeText(mContext, mContext.getString(R.string.occasion_cannot_be_empty_string), Toast.LENGTH_SHORT).show();
-                } else if (newOccasion.length() < 5) {
-                    edt.setError(mContext.getString(R.string.comment_too_short_error));
-                    Toast.makeText(mContext, mContext.getString(R.string.comment_too_short_error), Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Log.d(TAG, "New Occasion String: " + newOccasion);
-                    DatabaseReference photoDBReference = FirebaseConstants.getRef()
-                            .child(FirebaseConstants.PHOTOS)
-                            .child(PhotoUtilities.removeWebPFromUrl(mPhoto.getUrl()))
-                            .child(FirebaseConstants.OCCASION_SUBTITLE);
-
-                    occasionTextView.setText(newOccasion);
-                    photoDBReference.setValue(newOccasion);
-
-                }
-            }
-        });
-        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //pass
-                dialog.dismiss();
-            }
-        });
-        AlertDialog b = dialogBuilder.create();
-        b.show();
+        dialogBuilder.setTitle("Edit Photo Occasion")
+                .setView(dialogView)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String newOccasionMessage = editText.getText().toString();
+                        if (newOccasionMessage.length() < 1) {
+                            editText.setError(mContext.getString(R.string.comment_too_short_error));
+                        } else {
+                            occasionTextView.setText(newOccasionMessage);
+                            DatabaseContants.getPhotoRef(PhotoUtilities
+                                    .removeWebPFromUrl(mPhotoModel.getUrl()))
+                                    .child(PhotoModel.OCCASION_SUBTITLE_KEY)
+                                    .setValue(newOccasionMessage);
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
-    public void saveFile(File destination, byte[] fileSize) {
+    /**
+     * This method saves a file to the device.
+     * @param destination - A file object with a path indicating where to save the file.
+     * @param fileData - A byte array representing the file to store.
+     */
+    private void saveFile(File destination, byte[] fileData) {
         FileOutputStream fo;
         try {
             fo = new FileOutputStream(destination);
-            fo.write(fileSize);
+            fo.write(fileData);
             fo.close();
-            //Toast.makeText(mContext, "File Successfully Saved!!", Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e) {
-            //Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
     }
+
 }

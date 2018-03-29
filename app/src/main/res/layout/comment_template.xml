@@ -36,7 +36,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
-                android:layout_toLeftOf="@id/comment_more_options"
+                android:layout_toStartOf="@id/comment_more_options"
                 android:textSize="20sp"
                 tools:text="This is a test commentModel" />
 
@@ -47,15 +47,17 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/comment_textview"
                 android:layout_marginStart="8dp"
-                android:layout_toLeftOf="@id/comment_more_options"
+                android:layout_toStartOf="@id/comment_more_options"
                 tools:text="username" />
         </RelativeLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="500dp"
             tools:src="@mipmap/ic_launcher"
             android:id="@+id/comment_photo_view"
             android:visibility="gone"/>
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"

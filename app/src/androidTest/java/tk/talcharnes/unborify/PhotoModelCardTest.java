@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.allOf;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class PhotoCardTest {
+public class PhotoModelCardTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
@@ -40,8 +40,13 @@ public class PhotoCardTest {
     }
 
     /**
+<<<<<<< HEAD:app/src/androidTest/java/tk/talcharnes/unborify/PhotoModelCardTest.java
+     * Checks tapping on the PhotoModel.
+     * */
+=======
      * Checks tapping on the Photo.
      */
+>>>>>>> upstream/master:app/src/androidTest/java/tk/talcharnes/unborify/PhotoCardTest.java
     @Test
     public void checkTap() {
         onView(allOf(withParent(withId(R.id.main_fragment)), withId(R.id.swipeView)))
