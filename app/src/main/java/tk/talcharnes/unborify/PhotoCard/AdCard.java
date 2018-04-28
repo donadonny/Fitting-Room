@@ -28,7 +28,6 @@ import tk.talcharnes.unborify.R;
 
 /**
  * Created by Khuram Chaudhry on 09/02/2017.
- *
  */
 
 @Layout(R.layout.ad_card_view)
@@ -147,7 +146,8 @@ public class AdCard {
 
     private int pxToDp(int px) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
     }
 
 }

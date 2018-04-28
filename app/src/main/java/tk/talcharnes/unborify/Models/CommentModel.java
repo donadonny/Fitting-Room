@@ -15,9 +15,6 @@ package tk.talcharnes.unborify.Models;
 
 public class CommentModel {
 
-    public static final String COMMENT_KEY = "commentKey";
-    public static final String COMMENT_MESSAGE_KEY = "commentMessage";
-
     private String commenterUid;
     private String commentMessage;
     private long date;
@@ -34,7 +31,7 @@ public class CommentModel {
     }
 
     /**
-     * Custom Constructor.
+     * Default Constructor.
      */
     public CommentModel(String commenterUid, String commentMessage, long date, String photoUrl,
                         String commentKey, String photoUploaderUid) {

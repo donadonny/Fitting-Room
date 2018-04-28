@@ -17,22 +17,26 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
+
 import tk.talcharnes.unborify.Models.CommentModel;
-import tk.talcharnes.unborify.Models.ReportModel;
-import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.PhotoCard.ZoomPhotoActivity;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.DatabaseContants;
-import tk.talcharnes.unborify.Utilities.StorageConstants;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.PhotoUtilities;
 
 /**
  * Created by Tal on 9/3/2017.
- * This class is to view, edit, and delete comment.
+ * <p>
  * THANKS TO: https://www.learnhowtoprogram.com/android/data-persistence/firebase-recycleradapter
  */
 
@@ -42,40 +46,39 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
     private View mView;
     private Context mContext;
+    private String mCommenterID;
+    private static String mUrl;
     private boolean mOriginalCommenter;
-    private String mCurrentUserUid;
-    private CommentModel commentModel;
+    private String mCommentString;
+    private String photoUploader, mCurrentUser;
 
 
-    FirebaseCommentViewHolder(View itemView) {
+    public FirebaseCommentViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
         mContext = itemView.getContext();
         itemView.setOnClickListener(this);
     }
 
-    /**
-     * This method binds the comment.
-     */
-    void bindComment(final CommentModel commentModel, String currentUser) {
-        this.commentModel = commentModel;
-        mCurrentUserUid = currentUser;
-        mOriginalCommenter = commentModel.getCommenterUid().equals(currentUser);
-        final Integer orientation = commentModel.getOrientation();
-        final String mUrl = commentModel.getPhotoUrl() + ".webp";
+    public void bindComment(final CommentModel commentModel, String currentUser) {
+        if (commentModel.getOrientation() == null) {
+        Log.d(TAG, "Loading CommentModel: " + commentModel.getCommentKey());
+        TextView usernameTextView = (TextView) mView.findViewById(R.id.comment_username);
+        TextView comment_textview = (TextView) mView.findViewById(R.id.comment_textview);
+        ImageButton moreOptionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
 
-        TextView nameTextView = (TextView) mView.findViewById(R.id.comment_username);
-        TextView commentTextView = (TextView) mView.findViewById(R.id.comment_textview);
-        ImageButton optionsImageButton = (ImageButton) mView.findViewById(R.id.comment_more_options);
+        mCurrentUser = currentUser;
+        mCommenterID = commentModel.getCommenterUid();
+        mCommentString = commentModel.getCommentMessage();
+        mOriginalCommenter = (mCommenterID != null && mCommenterID.equals(currentUser));
+        photoUploader = commentModel.getPhotoUploaderUid();
 
-        if (orientation == null) {
-            String mCommenterId = commentModel.getCommenterUid();
-            String mCommentMessage = commentModel.getCommentMessage();
+        mUrl = PhotoUtilities.removeWebPFromUrl(commentModel.getPhotoUrl());
 
-            setCommentersName(currentUser, mCommenterId, mCommentMessage, nameTextView);
-            commentTextView.setText(mCommentMessage);
-
-            optionsImageButton.setOnClickListener(new View.OnClickListener() {
+            //usernameTextView.setText(commentModel.getCommenter());
+            setCommentorsName(mCommenterID, usernameTextView);
+            comment_textview.setText(mCommentString);
+            moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     setUpMoreOptionsButton(view, commentModel, mOriginalCommenter);
@@ -85,85 +88,111 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         else {
             mView.findViewById(R.id.comment_relative_layout).setVisibility(View.GONE);
             mView.findViewById(R.id.comment_photo_view).setVisibility(View.VISIBLE);
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                    .child(FirebaseConstants.IMAGES).child(commentModel.getPhotoUrl() + ".webp");
+            Log.d(FirebaseCommentViewHolder.class.getSimpleName(), "REFERENCE" + storageRef.toString());
+
+            final int orientation = commentModel.getOrientation();
+            Log.d(FirebaseCommentViewHolder.class.getSimpleName(), "photo comment orientation" + orientation);
+
             ProgressBar progressBar = mView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
-
-            StorageReference storageRef = StorageConstants.getImageRef(mUrl);
-
-            StorageConstants.loadImageUsingGlide(mContext,
-                    (ImageView) mView.findViewById(R.id.comment_photo_view), storageRef,
+            FirebaseConstants.loadImageUsingGlide(mContext, (ImageView) mView.findViewById(R.id.comment_photo_view), storageRef,
                     progressBar, orientation);
-
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
-                    intent.putExtra("url", mUrl);
-                    intent.putExtra("orientation", orientation);
-                    mContext.startActivity(intent);
+                    intent.putExtra("url", commentModel.getPhotoUrl()+ ".webp");
+                     intent.putExtra("rotation", orientation);
+                     mContext.startActivity(intent);
+
                 }
             });
+
         }
     }
 
-    /**
-     * This method set the commenter's name on the comment.
-     */
-    private void setCommentersName(String uid, final String mCommenterId,
-                                   final String mCommentMessage, final TextView nameTextView) {
-        if (uid != null && mCommentMessage != null) {
-            DatabaseContants.getUserRef(uid).child(UserModel.NAME_KEY)
+    public void setCommentorsName(String uid, final TextView usernameTextView) {
+        if (uid != null && mCommentString != null) {
+            FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                    .child(FirebaseConstants.USERNAME)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+                                String userName = dataSnapshot.getValue().toString();
+                                usernameTextView.setText(userName);
+                                if (mCommenterID.equals(photoUploader)) {
+                                    usernameTextView.setTextColor(Color.BLUE);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            usernameTextView.setText(R.string.anonymous_user);
+                        }
+                    });
+        } else {
+            usernameTextView.setText(R.string.anonymous_user);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        final ArrayList<CommentModel> commentModels = new ArrayList<>();
+//      Reference correct section of database below
+        if (mUrl != null && !mUrl.isEmpty()) {
+            DatabaseReference ref = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                    .child(mUrl).child(FirebaseConstants.COMMENTS);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String name =  dataSnapshot.getValue(String.class);
-                    if (name != null) {
-                        nameTextView.setText(name);
-                        if (mCurrentUserUid.equals(mCommenterId)) {
-                            nameTextView.setTextColor(Color.BLUE);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        CommentModel commentModel = snapshot.getValue(CommentModel.class);
+                        if (commentModel.getCommentMessage() != null) {
+                            Log.d("FirebaseCommentVH", "Comment" + commentModel.getCommentMessage());
+                            commentModels.add(snapshot.getValue(CommentModel.class));
                         }
                     }
+
+                    int itemPosition = getLayoutPosition();
+
+                    if (mOriginalCommenter) {
+                        showEditCommentDialog(commentModels.get(itemPosition));
+                    }
+//                int itemPosition = getLayoutPosition();
+
+//                Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
+//                intent.putExtra("position", itemPosition + "");
+//                intent.putExtra("restaurants", Parcels.wrap(restaurants));
+//
+//                mContext.startActivity(intent);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, databaseError.getMessage());
-                    nameTextView.setText(R.string.anonymous_user);
                 }
             });
-        } else {
-            nameTextView.setText(R.string.anonymous_user);
+
         }
     }
 
-    /**
-     * This method presents an edit comment dialog when the user clicks on the comment.
-     */
-    @Override
-    public void onClick(View view) {
-        if (!mOriginalCommenter) {
-            editComment(commentModel);
-        }
-    }
-
-    /**
-     * This method show a popup menu to edit, delete, and report comment.
-     */
-    private void setUpMoreOptionsButton(View view, final CommentModel commentModel,
-                                        boolean originalCommenter) {
+    private void setUpMoreOptionsButton(View view, final CommentModel commentModel, boolean originalCommenter) {
         PopupMenu popup = new PopupMenu(mContext, view);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_report_comment:
-                        setReport(commentModel.getCommentKey());
+                        FirebaseConstants.setReport(TAG, mView.getContext(),
+                                commentModel.getCommentKey(), mCurrentUser);
                         return true;
                     case R.id.action_delete_comment:
                         deleteComment(commentModel);
                         return true;
                     case R.id.action_edit_comment:
-                        editComment(commentModel);
+                        showEditCommentDialog(commentModel);
                         return true;
                     default:
                         return false;
@@ -180,52 +209,13 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
         popup.show();
     }
 
-    /**
-     * This method records the user's report in the database.
-     * @param commentKey - the comment key of the comment to report.
-     */
-    private void setReport(String commentKey) {
-        final DatabaseReference reportRef = DatabaseContants.getReportRef(commentKey);
-        reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.child(ReportModel.REPORTED_BY_KEY).child(mCurrentUserUid).exists()) {
-                    if (dataSnapshot.exists()) {
-                        DataSnapshot numReportSnap = dataSnapshot.child(ReportModel.NUM_REPORTS_KEY);
-                        Long currentNumReports = numReportSnap.getValue(Long.class);
-                        if (currentNumReports != null) {
-                            reportRef.child(ReportModel.NUM_REPORTS_KEY)
-                                    .setValue(currentNumReports + 1L);
-                        }
-                    } else {
-                        reportRef.child(ReportModel.NUM_REPORTS_KEY)
-                                .setValue(1L);
-                    }
-                    reportRef.child(ReportModel.REPORTED_BY_KEY).child(mCurrentUserUid)
-                            .setValue(System.currentTimeMillis());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
-            }
-        });
-    }
-
-    /**
-     * This method deletes the comment from the database.
-     * @param commentModel - the comment Object to delete.
-     */
     private void deleteComment(CommentModel commentModel) {
-        DatabaseReference commentRef = DatabaseContants.getCommentRef()
-                .child(commentModel.getCommentKey());
+        DatabaseReference commentRef = FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS)
+                .child(mUrl).child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey());
 
         commentRef.removeValue();
-
-        final DatabaseReference reportRef = DatabaseContants
-                .getReportRef(commentModel.getCommentKey());
-
+        final DatabaseReference reportRef = FirebaseConstants.getRef()
+                .child(FirebaseConstants.REPORTS).child(commentModel.getCommentKey());
         reportRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -236,41 +226,50 @@ public class FirebaseCommentViewHolder extends RecyclerView.ViewHolder implement
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
+
             }
         });
     }
 
-    /**
-     * This method displays a dialog to edit the comment and updates the comment to the database.
-     * @param commentModel - the comment Object to edit.
-     */
-    private void editComment(final CommentModel commentModel) {
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_comment, null);
-        final EditText commentText = (EditText) dialogView.findViewById(R.id.comment_edit_dialog_box);
+    private void showEditCommentDialog(final CommentModel commentModel) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        final View dialogView = inflater.inflate(R.layout.dialog_edit_comment, null);
+        dialogBuilder.setView(dialogView);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Edit Comment")
-                .setView(R.id.comment_edit_dialog_box)
-                .setView(dialogView)
-                .setCancelable(false)
-                .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String comment = commentText.getText().toString();
-                        if(comment.length() < 10) {
-                            commentText.setError("CommentModel must be longer than 9 characters");
-                        }
-                        DatabaseContants.getCommentRef().child(commentModel.getCommentKey())
-                                .child(CommentModel.COMMENT_MESSAGE_KEY).setValue(comment);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                    }
-                });
-        builder.show();
+        final EditText edt = (EditText) dialogView.findViewById(R.id.comment_edit_dialog_box);
+        if (mCommentString != null && !mCommentString.isEmpty()) {
+            edt.setText(mCommentString);
+        }
+        dialogBuilder.setTitle("Edit CommentModel");
+
+        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String newComment = edt.getText().toString();
+                if (newComment.isEmpty() ||
+                        newComment.equals("")
+                        || newComment == null) {
+
+                    edt.setError("CommentModel can not be empty");
+                } else if (newComment.length() < 5) {
+                    edt.setError("CommentModel must be longer than 5 characters");
+                } else {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                            .child(FirebaseConstants.PHOTOS).child(mUrl)
+                            .child(FirebaseConstants.COMMENTS).child(commentModel.getCommentKey())
+                            .child(FirebaseConstants.COMMENT_STRING);
+
+                    ref.setValue(newComment);
+
+                }
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //pass
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 }

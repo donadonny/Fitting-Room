@@ -14,35 +14,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
- * Created by Khuram Chaudhry on 9/21/17.
- * This fragment displays a dialog in which the user can change their name.
+ * Created by khuramchaudhry on 9/21/17.
  */
 
 public class changeNameDialogFragment extends DialogFragment {
 
     static final String TAG = changeNameDialogFragment.class.getSimpleName();
 
-    private onNameChangeListener mListener;
-    private AlertDialog dialog;
-
-    /**
-     * This interface is used to send data between the Activity and this DialogFragment.
-     */
-    public interface onNameChangeListener {
-        void onChange(String name);
+    public static interface onNameChangeListener {
+        public abstract void onChange(String name);
     }
 
-    /**
-     * onAttach is overrided to make sure the Activity implemented the listener.
-     */
+    private onNameChangeListener mListener;
+
+    // make sure the Activity implemented it
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -53,10 +48,6 @@ public class changeNameDialogFragment extends DialogFragment {
         }
     }
 
-    /**
-     * onAttach is overrided to make sure the Activity implemented the listener.
-     * This method deals with older devices.
-     */
     @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
@@ -71,14 +62,12 @@ public class changeNameDialogFragment extends DialogFragment {
         }
     }
 
-    /**
-     * Initializes basic initialization of components of the dialog.
-     */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
-        LayoutInflater inflater = getDialog().getLayoutInflater();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -94,17 +83,10 @@ public class changeNameDialogFragment extends DialogFragment {
                         dismiss();
                     }
                 });
-        dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
         dialog.setCancelable(false);
-        setDialogListener();
-        return dialog;
-    }
-
-    /**
-     * This method sets the custom listener for the positive button.
-     */
-    public void setDialogListener() {
+        //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,12 +94,12 @@ public class changeNameDialogFragment extends DialogFragment {
                 final EditText newName = (EditText) dialog.findViewById(R.id.input_new_name);
                 final String name = newName.getText().toString();
 
-                if (name.length() > 4 && name.length() < 26) {
+                if (name.isEmpty() || name.length() < 5 || name.length() > 25) {
                     newName.setError("enter between 5 and 25 characters");
                     wantToCloseDialog = false;
                 }
                 if (wantToCloseDialog) {
-                    FirebaseUser user = DatabaseContants.getCurrentUser();
+                    FirebaseUser user = FirebaseConstants.getUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build();
@@ -127,21 +109,21 @@ public class changeNameDialogFragment extends DialogFragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d(TAG, "User name updated.");
+                                        Log.d(TAG, "UserModel name updated.");
                                     }
                                 }
                             });
-                    DatabaseContants.getCurrentUserRef().child(name).setValue(name);
+                    FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                            .child(FirebaseConstants.getUser().getUid())
+                            .child(FirebaseConstants.USERNAME).setValue(name);
                     mListener.onChange(name);
                     dismiss();
                 }
             }
         });
+        return dialog;
     }
 
-    /**
-     * onStart is overrided to change the colors of the dialog buttons.
-     */
     @Override
     public void onStart() {
         super.onStart();

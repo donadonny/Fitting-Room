@@ -1,7 +1,6 @@
 package tk.talcharnes.unborify.OtherFragmentActivities.Notifications;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,21 +11,24 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.SimpleDividerItemDecoration;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Models.NotificationModel;
 
 /**
- * Created by Khuram Chaudhry on 8/31/17.
- * This fragment handles user interaction with the notification screen.
+ * Created by khuramchaudhry on 8/31/17.
  */
 
 public class NotificationFragment extends Fragment {
@@ -35,9 +37,10 @@ public class NotificationFragment extends Fragment {
 
     private View rootView;
     private ProgressBar progressBar;
+    private AdView mAdView;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_notification, container, false);
@@ -52,28 +55,24 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
-    /**
-     * This method sets up the banner ad.
-     */
     private void loadAd() {
-        AdView mAdView = (AdView) rootView.findViewById(R.id.notification_adView);
+        mAdView = (AdView) rootView.findViewById(R.id.notification_adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
 
-    /**
-     * This method loads the notifications for the user.
-     */
     private void loadNotifications() {
-        final RecyclerView notificationRecycleView = (RecyclerView) rootView.findViewById(R.id
+        final RecyclerView notification_recycle_view = (RecyclerView) rootView.findViewById(R.id
                 .notification_recycle_view);
-        notificationRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
+        notification_recycle_view.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        notificationRecycleView.setHasFixedSize(false);
-        notificationRecycleView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
+        notification_recycle_view.setHasFixedSize(false);
+        notification_recycle_view.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
 
-        DatabaseContants.getCurrentUserNotificationRef()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        final Query query = FirebaseConstants.getRef().child(FirebaseConstants.USERS)
+                .child(FirebaseConstants.getUser().getUid()).child(FirebaseConstants.NOTIFICATION);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -82,7 +81,7 @@ public class NotificationFragment extends Fragment {
                         notifications.add(snapshot.getValue(NotificationModel.class));
                     }
                     NotificationAdapter adapter = new NotificationAdapter(getActivity(), notifications);
-                    notificationRecycleView.setAdapter(adapter);
+                    notification_recycle_view.setAdapter(adapter);
                 } else {
                     RelativeLayout relativeLayout = (RelativeLayout) rootView.findViewById(R.id.main_view);
                     TextView textView = new TextView(getActivity());
@@ -97,9 +96,13 @@ public class NotificationFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
+                Log.d(TAG, "Failed to retrieve notifications.");
+                Log.d(TAG, databaseError.getMessage());
+                Log.d(TAG, databaseError.getDetails());
             }
         });
+
         progressBar.setVisibility(View.GONE);
+
     }
 }

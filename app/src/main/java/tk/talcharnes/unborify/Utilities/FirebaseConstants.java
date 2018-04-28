@@ -36,7 +36,7 @@ import tk.talcharnes.unborify.R;
  */
 
 public class FirebaseConstants {
-    /*public final static String COMMENTS = "Comments";
+    public final static String COMMENTS = "Comments";
     public final static String PHOTOS = "Photos";
     public final static String USERS = "Users";
     public final static String INSTANCEID = "instanceId";
@@ -217,6 +217,6 @@ public class FirebaseConstants {
 
                 })
                 .into(imageView);
-    }*/
+    }
 
 }

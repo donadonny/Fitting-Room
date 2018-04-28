@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tk.talcharnes.unborify.Services;
 
 import android.app.NotificationManager;
@@ -6,36 +22,25 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
 import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
-
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
     /**
-     * This method is called when message is received.
-     * @param remoteMessage - Object representing the message received from Firebase Cloud Messaging.
+     * Called when message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
+    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -67,9 +72,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             int SERVER_DATA_RECEIVED = 0;
-            if(notificationManager != null) {
-                notificationManager.notify(SERVER_DATA_RECEIVED, notification);
-            }
+            notificationManager.notify(SERVER_DATA_RECEIVED, notification);
         }
     }
+    // [END receive_message]
 }

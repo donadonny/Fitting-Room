@@ -1,16 +1,19 @@
 package tk.talcharnes.unborify.OtherFragmentActivities.Help;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.SpannedString;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,88 +21,74 @@ import android.widget.TextView;
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by Khuram Chaudhry on 8/31/17.
- * This fragment handles the user interactions with the help screen.
+ * Created by khuramchaudhry on 8/31/17.
  */
 
 public class HelpFragment extends Fragment {
 
-    private View rootView;
-    private Activity activity;
     private ViewPager viewPager;
+    private MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
+    private TextView[] dots;
     private int[] layouts;
     private Button btnNext; //btnSkip
+    private View rootView;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_help, container, false);
-        activity = getActivity();
 
-        initialize();
-
-        return rootView;
-    }
-
-    /**
-     * Initializes the basic components.
-     */
-    public void initialize() {
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) rootView.findViewById(R.id.layoutDots);
         //btnSkip = (Button) rootView.findViewById(R.id.btn_skip);
         btnNext = (Button) rootView.findViewById(R.id.btn_next);
 
-        layouts = new int[]{R.layout.help_screen1, R.layout.help_screen2, R.layout.help_screen3,
+
+        // layouts of all welcome sliders
+        // add few more layouts if you want
+        layouts = new int[]{
+                R.layout.help_screen1,
+                R.layout.help_screen2,
+                R.layout.help_screen3,
                 R.layout.help_screen4};
 
+        // adding bottom dots
         addBottomDots(0);
 
-        MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter();
+        myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageSelected(int position) {
-                addBottomDots(position);
-
-                if (position == layouts.length - 1) {
-                    btnNext.setText("");
-                    //btnSkip.setVisibility(View.GONE);
-                } else {
-                    btnNext.setText(getString(R.string.next));
-                }
+            public void onClick(View v) {
+                launchHomeScreen();
             }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-
-            }
-        });
+        });*/
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int current = viewPager.getCurrentItem() + 1;
+                // checking for last page
+                // if last page home screen will be launched
+                int current = getItem(+1);
                 if (current < layouts.length) {
+                    // move to next screen
                     viewPager.setCurrentItem(current);
+                } else {
+                    //launchHomeScreen();
                 }
             }
         });
+
+        return rootView;
     }
 
-    /**
-     * This method sets up the bottom dots on the screen.
-     */
     private void addBottomDots(int currentPage) {
-        TextView[] dots = new TextView[layouts.length];
+        dots = new TextView[layouts.length];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
         int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
@@ -107,8 +96,7 @@ public class HelpFragment extends Fragment {
         dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
             dots[i] = new TextView(getActivity());
-            SpannedString spannedString = new SpannedString("&#8226;");
-            dots[i].setText(spannedString);
+            dots[i].setText(fromHtml("&#8226;"));
             dots[i].setTextSize(35);
             dots[i].setTextColor(colorsInactive[currentPage]);
             dotsLayout.addView(dots[i]);
@@ -118,23 +106,65 @@ public class HelpFragment extends Fragment {
             dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
 
-    /**
-     * View pager adapter class sets up the multiple help screens.
-     */
-    class MyViewPagerAdapter extends PagerAdapter {
-        private LayoutInflater layoutInflater;
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String source) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(source);
+        }
+    }
+
+    private int getItem(int i) {
+        return viewPager.getCurrentItem() + i;
+    }
+
+    //  viewpager change listener
+    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            layoutInflater = (LayoutInflater) activity.getSystemService(Context
-                    .LAYOUT_INFLATER_SERVICE);
+        public void onPageSelected(int position) {
+            addBottomDots(position);
 
-            if(layoutInflater == null) {
-                activity.finish();
+            // changing the next button text 'NEXT' / 'GOT IT'
+            if (position == layouts.length - 1) {
+                // last page. make button text to GOT IT
+                btnNext.setText("");
+                //btnSkip.setVisibility(View.GONE);
+            } else {
+                // still pages are left
+                btnNext.setText(getString(R.string.next));
+                //btnSkip.setVisibility(View.VISIBLE);
             }
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+
+        }
+    };
+
+    /**
+     * View pager adapter
+     */
+    public class MyViewPagerAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+
+        public MyViewPagerAdapter() {
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
+
             return view;
         }
 
@@ -144,12 +174,13 @@ public class HelpFragment extends Fragment {
         }
 
         @Override
-        public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
+        public boolean isViewFromObject(View view, Object obj) {
             return view == obj;
         }
 
+
         @Override
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        public void destroyItem(ViewGroup container, int position, Object object) {
             View view = (View) object;
             container.removeView(view);
         }

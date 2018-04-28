@@ -112,8 +112,6 @@
     <string name="action_delete_photo">Delete Photo</string>
     <string name="action_edit_photo">Edit Photo</string>
     <string name="action_report">Report</string>
-    <string name="action_share">Share</string>
-    <string name="action_comment">Comment</string>
     <string name="dislike">Dislike</string>
     <string name="like">like</string>
     <string name="picture">Picture</string>

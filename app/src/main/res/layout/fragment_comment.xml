@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="tk.talcharnes.unborify.PhotoCard.Comments.CommentFragment"
+    tools:context="tk.talcharnes.unborify.PhotoCard.Comments.CommentActivityFragment"
     tools:showIn="@layout/activity_comment">
 
     <android.support.v7.widget.RecyclerView

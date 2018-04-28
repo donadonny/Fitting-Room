@@ -1,10 +1,8 @@
 package tk.talcharnes.unborify.MainNavigationFragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,16 +14,13 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.User;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -33,20 +28,13 @@ import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import tk.talcharnes.unborify.Models.CommentModel;
-import tk.talcharnes.unborify.Models.DealsModel;
 import tk.talcharnes.unborify.Models.PhotoModel;
-import tk.talcharnes.unborify.Models.UserModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
@@ -62,31 +50,48 @@ public class MainActivityFragment extends Fragment {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
+    private ArrayList<PhotoModel> photoModelList;
     private String userId, userName;
     private String oldestPostId;
     private DatabaseReference photoReference;
+    private DatabaseReference reportRef;
+
+    private InterstitialAd mInterstitialAd;
+    private Boolean showAd = false;
     private View rootView;
     private SwipePlaceHolderView mSwipeView;
     private Button refreshButton;
     private TextView refresh_textview, noImagesTextView;
     private Context mContext;
+    private int widthInDP;
+    private int heightInDP;
     private boolean refresh;
     private Spinner spinner;
     private boolean firstTime = true;
     private boolean categoryMode = false;
-    private Activity activity;
-    
+
+    /**
+     * Constructor.
+     */
+    public MainActivityFragment() {
+
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         photoReference = DatabaseContants.getPhotoRef();
+        reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
         oldestPostId = "";
-        
-        activity = getActivity();
 
         initializeBasicSetup();
-        
+
+        initializeSwipePlaceHolderView();
+        Log.d(LOG_TAG, "Load main");
+
+        //initializeAd();
+
         return rootView;
     }
 
@@ -95,7 +100,8 @@ public class MainActivityFragment extends Fragment {
      */
     private void initializeBasicSetup() {
         //choose your favorite adapter
-        FirebaseUser user = DatabaseContants.getCurrentUser();
+        photoModelList = new ArrayList<PhotoModel>();
+        FirebaseUser user = FirebaseConstants.getUser();
         userId = user.getUid();
         userName = user.getDisplayName();
 
@@ -121,115 +127,16 @@ public class MainActivityFragment extends Fragment {
 
         noImagesTextView = rootView.findViewById(R.id.noImagesTitle);
 
-        mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
-        spinner = (Spinner) activity.findViewById(R.id.toolbar).findViewById(R.id.spinner);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        /*FirebaseDatabase.getInstance().getReference().child("Photos").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final HashSet<String> users = new HashSet<>();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String category = snapshot.child("category").getValue(String.class);
-                    String ocassion = snapshot.child("occasion_subtitle").getValue(String.class);
-                    Integer o = snapshot.child("orientation").getValue(Integer.class);
-                    String url = snapshot.child("url").getValue(String.class);
-                    String uid = snapshot.child("user").getValue(String.class);
-                    long likes = 0;
-                    long dislikes = 0;
-                    PhotoModel photo = new PhotoModel(uid, ocassion, category, 0, 0, (o ==  null) ? 0 : o, url);
-                    Log.d(LOG_TAG, snapshot.getKey());
-                    if(photo != null && photo.getUserUid() != null) {
-                        users.add(photo.getUserUid());
-                        for(DataSnapshot comment : snapshot.child("Comments").getChildren()) {
-                            String message = comment.child("commentString").getValue(String.class);
-                            String puid = comment.child("photo_Uploader").getValue(String.class);
-                            String key = comment.child("comment_key").getValue(String.class);
-                            String cuid = comment.child("commenter").getValue(String.class);
-                            String curl = comment.child("photo_url").getValue(String.class);
-                            CommentModel commentModel = new CommentModel(puid, message, System.currentTimeMillis(), curl, key, cuid);
-                            DatabaseContants.getCommentRef().child(comment.getKey()).setValue(commentModel);
-                        }
-                        for(DataSnapshot vote : snapshot.child("votes").getChildren()) {
-                            DatabaseContants.getVotesRef().child(snapshot.getKey()).child(vote.getKey()).setValue(vote.getValue());
-                            if(vote.getValue(String.class).equals("likes")) {
-                                likes++;
-                            } else {
-                                dislikes++;
-                            }
-                        }
-                        photo.setLikes(likes);
-                        photo.setDislikes(dislikes);
-                        DatabaseContants.getPhotoRef(snapshot.getKey()).setValue(photo);
-                    }
-                }
-                FirebaseDatabase.getInstance().getReference().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if(users.contains(snapshot.getKey())) {
-                                String email = snapshot.child("email").getValue(String.class);
-                                String name = snapshot.child("name").getValue(String.class);
-                                String uri = snapshot.child("uri").getValue(String.class);
-                                String date = snapshot.child("date_joined").getValue(String.class);
-                                long milliseconds = 0;
-                                if(date != null) {
-                                    date = date.replace(",", "");
-                                    date = date.replaceAll(" ", "-");
-                                    SimpleDateFormat f = new SimpleDateFormat("dd-MMM-yyyy");
-                                    SimpleDateFormat f2 = new SimpleDateFormat("MMM-dd-yyyy");
-                                    try {
-                                        Date d = f.parse(date);
-                                        milliseconds = d.getTime();
-                                    } catch (Exception e) {
-                                        try {
-                                            Date d = f2.parse(date);
-                                            milliseconds = (milliseconds == 0) ? d.getTime() : milliseconds;
-                                        } catch (Exception e2) {
-
-                                        }
-                                    }
-                                }
-                                UserModel user = new UserModel(name, email, uri, milliseconds);
-                                DatabaseContants.getRef().child(DatabaseContants.INSTANCEIDS).child(snapshot.getKey()).child(DatabaseContants.INSTANCEID).setValue(snapshot.child("instanceId").getValue());
-                                for(DataSnapshot not : snapshot.child("Notifications").getChildren()) {
-                                    DatabaseContants.getNotificationRef(snapshot.getKey()).child(not.getKey()).setValue(not.getValue());
-                                }
-                                for(DataSnapshot not : snapshot.child("user_favorites").getChildren()) {
-                                    DatabaseContants.getFavoritesRef(snapshot.getKey()).child(not.getKey()).setValue(System.currentTimeMillis());
-                                }
-                                for(DataSnapshot not : snapshot.child("user_connections").getChildren()) {
-                                    DatabaseContants.getFollowingRef().child(snapshot.getKey()).child(not.getKey()).setValue("Following");
-                                }
-                                DatabaseContants.getUserRef(snapshot.getKey()).setValue(user);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-        initializeSwipePlaceHolderView();
     }
 
     /**
      * Initializes SwipePlaceHolderView.
      */
     private void initializeSwipePlaceHolderView() {
+        mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
+
         int bottomMargin = Utils.dpToPx(90);
-        Point windowSize = Utils.getDisplaySize(activity.getWindowManager());
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
                 .setIsUndoEnabled(true)
@@ -244,6 +151,7 @@ public class MainActivityFragment extends Fragment {
 
         getPhotos();
 
+        spinner = (Spinner) getActivity().findViewById(R.id.toolbar).findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
@@ -283,7 +191,7 @@ public class MainActivityFragment extends Fragment {
                     Log.d(LOG_TAG, "Empty SwipeView");
                     if (categoryMode) {
                         noImagesTextView.setVisibility(View.VISIBLE);
-                        noImagesTextView.setText(activity.getResources()
+                        noImagesTextView.setText(getActivity().getResources()
                                 .getString(R.string.no_image_title_6));
                     } else if (refresh) {
                         Log.d(LOG_TAG, "No more photos");
@@ -319,12 +227,70 @@ public class MainActivityFragment extends Fragment {
                 if (dataSnapshot.exists()) {
                     ArrayList<PhotoCard> list = new ArrayList<PhotoCard>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        PhotoModel photoModel = child.getValue(PhotoModel.class);
 
-                        if(list.size() == 0 && photoModel != null) {
-                            oldestPostId = PhotoUtilities.removeWebPFromUrl(photoModel.getUrl());
+                        PhotoModel photoModel = child.getValue(PhotoModel.class);
+                        /*final DatabaseReference photoRef = photoReference.child(PhotoUtilities
+                                .removeWebPFromUrl(photoModel.getUrl()));*/
+
+                        /*Randomizing votes for photos
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("likes").setValue((int) (Math.random()*10));
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("dislikes").setValue((int) (Math.random()*10));*/
+
+                        /*Randomizing categories for photos
+                        String[] categories = getActivity().getResources().getStringArray(R.array.spinner_list_item_array);
+                        photoReference.child(photoModel.getUrl().replace(".webp", "")).child("category")
+                                .setValue(categories[(int) Math.floor((Math.random() * categories.length-1) + 1)]);*/
+                        DatabaseReference ref = photoReference.child(photoModel.getUrl().replace(".webp", ""));
+
+//                        System.out.println();
+
+//                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                                    oldPhoto oldPhoto = child.getValue(oldPhoto.class);
+//                                    PhotoModel photo = new PhotoModel(oldPhoto.getUser(),
+//                                            oldPhoto.getOccasion_subtitle(), oldPhoto.getCategory(),
+//                                            oldPhoto.getLikes(), oldPhoto.getDislikes(),
+//                                            oldPhoto.getReports(), oldPhoto.getOrientation(), oldPhoto.getUrl());
+//                                    DatabaseContants.getPhotoRef().child(""+oldPhoto.getUrl()).setValue(photo);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+
+//                        DatabaseReference ref2 = photoReference.child(photoUrl).child("votes");
+//
+//                        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                GenericTypeIndicator<HashMap<String, String>> t =
+//                                        new GenericTypeIndicator<HashMap<String, String>>();
+//
+//                                HashMap<String, String> map = new HashMap<String, String>();
+//                                for(DataSnapshot child : dataSnapshot.getChildren()) {
+//                                    map.put(child.getKey().toString(), child.getValue().toString());
+//                                }
+//                                DatabaseContants.getVotesRef().child(""+photoUrl).setValue(map);
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+
+                        if(photoModel != null) {
+                            if(list.size() == 0) {
+                                oldestPostId = PhotoUtilities.removeWebPFromUrl(photoModel.getUrl());
+                            }
+                            list.add(new PhotoCard(mContext, photoModel, mSwipeView, userId, userName,
+                                    photoReference, reportRef));
                         }
-                        list.add(new PhotoCard(mContext, photoModel, mSwipeView, userId, userName));
                     }
 
                     int stopAt = (list.size() < 8) ? -1 : 0;
@@ -351,7 +317,8 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e(LOG_TAG, "Failed to read value.", error.toException());
+                // Failed to read value
+                Log.w(LOG_TAG, "Failed to read value.", error.toException());
             }
         });
 
@@ -384,7 +351,7 @@ public class MainActivityFragment extends Fragment {
                     } else {
                         while (count > 0) {
                             mSwipeView.addView(new PhotoCard(mContext, photoModels.get(count - 1),
-                                    mSwipeView, userId, userName));
+                                    mSwipeView, userId, userName, photoReference, reportRef));
                             if (count - 1 % 8 == 0) {
                                 mSwipeView.addView(new AdCard(mContext, mSwipeView));
                                 mSwipeView.addView(new AdCard(mContext, mSwipeView));
@@ -411,5 +378,167 @@ public class MainActivityFragment extends Fragment {
         });
     }
 
+    /**
+     * Initializes Ad.
+     */
+    private void initializeAd() {
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad");
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+                Log.i("Ads", "onAdOpened");
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.i("Ads", "onAdLeftApplication");
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                showAd = false;
+                Log.i("Ads", "onAdClosed");
+            }
+        });
+    }
+
 }
 
+class oldPhoto {
+    private long likes;
+    private long dislikes;
+    private String url;
+    private HashMap<String, String> Votes;
+    private long reports;
+    private String user;
+    private String occasion_subtitle;
+    private int orientation;
+    private boolean isAd;
+    private String category;
+    public final static String OCCASION_SUBTITLE_KEY = "occasion_subtitle";
+    public final static String USER_KEY = "user";
+    public final static String REPORTS_KEY = "reports";
+    public static final String URL_KEY = "url";
+    public static final String DISLIKES_KEY = "dislikes";
+    public static final String LIKES_KEY = "likes";
+    public static final String CATEGORY_KEY = "category";
+    public static final String VOTES = "votes";
+
+    public oldPhoto() {
+
+    }
+
+    public oldPhoto(String user, String occasion_subtitle, String category, long likes, long dislikes, long reports,
+                 int orientation, String url) {
+        this.user = user;
+        this.occasion_subtitle = occasion_subtitle;
+        this.category = category;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.reports = reports;
+        this.orientation = orientation;
+        this.url = url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public void setVotes(HashMap<String, String> Votes) {
+        this.Votes = Votes;
+    }
+
+    public HashMap<String, String> getVotes() {
+        return Votes;
+    }
+
+    public long getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(long dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    public long getReports() {
+        return reports;
+    }
+
+    public void setReports(long reports) {
+        this.reports = reports;
+    }
+
+    public String getOccasion_subtitle() {
+        return occasion_subtitle;
+    }
+
+    public void setOccasion_subtitle(String occasion_subtitle) {
+        this.occasion_subtitle = occasion_subtitle;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
+    public boolean isAd() {
+        return isAd;
+    }
+
+    public void setAd(boolean ad) {
+        isAd = ad;
+    }
+
+    public String getCategory() {
+        if (category != null) {
+            return category;
+        }
+        return "Fashion";
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+}

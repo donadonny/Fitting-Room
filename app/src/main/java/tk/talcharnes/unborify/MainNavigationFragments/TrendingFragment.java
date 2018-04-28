@@ -1,9 +1,7 @@
 package tk.talcharnes.unborify.MainNavigationFragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,43 +21,47 @@ import com.google.firebase.database.ValueEventListener;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.PhotoCard.AdCard;
 import tk.talcharnes.unborify.PhotoCard.PhotoCard;
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
- * Created by Khuram Chaudhry on 9/29/17.
- * Thia fragment displays a list of photos that are trending.
+ * Created by khuramchaudhry on 9/29/17.
  */
 
 public class TrendingFragment extends Fragment {
 
     private static final String TAG = TrendingFragment.class.getSimpleName();
 
-    private View rootView;
     private String userId, userName;
     private DatabaseReference photoReference;
+    private DatabaseReference reportRef;
+
+    private View rootView;
     private SwipePlaceHolderView mSwipeView;
     private Button refreshButton;
     private TextView refresh_textview;
     private Context mContext;
-    private Activity activity;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_trending, container, false);
-        activity = getActivity();
         photoReference = DatabaseContants.getPhotoRef();
+        reportRef = FirebaseConstants.getRef().child(FirebaseConstants.REPORTS);
 
         initializeBasicSetup();
 
         initializeSwipePlaceHolderView();
+        Log.d(TAG, "Load trending");
 
         return rootView;
     }
@@ -67,7 +70,7 @@ public class TrendingFragment extends Fragment {
      * Initializes Basic stuff. The photoList, mAdView, and the fab buttons.
      */
     private void initializeBasicSetup() {
-        FirebaseUser user = DatabaseContants.getCurrentUser();
+        FirebaseUser user = FirebaseConstants.getUser();
         userId = user.getUid();
         userName = user.getDisplayName();
 
@@ -94,7 +97,7 @@ public class TrendingFragment extends Fragment {
         mSwipeView = (SwipePlaceHolderView) rootView.findViewById(R.id.swipeView);
 
         int bottomMargin = Utils.dpToPx(90);
-        Point windowSize = Utils.getDisplaySize(activity.getWindowManager());
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
                 .setIsUndoEnabled(true)
@@ -151,8 +154,8 @@ public class TrendingFragment extends Fragment {
 
                     int count = photoModels.size();
                     while(count > 0) {
-                        mSwipeView.addView(new PhotoCard(mContext, photoModels.get(count-1),
-                                mSwipeView, userId, userName));
+                        mSwipeView.addView(new PhotoCard(mContext, photoModels.get(count-1), mSwipeView,
+                                userId, userName, photoReference, reportRef));
                         if (count - 1 % 8 == 0) {
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
                             mSwipeView.addView(new AdCard(mContext, mSwipeView));
@@ -161,14 +164,17 @@ public class TrendingFragment extends Fragment {
                     }
                     photoModels.clear();
 
+                    Log.d(TAG, "Retrieved data");
                     mSwipeView.refreshDrawableState();
                     final long endTime = System.currentTimeMillis();
+                    Log.d(TAG, "Data Load time: " + (endTime - startTime));
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e(TAG, error.getMessage());
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
 

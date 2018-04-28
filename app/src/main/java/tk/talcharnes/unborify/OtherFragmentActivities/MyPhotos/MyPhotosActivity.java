@@ -3,11 +3,11 @@ package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by Khuram Chaudhry on 9/29/17.
- * This activity with its fragment displays user's photos.
+ * Created by khuramchaudhry on 9/29/17.
  */
 
 public class MyPhotosActivity extends AppCompatActivity {

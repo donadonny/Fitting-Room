@@ -11,38 +11,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
- * Created by Khuram Chaudhry on 8/8/16.
- * This fragment displays a dialog which allows the user to change their password.
+ * Created by khuramchaudhry on 8/8/16.
  */
 public class changePasswordDialogFragment extends DialogFragment {
 
     static final String TAG = changePasswordDialogFragment.class.getSimpleName();
 
-    private AlertDialog dialog;
-
-    /**
-     * Initializes basic initialization of components of the dialog.
-     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
-        LayoutInflater inflater = getDialog().getLayoutInflater();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(inflater.inflate(R.layout.dialog_change_password, null))
                 // Add action buttons
-                .setPositiveButton("CHANGE PASSWORD", new DialogInterface
-                        .OnClickListener() {
+                .setPositiveButton("CHANGE PASSWORD", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }
@@ -52,36 +46,24 @@ public class changePasswordDialogFragment extends DialogFragment {
                         dismiss();
                     }
                 });
-        dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
         dialog.setCancelable(false);
-        setDialogListener();
-
-        return dialog;
-    }
-
-    /**
-     * This method sets the custom listener for the positive button.
-     */
-    public void setDialogListener() {
-        //Overriding the handler immediately after show is probably a better approach
-        // than OnShowListener as described below
+        //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Boolean wantToCloseDialog = true;
-                final EditText newPassword = (EditText) dialog.findViewById(
-                        R.id.input_new_password);
-                final EditText confirmnPassword = (EditText) dialog.findViewById(
-                        R.id.confirm_new_password);
+                final EditText newPassword = (EditText) dialog.findViewById(R.id.input_new_password);
+                final EditText confirmnPassword = (EditText) dialog.findViewById(R.id.confirm_new_password);
                 final String new_password = newPassword.getText().toString();
                 final String confirm_password = confirmnPassword.getText().toString();
 
-                if (new_password.length() > 7 && new_password.length() < 26) {
+                if (new_password.isEmpty() || new_password.length() < 8 || new_password.length() > 25) {
                     newPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
-                if (confirm_password.length() > 7 && confirm_password.length() < 26) {
+                if (confirm_password.isEmpty() || confirm_password.length() < 8 || confirm_password.length() > 25) {
                     confirmnPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
@@ -90,7 +72,7 @@ public class changePasswordDialogFragment extends DialogFragment {
                     wantToCloseDialog = false;
                 }
                 if (wantToCloseDialog) {
-                    FirebaseUser user = DatabaseContants.getCurrentUser();
+                    FirebaseUser user = FirebaseConstants.getUser();
                     user.updatePassword(new_password)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -104,11 +86,9 @@ public class changePasswordDialogFragment extends DialogFragment {
                 }
             }
         });
+        return dialog;
     }
 
-    /**
-     * onStart is overrided to change the colors of the dialog buttons.
-     */
     @Override
     public void onStart() {
         super.onStart();

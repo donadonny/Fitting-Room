@@ -10,17 +10,14 @@ import java.util.HashMap;
  *
  * Properties:
  *      numReports - holds the number of reports, used for easy access.
- *      reportedBy - holds information of who is reporting as the key and the value as the time it
- *          was report on.
+ *      reportedBy - holds information of who is reporting as the key and the value as the reason
+ *                      which is optional.
  */
 
 public class ReportModel {
 
-    public final static String NUM_REPORTS_KEY = "numReports";
-    public final static String REPORTED_BY_KEY = "reportedBy";
-
     private int numReports;
-    private HashMap<String, Long> reportedBy;
+    private HashMap<String, String> reportedBy;
 
     /**
      * Required empty Constructor for FireBase.
@@ -30,9 +27,9 @@ public class ReportModel {
     }
 
     /**
-     * Custom Constructor.
+     * Default Constructor.
      */
-    public ReportModel(int numReports, HashMap<String, Long> reportedBy) {
+    public ReportModel(int numReports, HashMap<String, String> reportedBy) {
         this.numReports = numReports;
         this.reportedBy = reportedBy;
     }
@@ -47,7 +44,7 @@ public class ReportModel {
     /**
      * This class return a dictionary of the user who made the report.
      */
-    public HashMap<String, Long> getReportedBy() {
+    public HashMap<String, String> getReportedBy() {
         return this.reportedBy;
     }
 
@@ -61,7 +58,7 @@ public class ReportModel {
     /**
      * This class sets the reportedBy property.
      */
-    public void setReportedBy(HashMap<String, Long> reportedBy) {
+    public void setReportedBy(HashMap<String, String> reportedBy) {
         this.reportedBy = reportedBy;
     }
 

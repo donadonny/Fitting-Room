@@ -1,6 +1,6 @@
 package tk.talcharnes.unborify.UserProfile;
 
-import android.support.annotation.NonNull;
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,51 +10,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.Utils;
 
 /**
- * Created by Khuram Chaudhry on 10/19/17.
- * This fragment displays the users the user is following.
+ * Created by khuramchaudhry on 10/19/17.
  */
 
 public class UserFollowingFragment extends Fragment {
 
     private static final String TAG = UserFollowingFragment.class.getSimpleName();
 
+    private View rootView;
     private RecyclerView my_recycler_view;
     private TextView noImageView;
 
-    /**
-     * Initializes basic initialization of components of the fragment.
-     */
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View rootView = inflater.inflate(R.layout.fragment_user_following, container, false);
+        rootView = inflater.inflate(R.layout.fragment_user_following, container, false);
 
         Log.d(TAG, "Loading UserFollowingFragment");
 
         my_recycler_view = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         noImageView = (TextView) rootView.findViewById(R.id.noImagesTitle);
 
-        final int size = 300;
+        Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
+        final int size = (int) Math.floor(windowSize.x / 300);
 
         if (getArguments() != null) {
             String uid = getArguments().getString("uid");
             if (uid != null && !uid.isEmpty()) {
                 Log.d(TAG, "Loading user Photos");
-
-                DatabaseContants.getFollowingRef().child(uid)
+                FirebaseConstants.getRef().child(FirebaseConstants.USERS).child(uid)
+                        .child(FirebaseConstants.USER_CONNECTIONS)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,15 +82,15 @@ public class UserFollowingFragment extends Fragment {
                                             getActivity(), size));
                                     my_recycler_view.setHasFixedSize(false);
                                     UserProfileAdapter adapter = new UserProfileAdapter(
-                                            getActivity(), DatabaseContants.getCurrentUser()
-                                            .getUid(), users, false);
+                                            getActivity(), FirebaseConstants.getUser().getUid(),
+                                            users, "Not Photos");
                                     my_recycler_view.setAdapter(adapter);
                                 }
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.d(TAG, databaseError.getMessage());
+
                             }
                         });
             }

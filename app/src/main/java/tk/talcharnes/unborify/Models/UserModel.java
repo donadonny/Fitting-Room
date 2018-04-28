@@ -14,13 +14,10 @@ package tk.talcharnes.unborify.Models;
 
 public class UserModel {
 
-    public final static String NAME_KEY = "name";
-    public final static String URI_KEY = "uri";
-
     private String name;
     private String email;
     private String uri;
-    private long dateJoined;
+    private String dateJoined;
 
     /**
      * Required empty Constructor for FireBase.
@@ -30,9 +27,9 @@ public class UserModel {
     }
 
     /**
-     * Custom Constructor.
+     * Default Constructor.
      */
-    public UserModel(String name, String email, String uri, long dateJoined) {
+    public UserModel(String name, String email, String uri, String dateJoined) {
         this.name = name;
         this.email = email;
         this.uri = uri;
@@ -61,9 +58,9 @@ public class UserModel {
     }
 
     /**
-     * This class returns the long representation of the time user joined.
+     * This class returns the string representation of the time user joined.
      */
-    public long getDateJoined() {
+    public String getDateJoined() {
         return this.dateJoined;
     }
 
@@ -91,7 +88,7 @@ public class UserModel {
     /**
      * This class set timeJoined property.
      */
-    public void setDateJoined(long dateJoined) {
+    public void setDateJoined(String dateJoined) {
         this.dateJoined = dateJoined;
     }
 

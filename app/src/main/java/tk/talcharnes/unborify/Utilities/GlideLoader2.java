@@ -29,7 +29,8 @@ public class GlideLoader2 extends ImageLoaderBase {
                           @NonNull AvatarPlaceholder avatarPlaceholder,
                           @NonNull String avatarUrl) {
 
-        StorageReference storageReference = StorageConstants.getUserPhotoRef(avatarUrl);
+        StorageReference storageReference = FirebaseConstants.getStorRef()
+                .child(FirebaseConstants.PROFILE_IMAGE).child(avatarUrl + ".webp");
 
         GlideApp.with(avatarView.getContext())
                 .load(storageReference)
