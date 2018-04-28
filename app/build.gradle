@@ -68,8 +68,8 @@ dependencies {
     compile 'com.google.firebase:firebase-firestore:11.6.0'
     compile 'com.firebase:firebase-jobdispatcher:0.8.4'
     // facebook
-    //compile 'com.facebook.android:facebook-login:4.28.0'
-    //compile 'com.facebook.android:facebook-login:[4,5)'
+    compile 'com.facebook.android:facebook-login:4.28.0'
+    compile 'com.facebook.android:facebook-login:[4,5)'
     // Custom Libraries
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.roughike:bottom-bar:2.3.1'
