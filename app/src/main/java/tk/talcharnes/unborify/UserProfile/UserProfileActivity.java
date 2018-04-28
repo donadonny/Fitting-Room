@@ -133,6 +133,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
             DatabaseContants.getUserRef(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
@@ -152,7 +153,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e(TAG, databaseError.getMessage());
+                            Log.d(TAG, databaseError.getMessage());
                         }
                     });
 
