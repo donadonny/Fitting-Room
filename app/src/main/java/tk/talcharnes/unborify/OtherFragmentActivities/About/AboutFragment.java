@@ -5,11 +5,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by khuramchaudhry on 8/31/17.
+ * Created by Khuram Chaudhry on 8/31/17.
+ * This is the about fragment. Nothing special here.
  */
 
 public class AboutFragment extends Fragment {

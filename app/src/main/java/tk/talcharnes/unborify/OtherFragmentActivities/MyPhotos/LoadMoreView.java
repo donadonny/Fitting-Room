@@ -3,31 +3,29 @@ package tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
 import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.infinite.LoadMore;
-
 import java.util.List;
-
 import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by khuramchaudhry on 9/21/17.
+ * Created by Khuram Chaudhry on 9/21/17.
+ * This class sets the load operation to load more photos from the list.
  */
 
 @Layout(R.layout.load_more_view)
-public class LoadMoreView {
+class LoadMoreView {
 
-    public static final int LOAD_VIEW_SET_COUNT = 8;
+    static final int LOAD_VIEW_SET_COUNT = 8;
 
     private InfinitePlaceHolderView mLoadMoreView;
     private List<PhotoModel> mFeedList;
     private String mUserId, mUserName;
 
-    public LoadMoreView(InfinitePlaceHolderView loadMoreView, List<PhotoModel> feedList, String userId,
-                        String userName) {
+    LoadMoreView(InfinitePlaceHolderView loadMoreView, List<PhotoModel> feedList, String userId,
+                 String userName) {
         this.mLoadMoreView = loadMoreView;
         this.mFeedList = feedList;
         mUserId = userId;
@@ -42,7 +40,7 @@ public class LoadMoreView {
 
     private class ForcedWaitedLoading implements Runnable {
 
-        public ForcedWaitedLoading() {
+        ForcedWaitedLoading() {
             new Thread(this).start();
         }
 
@@ -50,7 +48,7 @@ public class LoadMoreView {
         public void run() {
 
             try {
-                Thread.currentThread().sleep(2000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

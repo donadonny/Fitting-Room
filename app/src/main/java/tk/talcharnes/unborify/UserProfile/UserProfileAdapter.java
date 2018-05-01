@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify.UserProfile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,60 +10,92 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.List;
-
+import tk.talcharnes.unborify.PhotoCard.Comments.CommentActivity;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
+import tk.talcharnes.unborify.Utilities.DatabaseContants;
+import tk.talcharnes.unborify.Utilities.StorageConstants;
 
 /**
- * Created by khuramchaudhry on 10/19/17.
+ * Created by Khuram Chaudhry on 10/19/17.
+ * This is a RecyclerView Adapter that displays a list of photo cards with the current user's rating.
  */
 
-public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.SingleItemRowHolder> {
+public class UserProfileAdapter
+        extends RecyclerView.Adapter<UserProfileAdapter.SingleItemRowHolder> {
 
-    public static final String TAG = UserProfileAdapter.class.getSimpleName();
+    public static final String LOG_TAG = UserProfileAdapter.class.getSimpleName();
 
     private Context mContext;
-    private String uid, type;
+    private String uid;
+    private String cuid;
     private List<String> urlList;
+    private boolean fashionPhotos;
     private StorageReference storageReference;
 
-    public UserProfileAdapter(Context context, String uid, List<String> urls, String type) {
+    /**
+     * This class binds the UI elements for each item in the RecyclerView.
+     */
+    class SingleItemRowHolder extends RecyclerView.ViewHolder {
+
+        private ImageView photo, userRating;
+        private ProgressBar progressBar;
+
+        SingleItemRowHolder(View view) {
+            super(view);
+            if (!urlList.isEmpty()) {
+                photo = (ImageView) view.findViewById(R.id.photoImageView);
+                userRating = (ImageView) view.findViewById(R.id.ratingImageView);
+                progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            }
+        }
+
+    }
+
+    /**
+     * RecyclerView Constructor.
+     * @param context - The Application Context of the main Activity.
+     * @param uid - The user id of the profile user.
+     * @param cuid - The user id of the current user.
+     * @param urls - The list of photo urls.
+     * @param fashionPhotos -  A boolean value that tells the Adapter to display fashion photos if
+     *          true and profile photos if false.
+     */
+    public UserProfileAdapter(Context context, String uid, String cuid, List<String> urls,
+                              boolean fashionPhotos) {
         this.urlList = urls;
         this.mContext = context;
         this.uid = uid;
-        this.type = type;
-        if (type.equals("Photos")) {
-            storageReference = FirebaseStorage.getInstance().getReference()
-                    .child(FirebaseConstants.IMAGES);
-        } else {
-            storageReference = FirebaseStorage.getInstance().getReference()
-                    .child(FirebaseConstants.PROFILE_IMAGE);
-        }
+        this.cuid = cuid;
+        this.fashionPhotos = fashionPhotos;
+        storageReference = StorageConstants.getRef().child(((fashionPhotos) ?
+                StorageConstants.IMAGES : StorageConstants.PROFILE_IMAGE));
     }
 
+    /**
+     * This functions sets the view for the items in the Adapter.
+     */
     @Override
     public UserProfileAdapter.SingleItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_card, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_card, viewGroup, false);
         return new UserProfileAdapter.SingleItemRowHolder(v);
     }
 
+    /**
+     * This function sets the UI elements for each item in the RecyclerView.
+     */
     @Override
     public void onBindViewHolder(final SingleItemRowHolder holder, int i) {
         StorageReference photoRef = storageReference.child(urlList.get(i) + ".webp");
-        Log.d(TAG, photoRef.getPath());
-        FirebaseConstants.loadImageUsingGlide(mContext, holder.photo, photoRef,
-                holder.progressBar);
-
-        FirebaseConstants.getRef().child(FirebaseConstants.PHOTOS).child(urlList.get(i))
-                .child(FirebaseConstants.VOTES).child(uid)
+        Log.d(LOG_TAG, photoRef.getPath());
+        StorageConstants.loadImageUsingGlide(mContext, holder.photo, photoRef, holder.progressBar);
+        final int index = holder.getAdapterPosition();
+        DatabaseContants.getVotesRef().child(urlList.get(i)).child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,7 +121,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
                                         .getDrawable(mContext, R.drawable.ic_thumb_down_white_24dp));
                             }
                         } else {
-                            if(type.equals("Photos")) {
+                            if(fashionPhotos) {
                                 holder.userRating.setVisibility(View.INVISIBLE);
                             } else {
                                 holder.userRating.setBackgroundColor(ContextCompat
@@ -101,30 +134,31 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.d(LOG_TAG, databaseError.getDetails());
                     }
                 });
 
     }
 
+    private void openCommentActivity(String url) {
+        if(!url.contains(".webp")){
+            url = url + ".webp";
+        }
+
+        Intent intent = new Intent(mContext, CommentActivity.class);
+        intent.putExtra("photoUserID", uid);
+        intent.putExtra("url", url);
+        intent.putExtra("currentUser", cuid);
+
+        mContext.startActivity(intent);
+    }
+
+    /**
+     * This function returns the number of items in the Adapter.
+     */
     @Override
     public int getItemCount() {
         return urlList.size();
     }
 
-    public class SingleItemRowHolder extends RecyclerView.ViewHolder {
-
-        private ImageView photo, userRating;
-        private ProgressBar progressBar;
-
-        public SingleItemRowHolder(View view) {
-            super(view);
-            if (!urlList.isEmpty()) {
-                photo = (ImageView) view.findViewById(R.id.photoImageView);
-                userRating = (ImageView) view.findViewById(R.id.ratingImageView);
-                progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-            }
-        }
-
-    }
 }

@@ -1,6 +1,5 @@
 package tk.talcharnes.unborify.MainNavigationFragments.Following;
 
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,21 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import tk.talcharnes.unborify.R;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
-import tk.talcharnes.unborify.Utilities.FirebaseConstants;
 
 /**
  * Created by Khuram Chaudhry on 9/29/17.
@@ -62,33 +56,22 @@ public class FollowingFragment extends Fragment {
      */
     private void initialize() {
         // uid is the user id of the logged in user.
-        String uid = FirebaseConstants.getUser().getUid();
+        String uid = DatabaseContants.getCurrentUser().getUid();
         if (!uid.isEmpty()) {
             Log.d(TAG, "Loading user Photos");
-
-            // following is a db reference to the list of users the main user is following. */
-            DatabaseReference following = DatabaseContants.getCurrentUserRef(uid)
-                    .child(DatabaseContants.USER_CONNECTIONS);
 
             // Grabbing all the uids of the users from following(db reference) and sends the list
             //      to the followingAdapter if the list isn't empty else it will display a
             //      message instead.
-            DatabaseContants.getData(following, new ValueEventListener() {
+            DatabaseContants.getUserFollowingRef().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     ArrayList<String> users = new ArrayList<String>();
-                    GenericTypeIndicator<HashMap<String, String>> t =
-                            new GenericTypeIndicator<HashMap<String, String>>();
 
-                    if (DatabaseContants.checkRefValue(dataSnapshot)) {
-                        HashMap<String, String> map = dataSnapshot.getValue(t);
-                        if (map != null) {
-                            for (Map.Entry<String, String> entry : map.entrySet()) {
-                                if (entry.getValue().equals("Following")) {
-                                    users.add(entry.getKey());
-                                }
-                            }
-                        }
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String userConnection = snapshot.getValue(String.class);
+                        if(userConnection != null && userConnection.equals("Following"))
+                        users.add(snapshot.getKey());
                     }
                     // Checks if the list isn't empty and set noImageView visible which displays
                     //      a message telling user to following other users.

@@ -3,11 +3,12 @@ package tk.talcharnes.unborify.OtherFragmentActivities.ContactUs;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by khuramchaudhry on 9/29/17.
+ * Created by Khuram Chaudhry on 9/29/17.
+ * This activity with its fragment displays an app screen that allows the user to
+ *  contact the app development team.
  */
 
 public class ContactUsActivity extends AppCompatActivity {

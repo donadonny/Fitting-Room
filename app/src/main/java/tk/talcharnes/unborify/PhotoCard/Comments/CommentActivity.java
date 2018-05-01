@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by Tal.
+ * Created by Tal on 9/3/2017.
  * This activity with it's fragment displays the comments screen for users to comment on occasion
  * photos.
  */
@@ -34,7 +34,7 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     /**
-     * This function handles the items clicked on the toolbar.
+     * This method handles the items clicked on the toolbar.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

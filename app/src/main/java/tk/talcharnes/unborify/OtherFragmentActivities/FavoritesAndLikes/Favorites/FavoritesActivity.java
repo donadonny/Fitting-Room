@@ -3,11 +3,11 @@ package tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.Favorit
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import tk.talcharnes.unborify.R;
 
 /**
- * Created by khuramchaudhry on 10/22/17.
+ * Created by Khuram Chaudhry on 10/22/17.
+ * This activity with its fragment displays the user's favorite list of photos.
  */
 
 public class FavoritesActivity extends AppCompatActivity {
