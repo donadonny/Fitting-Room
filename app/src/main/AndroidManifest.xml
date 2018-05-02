@@ -228,6 +228,9 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d1ad8b8375a15532b07614b70790dff2657ee0c2" />
     </application>
 
 </manifest>
