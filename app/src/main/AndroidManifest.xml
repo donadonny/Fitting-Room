@@ -230,7 +230,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="d1ad8b8375a15532b07614b70790dff2657ee0c2" />
+            android:value="INSERT_FABRIC_CRASHLYTICS_KEY_HERE" />
     </application>
 
 </manifest>
