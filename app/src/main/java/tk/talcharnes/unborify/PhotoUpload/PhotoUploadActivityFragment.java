@@ -40,6 +40,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+
 import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -90,9 +92,10 @@ public class PhotoUploadActivityFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        EasyImage.configuration(activity)
+        EasyImage
+                .configuration(activity)
                 .setImagesFolderName("FittingRoom_Data")
-                .saveInAppExternalFilesDir();
+                .setAllowMultiplePickInGallery(false);
 
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -217,7 +220,8 @@ public class PhotoUploadActivityFragment extends Fragment {
                         }
 
                         @Override
-                        public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                        public void onImagesPicked(@NonNull List<File> imageFiles, EasyImage.ImageSource source, int type) {
+                            File imageFile = imageFiles.get(0);
                             rotation = PhotoUtilities.getCameraPhotoOrientation(activity,
                                     Uri.fromFile(imageFile), imageFile.getAbsolutePath());
 

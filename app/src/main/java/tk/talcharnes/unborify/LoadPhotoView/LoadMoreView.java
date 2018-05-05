@@ -22,7 +22,7 @@ import tk.talcharnes.unborify.Utilities.DatabaseContants;
 @Layout(R.layout.load_more_view)
 public class LoadMoreView {
 
-    public static final String TAG = LoadMoreView.class.getSimpleName();
+   // public static String TAG = LoadMoreView.class.getSimpleName();
     public static final int LOAD_VIEW_SET_COUNT = 8;
 
     private InfinitePlaceHolderView mLoadMoreView;
@@ -49,7 +49,7 @@ public class LoadMoreView {
     }
 
     @LoadMore
-    private void onLoadMore() {
+    public void onLoadMore() {
         new ForcedWaitedLoading();
     }
 
@@ -89,7 +89,7 @@ public class LoadMoreView {
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    DatabaseContants.logDatabaseError(TAG, databaseError);
+                                    //DatabaseContants.logDatabaseError(TAG, databaseError);
                                 }
                             });
                         } else {

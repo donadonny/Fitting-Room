@@ -48,7 +48,7 @@ public class StorageConstants {
                 orientation == Configuration.ORIENTATION_PORTRAIT)  && rotation != 0) ? 0 : rotation;
         GlideApp.with(context)
                 .load(storageReference)
-                .transform(new MyTransformation(context, rotation))
+                .transform(new MyTransformation(rotation))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e,

@@ -47,28 +47,28 @@ public class PhotoView {
     private static final String TAG = PhotoView.class.getSimpleName();
 
     @View(R.id.card_image_view)
-    private ImageView imageView;
+    ImageView imageView;
 
     @View(R.id.occasion_cardview_textview)
-    private TextView occasionTextView;
+    TextView occasionTextView;
 
     @View(R.id.comments_button)
-    private ImageButton commentsButton;
+    ImageButton commentsButton;
 
     @View(R.id.zoom_button)
-    private ImageButton zoomButton;
+    ImageButton zoomButton;
 
     @View(R.id.menu_button)
-    private ImageButton menuButton;
+    ImageButton menuButton;
 
     @View(R.id.ratingbar)
-    private SimpleRatingBar ratingBar;
+    SimpleRatingBar ratingBar;
 
     @View(R.id.share_image_button)
-    private ImageButton shareButton;
+    ImageButton shareButton;
 
     @View(R.id.progress_bar)
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
 
     private PhotoModel mPhotoModel;
     private Context mContext;
@@ -87,7 +87,7 @@ public class PhotoView {
     }
 
     @Resolve
-    private void onResolved() {
+    public void onResolved() {
         occasionTextView.setText(mPhotoModel.getOccasionSubtitle());
 
         String urlString = mPhotoModel.getUrl();

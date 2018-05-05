@@ -3,14 +3,14 @@ package tk.talcharnes.unborify;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 import tk.talcharnes.unborify.BottomBar.BottomBarAdapter;
 import tk.talcharnes.unborify.BottomBar.NoSwipePager;
 import tk.talcharnes.unborify.MainNavigationFragments.Deals.DealsFragment;
@@ -86,20 +86,20 @@ public class MainActivity extends AppCompatActivity {
 
         setupViewPager();
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                //spinner.setVisibility(View.INVISIBLE);
-                switch (tabId) {
-                    case R.id.tab_home: viewPager.setCurrentItem(0); break;
-                    case R.id.tab_trending: viewPager.setCurrentItem(1); break;
-                    case R.id.tab_deals: viewPager.setCurrentItem(2); break;
-                    case R.id.tab_following: viewPager.setCurrentItem(3); break;
-                    default: viewPager.setCurrentItem(4); break;
-                }
-            }
-        });
+        ((BottomNavigationView) findViewById(R.id.bottom_navigation)).setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.tab_home: viewPager.setCurrentItem(0); break;
+                            case R.id.tab_trending: viewPager.setCurrentItem(1); break;
+                            case R.id.tab_deals: viewPager.setCurrentItem(2); break;
+                            case R.id.tab_following: viewPager.setCurrentItem(3); break;
+                            default: viewPager.setCurrentItem(4); break;
+                        }
+                        return true;
+                    }
+                });
     }
 
     private void setupViewPager() {
@@ -124,4 +124,5 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setCurrentItem(fragmentNum);
         }
     }
+
 }

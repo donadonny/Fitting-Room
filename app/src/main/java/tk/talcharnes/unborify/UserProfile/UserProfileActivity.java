@@ -114,6 +114,9 @@ public class UserProfileActivity extends AppCompatActivity implements changeName
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        EasyImage
+                .configuration(this)
+                .setAllowMultiplePickInGallery(false);
         initializeViews();
         initializeUserSettings();
         setListeners();
@@ -390,7 +393,8 @@ public class UserProfileActivity extends AppCompatActivity implements changeName
                         }
 
                         @Override
-                        public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                        public void onImagesPicked(@NonNull List<File> imageFiles, EasyImage.ImageSource source, int type) {
+                            File imageFile = imageFiles.get(0);
                             Log.d(TAG, "Successfully picked an image, source: " + source.name());
                             try {
                                 Glide.with(avatarView.getContext())

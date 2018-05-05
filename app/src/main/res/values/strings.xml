@@ -1,8 +1,8 @@
 <resources>
     <!--App name-->
     <string name="app_name" translatable="false">InStyle</string>
-    <string name="facebook_application_id" translatable="false">2071885073046788</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb2071885073046788</string>
+    <string name="facebook_application_id">1385260598241279</string>
+    <string name="facebook_login_protocol_scheme">fb1385260598241279</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>
@@ -194,6 +194,13 @@
     <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
     <string name="share_photo">share_photo</string>
     <string name="anonymous_user">Anonymous User</string>
+
+    <!-- Bottom Tabs Strings -->
+    <string name="text_home">Home</string>
+    <string name="text_trending">Trending</string>
+    <string name="text_deals">Deals</string>
+    <string name="text_following">Following</string>
+    <string name="text_other">Other</string>
 
     <!-- Content Description -->
     <string name="description_submit_comment">Submit Comment</string>

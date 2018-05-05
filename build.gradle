@@ -4,17 +4,21 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        google()
+        google() // Gradle 4.0+
+        maven { url "https://maven.google.com" } // Gradle < 4.0
+        maven { url 'https://maven.fabric.io/public' } // Gradle < 4.0
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'io.fabric.tools:gradle:1.25.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'com.google.gms:google-services:3.1.0'
+        classpath 'com.google.gms:google-services:3.2.1'
     }
 }
+
 plugins {
     id 'com.github.ben-manes.versions' version '0.17.0'
 }
@@ -25,9 +29,12 @@ allprojects {
         jcenter()
         google()
 
-        maven {
-            url "https://jitpack.io"
-        }
+        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.google.com/' }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
     }
 }
 
