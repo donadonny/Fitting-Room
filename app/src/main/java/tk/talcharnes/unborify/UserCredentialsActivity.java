@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 import java.util.Calendar;
 import tk.talcharnes.unborify.Models.UserModel;
@@ -42,6 +43,7 @@ public class UserCredentialsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         initialize();
 
     }
@@ -90,12 +92,14 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 } else {
                     // User is signed out
                     startActivityForResult(
-                            AuthUI.getInstance().createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(Arrays.asList(
                                             new AuthUI.IdpConfig.EmailBuilder().build(),
                                             new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                            new AuthUI.IdpConfig.FacebookBuilder().build()))
+                                            new AuthUI.IdpConfig.FacebookBuilder().build(),
+                                            new AuthUI.IdpConfig.TwitterBuilder().build()))
                                     .build(),
                             RC_SIGN_IN);
                     Log.d(TAG, "Starting up Firebase UI.");
@@ -108,7 +112,6 @@ public class UserCredentialsActivity extends AppCompatActivity {
     /**
      * Checks if the user sign in and if not then it checks what was error.
      */
-    @SuppressWarnings("ThrowableNotThrown")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -1,8 +1,11 @@
 <resources>
     <!--App name-->
     <string name="app_name" translatable="false">InStyle</string>
-    <string name="facebook_application_id">1385260598241279</string>
-    <string name="facebook_login_protocol_scheme">fb1385260598241279</string>
+    <string name="facebook_application_id">392827217865642</string>
+    <string name="facebook_login_protocol_scheme">fb392827217865642</string>
+    <string name="twitter_consumer_key" translatable="false">OkYwa2sAT9SFs9ClO6IBNIjNo</string>
+    <string name="twitter_consumer_secret" translatable="false">u5jfBNrPbc9lyc8wXKj0rCoOPSGFz4cL8F2njtbW24PHjxQ9sl
+</string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>

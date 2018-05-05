@@ -10,7 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseUser;
+
+import io.fabric.sdk.android.Fabric;
 import tk.talcharnes.unborify.BottomBar.BottomBarAdapter;
 import tk.talcharnes.unborify.BottomBar.NoSwipePager;
 import tk.talcharnes.unborify.MainNavigationFragments.Deals.DealsFragment;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Fabric.with(this, new Crashlytics());
 
         // Initializing main components
         initialize();
@@ -53,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             fragment_id = R.id.nav_home;
             previous_fragment_id = fragment_id;
         }
-
     }
 
     /**
