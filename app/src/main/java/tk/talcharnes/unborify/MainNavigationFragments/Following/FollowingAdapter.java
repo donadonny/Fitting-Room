@@ -1,6 +1,7 @@
 package tk.talcharnes.unborify.MainNavigationFragments.Following;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,13 +11,14 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mindorks.placeholderview.InfinitePlaceHolderView;
 import java.util.ArrayList;
+import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
-import tk.talcharnes.unborify.Models.UserModel;
+import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
-import tk.talcharnes.unborify.UserProfile.UserProfileAdapter;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
-import tk.talcharnes.unborify.Utilities.StorageConstants;
+import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
 /**
  * Created by Khuram Chaudhry on 11/1/17.
@@ -29,25 +31,28 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
 
     public static final String TAG = FollowingAdapter.class.getSimpleName();
 
-    private Context mContext;
+    private Activity mActivity;
     private ArrayList<String> userUids;
+    private IImageLoader imageLoader;
+
 
     /**
      *  This is the default constructor.
-     *  @param mContext: Context of the activity.
+     *  @param mActivity: The main activity.
      *  @param userUids: String list containing uids of users.
      */
-    public FollowingAdapter(Context mContext, ArrayList<String> userUids) {
-        this.mContext = mContext;
+    public FollowingAdapter(Activity mActivity, ArrayList<String> userUids) {
+        this.mActivity = mActivity;
         this.userUids = userUids;
+        imageLoader = new GlideLoader2();
     }
 
     /**
      * This function loads the layout to used for each ItemRowHolder object.
      */
     @Override
-    public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent,
+    public ItemRowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_user_info, parent,
                 false);
         return new ItemRowHolder(v);
     }
@@ -56,7 +61,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
      * This function grabs data and apply's data to each ItemRowHolder.
      */
     @Override
-    public void onBindViewHolder(final ItemRowHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ItemRowHolder holder, int i) {
+        int position = holder.getAdapterPosition();
 
         // Getting the current uid from the list of uids.
         final String uid = userUids.get(position);
@@ -65,41 +71,16 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
         //    a bug in which the an empty uid was received from the database.
         if(!uid.isEmpty()) {
 
-            // Setting the user profile image.
-            StorageConstants.loadProfileImage(mContext, holder.userPhoto, uid);
-
-            // Grabbing user's name from the database.
-            DatabaseContants.getUserRef(uid).child(UserModel.NAME_KEY)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (DatabaseContants.checkRefValue(dataSnapshot)) {
-                                holder.userName.setText(dataSnapshot.getValue(String.class));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            DatabaseContants.logDatabaseError(TAG, databaseError);
-                        }
-                    });
-
-            // Grabbing the user's photos from the database.
-            DatabaseContants.getUserPhotos(uid, new ValueEventListener() {
+            // Setting the user profile image and grabbing user's name from the database.
+            DatabaseContants.getUserNameRef(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    ArrayList<String> urls = new ArrayList<String>();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        urls.add(snapshot.getKey());
-                    }
-                    if (urls.size() > 0) {
-                        holder.photoList.setLayoutManager(new
-                                LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL,
-                                false));
-                        holder.photoList.setHasFixedSize(false);
-                        UserProfileAdapter adapter = new UserProfileAdapter(mContext, uid,
-                                DatabaseContants.getCurrentUser().getUid(), urls, true);
-                        holder.photoList.setAdapter(adapter);
+                    if (dataSnapshot.exists()) {
+                        String name = dataSnapshot.getValue(String.class);
+                        if (name != null) {
+                            imageLoader.loadImage(holder.userPhoto, uid, name);
+                            holder.userName.setText(name);
+                        }
                     }
                 }
 
@@ -108,6 +89,16 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
                     DatabaseContants.logDatabaseError(TAG, databaseError);
                 }
             });
+
+            holder.mLoadMoreView.getBuilder().setHasFixedSize(false).setItemViewCacheSize(10)
+                    .setLayoutManager(new LinearLayoutManager(mActivity,
+                            LinearLayoutManager.HORIZONTAL, false));
+
+            // Grabbing the user's photos from the database.
+            DatabaseContants.retrievePhotosFromDatabaseUsingUrl(TAG, mActivity, holder.itemView,
+                    DatabaseContants.getPhotoRef().orderByChild(PhotoModel.USER_KEY)
+                            .equalTo(uid), holder.mLoadMoreView,
+                    R.string.no_image_title_3, false);
         }
 
     }
@@ -120,6 +111,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
         return userUids.size();
     }
 
+
     /**
      * ItemRowHolder class.
      */
@@ -127,14 +119,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
 
         private AvatarView userPhoto;
         private TextView userName;
-        private RecyclerView photoList;
+        private InfinitePlaceHolderView mLoadMoreView;
 
         ItemRowHolder(View view) {
             super(view);
             if (!userUids.isEmpty()) {
                 this.userPhoto = (AvatarView) view.findViewById(R.id.avatarImage);
                 this.userName = (TextView) view.findViewById(R.id.textview);
-                this.photoList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+                this.mLoadMoreView = (InfinitePlaceHolderView) view.findViewById(R.id.loadMoreView);
             }
         }
     }

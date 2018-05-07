@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -91,6 +92,19 @@ public class ProfileActivity extends AppCompatActivity implements changeNameDial
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getIntent() != null) {
+                    Integer fragmentNum = getIntent().getIntExtra("fragmentNumber", 0);
+                    Intent output = new Intent();
+                    output.putExtra("fragmentNumber", fragmentNum.intValue());
+                    setResult(0, output);
+                    finish();
+                }
+            }
+        });
 
         /* Set up the user's name, email, and the register date */
         Intent intent = getIntent();

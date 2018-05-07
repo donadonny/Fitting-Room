@@ -59,37 +59,37 @@ import tk.talcharnes.unborify.Utilities.StorageConstants;
  *  user to rate, report, and favorite the image.
  */
 @NonReusable
-@Layout(R.layout.photo_card_view)
+@Layout(R.layout.card_photo_view)
 public class PhotoCard {
 
     private final String TAG = PhotoCard.class.getSimpleName();
 
     @View(R.id.photoImageView)
-    private ImageView photoImageView;
+    ImageView photoImageView;
 
     @View(R.id.avatarImage)
-    private AvatarView avatarView;
+    AvatarView avatarView;
 
     @View(R.id.thumbs_up_fab)
-    private FloatingActionButton likeButton;
+    FloatingActionButton likeButton;
 
     @View(R.id.thumbs_down_fab)
-    private FloatingActionButton dislikeButton;
+    FloatingActionButton dislikeButton;
 
     @View(R.id.occasion_textview)
-    private TextView occasionTextView;
+    TextView occasionTextView;
 
     @View(R.id.ratingbar)
-    private SimpleRatingBar ratingBar;
+    SimpleRatingBar ratingBar;
 
     @View(R.id.uploadederNameTxt)
-    private TextView usernameTextView;
+    TextView usernameTextView;
 
     @View(R.id.progress_bar)
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
 
     @View(R.id.photo_card_options)
-    private ImageButton photo_card_options;
+    ImageButton photo_card_options;
 
     private PhotoModel mPhotoModel;
     private Context mContext;
@@ -114,8 +114,8 @@ public class PhotoCard {
      * This method is called at the start of the PhotoCard initialization.
      */
     @Resolve
-    private void onResolved() {
-        imageLoader = new GlideLoader2();
+    public void onResolved() {
+        imageLoader = new GlideLoader2(mUserName);
 
         final String url = mPhotoModel.getUrl();
 
@@ -196,8 +196,7 @@ public class PhotoCard {
         avatarView.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
-                Intent intent = new Intent(mContext, (mUserId.equals(mPhotoModel.getUserUid())) ?
-                                ProfileActivity.class : UserProfileActivity.class);
+                Intent intent = new Intent(mContext, UserProfileActivity.class);
                 intent.putExtra("uid", mPhotoModel.getUserUid());
                 mContext.startActivity(intent);
             }
@@ -224,7 +223,7 @@ public class PhotoCard {
      * This method handles when the Card View is clicked.
      */
     @Click(R.id.photoImageView)
-    private void onClick() {
+    public void onClick() {
         Intent intent = new Intent(mContext, ZoomPhotoActivity.class);
         intent.putExtra("url", mPhotoModel.getUrl());
         intent.putExtra("rotation", mPhotoModel.getOrientation());
@@ -236,7 +235,7 @@ public class PhotoCard {
      * This method handles when the Card View is swiped right.
      */
     @SwipeIn
-    private void onSwipeIn() {
+    public void onSwipeIn() {
         //Log.d(LOG_TAG, "onSwipedIn");
         setVote("likes");
         Analytics.registerSwipe(mContext, "right");
@@ -246,7 +245,7 @@ public class PhotoCard {
      * This method handles when the Card View is swiped left.
      */
     @SwipeOut
-    private void onSwipedOut() {
+    public void onSwipedOut() {
         //Log.d(LOG_TAG, "onSwipedOut");
         if (isReported != null && isReported) {
             isReported = false;
@@ -261,7 +260,7 @@ public class PhotoCard {
      * This method handles when the Card View is moving right.
      */
     @SwipeInState
-    private void onSwipeInState() {
+    public void onSwipeInState() {
         //Log.d(LOG_TAG, "onSwipeInState");
     }
 
@@ -269,7 +268,7 @@ public class PhotoCard {
      * This method handles when the Card View is moving left.
      */
     @SwipeOutState
-    private void onSwipeOutState() {
+    public void onSwipeOutState() {
         //Log.d(LOG_TAG, "onSwipeOutState");
     }
 
@@ -277,7 +276,7 @@ public class PhotoCard {
      * Don't know what this does.
      */
     @SwipeCancelState
-    private void onSwipeCancelState() {
+    public void onSwipeCancelState() {
         //Log.d(LOG_TAG, "onSwipeCancelState");
     }
 
@@ -285,7 +284,7 @@ public class PhotoCard {
      * This method records the direction of user touches.
      */
     @SwipingDirection
-    private void onSwipingDirection(SwipeDirection direction) {
+    public void onSwipingDirection(SwipeDirection direction) {
         //Log.d(LOG_TAG, "SwipingDirection " + direction.name());
     }
 

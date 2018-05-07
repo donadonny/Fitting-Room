@@ -78,22 +78,24 @@ public class changeNameDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
-        LayoutInflater inflater = getDialog().getLayoutInflater();
+        if(getActivity() != null) {
+            LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_change_name, null))
-                // Add action buttons
-                .setPositiveButton("CHANGE NAME", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
-                    }
-                });
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(inflater.inflate(R.layout.dialog_change_name, null))
+                    // Add action buttons
+                    .setPositiveButton("CHANGE NAME", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dismiss();
+                        }
+                    });
+        }
         dialog = builder.create();
         dialog.show();
         dialog.setCancelable(false);
@@ -112,7 +114,7 @@ public class changeNameDialogFragment extends DialogFragment {
                 final EditText newName = (EditText) dialog.findViewById(R.id.input_new_name);
                 final String name = newName.getText().toString();
 
-                if (name.length() > 4 && name.length() < 26) {
+                if (name.length() < 5 || name.length() > 25) {
                     newName.setError("enter between 5 and 25 characters");
                     wantToCloseDialog = false;
                 }
@@ -131,7 +133,7 @@ public class changeNameDialogFragment extends DialogFragment {
                                     }
                                 }
                             });
-                    DatabaseContants.getCurrentUserRef().child(name).setValue(name);
+                    DatabaseContants.getCurrentUserRef().child("name").setValue(name);
                     mListener.onChange(name);
                     dismiss();
                 }

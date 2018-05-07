@@ -1,78 +1,66 @@
 package tk.talcharnes.unborify.Models;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 /**
- * Created by Khuram Chaudhry on 2/26/18.
- * This class is an Object design for the Deals Object.
- *
+ * Created by marzin
  */
 
+@IgnoreExtraProperties
 public class DealsModel {
+    private String name;
+    private String website;
+    private double price;
+    private String expirationDate;
+    private String details;
 
-    private Long id;
-    private Integer zipcode;
-    private String description;
-    private String pictureUrl;
+    public DealsModel(){}
 
-    /**
-     * Required empty Constructor for FireBase.
-     */
-    public DealsModel() {
-
+    public DealsModel(String name, String website, double price, String expirationDate, String details) {
+        this.name = name;
+        this.website = website;
+        this.price = price;
+        this.expirationDate = expirationDate;
+        this.details = details;
     }
 
-    /**
-     * This method returns the id of the deal in the database.
-     */
-    public Long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * This method returns the location of the deal by zip code.
-     */
-    public Integer getZipcode() {
-        return zipcode;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    /**
-     * This method returns the description of the deal.
-     */
-    public String getDescription() {
-        return description;
+    public String getWebsite() {
+        return website;
     }
 
-    /**
-     * This method returns the url of the photo displayed in the deal.
-     */
-    public String getPictureUrl() {
-        return pictureUrl;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
-    /**
-     * This method sets the id of the deal object.
-     */
-    public void setId(Long id) {
-        this.id = id;
+    public double getPrice() {
+        return price;
     }
 
-    /**
-     * This method sets the location of the deal object.
-     */
-    public void setZipcode(Integer zipcode) {
-        this.zipcode = zipcode;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    /**
-     * This method sets the description of the deal object.
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public String getExpirationDate() {
+        return expirationDate;
     }
 
-    /**
-     * This method sets the photo url of the deal object.
-     */
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

@@ -20,7 +20,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
     private final static String TAG = PhotoUploadActivity.class.getSimpleName();
 
-    private static String category = "";
+    private static String category = "Fashion";
 
     /**
      * Initializes basic initialization of components.
@@ -36,26 +36,6 @@ public class PhotoUploadActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-
-        Spinner spinner = (Spinner) toolbar.findViewById(R.id.category_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(PhotoUploadActivity.this,
-                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                category = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     /**

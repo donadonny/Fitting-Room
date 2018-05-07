@@ -107,9 +107,10 @@ public class HelpFragment extends Fragment {
         dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
             dots[i] = new TextView(getActivity());
-            SpannedString spannedString = new SpannedString("&#8226;");
-            dots[i].setText(spannedString);
-            dots[i].setTextSize(35);
+            final int upSymbolUnicode = 0x2022;
+            final String dot = Character.toString((char)upSymbolUnicode);
+            dots[i].setText(dot);
+            dots[i].setTextSize(40);
             dots[i].setTextColor(colorsInactive[currentPage]);
             dotsLayout.addView(dots[i]);
         }

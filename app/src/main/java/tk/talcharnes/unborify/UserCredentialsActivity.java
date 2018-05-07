@@ -1,10 +1,13 @@
 package tk.talcharnes.unborify;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -90,16 +93,13 @@ public class UserCredentialsActivity extends AppCompatActivity {
                     // User is signed out
                     startActivityForResult(
                             AuthUI.getInstance()
-                                    .createSignInIntentBuilder().setLogo(R.mipmap.ic_launcher)
+                                    .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
-                                                    .build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                                                    .build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
-                                                    .build()
-                                            ))
+                                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                                            new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                            new AuthUI.IdpConfig.FacebookBuilder().build(),
+                                            new AuthUI.IdpConfig.TwitterBuilder().build()))
                                     .build(),
                             RC_SIGN_IN);
                     Log.d(TAG, "Starting up Firebase UI.");
@@ -125,13 +125,18 @@ public class UserCredentialsActivity extends AppCompatActivity {
                 if (response == null) {
                     Log.d(TAG, "Login failed due to back press.");
                 } else {
-                    switch (response.getErrorCode()) {
-                        case ErrorCodes.NO_NETWORK:
-                            Log.d(TAG, "Login failed due to no network.");
-                            break;
-                        default:
-                            Log.d(TAG, "Login failed due to unknown error.");
-                            break;
+                    if (response.getError() != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle(response.getError().getErrorCode())
+                                .setMessage(response.getError().getMessage())
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
                 }
         }

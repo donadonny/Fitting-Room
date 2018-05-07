@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
         android:contentDescription="TODO"
         android:src="@mipmap/ic_launcher"/>
 
@@ -19,8 +19,8 @@
         android:layout_width="fill_parent"
         android:layout_height="26dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/dealIcon"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/dealIcon"
         android:ellipsize="marquee"
         android:text="Date Range"
         android:textSize="12sp"

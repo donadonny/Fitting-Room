@@ -1,8 +1,10 @@
 <resources>
     <!--App name-->
     <string name="app_name" translatable="false">InStyle</string>
-    <string name="facebook_application_id" translatable="false">2071885073046788</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb2071885073046788</string>
+    <string name="facebook_application_id"></string>
+    <string name="facebook_login_protocol_scheme"></string>
+    <string name="twitter_consumer_key" translatable="false"></string>
+    <string name="twitter_consumer_secret" translatable="false"></string>
 
     <!--String for settings menu-->
     <string name="action_settings">Settings</string>
@@ -43,6 +45,8 @@
         later.</string>
     <string name="no_image_title_7">Looks like you haven\'t liked any photos.</string>
     <string name="no_image_title_8">Looks like you aren\'t following anybody.</string>
+    <string name="no_image_title_9">You have no Photos. :(</string>
+    <string name="no_image_title_10">Looks like you haven\'t added any photos to favorites.</string>
     <string name="title_activity_my_photos">My Photos</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="title_activity_help">Help</string>
@@ -147,26 +151,26 @@
     <string name="help_slide_4_desc">Just don\'t think of this app as a competition app. </string>
 
     <!-- Strings for the about screen -->
-    <string name="about_title_1">Our Mission</string>
-    <string name="about_title_1_desc">We are independent developers who love fashion and seek
-        to bring the love of fashion to everyone.</string>
-    <string name="about_title_2">Developers</string>
-    <string name="about_title_2_desc_1">Tal Charnes</string>
-    <string name="about_title_2_desc_2">Khuram Chaudhry</string>
-    <string name="about_title_2_desc_3">Mario(marzinx3)</string>
-    <string name="about_title_3">Credits</string>
-    <string name="about_title_3_desc_2">Google for the Google Libraries used</string>
-    <string name="about_title_3_desc_1">Janishar Ali for the PlaceHolder Library</string>
-    <string name="about_title_3_desc_3">Ben Manes for the Dependency Updates library</string>
-    <string name="about_title_3_desc_4">Ravi Tamada from AndroidHive</string>
-    <string name="about_title_3_desc_5">Zetra(zetbaitsu) for the Compressor Library</string>
-    <string name="about_title_3_desc_6">Bump Technologies for the Glide Library</string>
-    <string name="about_title_3_desc_7">Chris Banes for the PhotoView Library</string>
-    <string name="about_title_3_desc_8">Ivan Arcuschin for the SimpleRatingBar Library</string>
-    <string name="about_title_3_desc_9">Icons from https://icons8.com/</string>
-    <string name="about_title_3_desc_10">Tango Agency for the Avatar View Library</string>
-    <string name="about_title_3_desc_11">Jacek for the EasyImage Library</string>
-    <string name="about_trademark">Something LLC. All rights reserved.</string>
+    <string name="about_desc_1">Our Mission\n\n
+        We are independent developers who love fashion and seek to bring the love of fashion to everyone.</string>
+    <string name="about_desc_2">Developers\n\n
+        Tal Charnes\n
+        Khuram Chaudhry\n
+        Mario(marzinx3)</string>
+    <string name="about_desc_3">Credits\n\n
+        Google for the Google Libraries used\n
+        Janishar Ali for the PlaceHolder Library\n
+        Ben Manes for the Dependency Updates library\n
+        Ravi Tamada from AndroidHive\n
+        Zetra(zetbaitsu) for the Compressor Library\n
+        Bump Technologies for the Glide Library\n
+        Chris Banes for the PhotoView Library\n
+        Ivan Arcuschin for the SimpleRatingBar Library\n
+        Icons from https://icons8.com/\n
+        Tango Agency for the Avatar View Library\n
+        Jacek for the EasyImage Library\n
+        Devlight for the InfiniteCycleViewPager Library\n
+        Something LLC. All rights reserved.</string>
     <string name="report">report</string>
     <string name="delete">delete</string>
     <string name="edit">edit</string>
@@ -192,6 +196,13 @@
     <string name="comment_too_short_error">Comment must be longer than 5 characters</string>
     <string name="share_photo">share_photo</string>
     <string name="anonymous_user">Anonymous User</string>
+
+    <!-- Bottom Tabs Strings -->
+    <string name="text_home">Home</string>
+    <string name="text_trending">Trending</string>
+    <string name="text_deals">Deals</string>
+    <string name="text_following">Following</string>
+    <string name="text_other">Other</string>
 
     <!-- Content Description -->
     <string name="description_submit_comment">Submit Comment</string>
@@ -222,4 +233,7 @@
     <string name="Km">Km</string>
     <string name="Mi">Mi</string>
     <string name="save">Save</string>
+    <string name="metric_text">Choose the metric for the distance </string>
+    <string name="distance_text">Maximum Distance! </string>
+
 </resources>

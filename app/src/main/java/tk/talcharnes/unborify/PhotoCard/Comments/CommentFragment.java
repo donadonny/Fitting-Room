@@ -87,7 +87,7 @@ public class CommentFragment extends Fragment {
                 (options) {
 
             @Override
-            public FirebaseCommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public FirebaseCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.comment_template, parent, false);
 

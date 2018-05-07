@@ -32,26 +32,27 @@ public class changePasswordDialogFragment extends DialogFragment {
      */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
-        LayoutInflater inflater = getDialog().getLayoutInflater();
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_change_password, null))
-                // Add action buttons
-                .setPositiveButton("CHANGE PASSWORD", new DialogInterface
-                        .OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
-                    }
-                });
+        if(getActivity() != null) {
+            // Get the layout inflater
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(inflater.inflate(R.layout.dialog_change_password, null))
+                    // Add action buttons
+                    .setPositiveButton("CHANGE PASSWORD", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dismiss();
+                        }
+                    });
+        }
         dialog = builder.create();
         dialog.show();
         dialog.setCancelable(false);
@@ -77,11 +78,11 @@ public class changePasswordDialogFragment extends DialogFragment {
                 final String new_password = newPassword.getText().toString();
                 final String confirm_password = confirmnPassword.getText().toString();
 
-                if (new_password.length() > 7 && new_password.length() < 26) {
+                if (new_password.length() < 9 || new_password.length() > 25) {
                     newPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
-                if (confirm_password.length() > 7 && confirm_password.length() < 26) {
+                if (new_password.length() < 9 || new_password.length() > 25) {
                     confirmnPassword.setError("between 8 and 25 alphanumeric characters");
                     wantToCloseDialog = false;
                 }
