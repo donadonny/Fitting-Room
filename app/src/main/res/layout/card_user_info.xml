@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/user_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fab_size"
+        android:layout_margin="10dp"
+        android:background="@drawable/circle"
+        android:orientation="horizontal">
+
+        <agency.tango.android.avatarview.views.AvatarView
+            android:id="@+id/avatarImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp"
+            android:gravity="start"
+            android:scaleType="centerCrop"
+            app:av_border_color="@color/colorPrimary"
+            app:av_border_width="4dp"
+            app:av_text_size_percentage="75" />
+
+        <TextView
+            android:id="@+id/textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
+            tools:text="@string/placeholder"
+            android:textAlignment="center"
+            android:textColor="#FFF" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_below="@+id/user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <com.mindorks.placeholderview.InfinitePlaceHolderView
+        android:id="@+id/loadMoreView"
+        android:layout_below="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

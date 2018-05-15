@@ -1,8 +1,8 @@
 package tk.talcharnes.unborify.Utilities;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
@@ -13,14 +13,12 @@ public class MyTransformation extends BitmapTransformation {
 
     private float rotateRotationAngle = 0f;
 
-    public MyTransformation(Context context, float rotateRotationAngle) {
-        super(context);
-
+    MyTransformation(float rotateRotationAngle) {
         this.rotateRotationAngle = rotateRotationAngle;
     }
 
     @Override
-    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
         Matrix matrix = new Matrix();
 
         matrix.postRotate(rotateRotationAngle);
@@ -29,7 +27,7 @@ public class MyTransformation extends BitmapTransformation {
     }
 
     @Override
-    public void updateDiskCacheKey(MessageDigest messageDigest) {
+    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
         messageDigest.update(("rotate" + rotateRotationAngle).getBytes());
     }
 

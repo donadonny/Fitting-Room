@@ -1,8 +1,12 @@
 package tk.talcharnes.unborify.OtherFragmentActivities.ContactUs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+
 import tk.talcharnes.unborify.R;
 
 /**
@@ -28,6 +32,19 @@ public class ContactUsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getIntent() != null) {
+                    Integer fragmentNum = getIntent().getIntExtra("fragmentNumber", 0);
+                    Intent output = new Intent();
+                    output.putExtra("fragmentNumber", fragmentNum.intValue());
+                    setResult(0, output);
+                    finish();
+                }
+            }
+        });
     }
 
 }

@@ -128,7 +128,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         StorageReference storageReference = StorageConstants.getImageRef(url);
 
         StorageConstants.loadImageUsingGlide(getApplicationContext(), photoView,
-                storageReference, progressBar);
+                storageReference, progressBar, 0);
 
         // Set up the user interaction to manually show or hide the system UI.
         getWindow().getDecorView().findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {

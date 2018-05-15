@@ -78,7 +78,7 @@ public class PhotoUtilities {
     }
 
 
-    public static void scaleImage(Activity activity, ImageView imageView) {
+/*    public static void scaleImage(Activity activity, ImageView imageView) {
         // Get the ImageView and its bitmap
         Drawable drawing = imageView.getDrawable();
         if (drawing == null) {
@@ -126,7 +126,7 @@ public class PhotoUtilities {
         imageView.setLayoutParams(params);
 
         Log.i("Test", "done");
-    }
+    }*/
 
     private static int dpToPx(int dp, Activity activity) {
         float density = activity.getResources().getDisplayMetrics().density;

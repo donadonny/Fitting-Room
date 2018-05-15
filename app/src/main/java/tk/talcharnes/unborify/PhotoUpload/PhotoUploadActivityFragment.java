@@ -40,6 +40,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+
 import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -65,6 +67,7 @@ public class PhotoUploadActivityFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST = 123;
 
     private ImageView userImageToUploadView;
+    private TextView imageTextView;
     private Button submitButton;
     private EditText photo_description_edit_text;
     private String photoDescription;
@@ -89,13 +92,15 @@ public class PhotoUploadActivityFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        EasyImage.configuration(activity)
+        EasyImage
+                .configuration(activity)
                 .setImagesFolderName("FittingRoom_Data")
-                .saveInAppExternalFilesDir();
+                .setAllowMultiplePickInGallery(false);
 
         photo_description_edit_text = (EditText) rootView.findViewById(R.id.photo_description_edit_text);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         userImageToUploadView = (ImageView) rootView.findViewById(R.id.uploadedPhoto);
+        imageTextView = (TextView) rootView.findViewById(R.id.imageViewText);
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         initialize();
 
@@ -215,12 +220,14 @@ public class PhotoUploadActivityFragment extends Fragment {
                         }
 
                         @Override
-                        public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                        public void onImagesPicked(@NonNull List<File> imageFiles, EasyImage.ImageSource source, int type) {
+                            File imageFile = imageFiles.get(0);
                             rotation = PhotoUtilities.getCameraPhotoOrientation(activity,
                                     Uri.fromFile(imageFile), imageFile.getAbsolutePath());
 
                             Log.d(LOG_TAG, "Successfully picked an image, source: " + source.name());
                             try {
+                                imageTextView.setVisibility(View.GONE);
                                 File compressedFile = new Compressor(activity).compressToFile(imageFile);
                                 int size = (int) compressedFile.length();
                                 bytes = new byte[size];

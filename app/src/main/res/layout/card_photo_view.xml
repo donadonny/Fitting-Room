@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/realPhotoSwipeCard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="#FFF"
+    android:contentDescription="@string/placeholder"
+    android:orientation="vertical"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/thumbs_down_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/fab_radius"
+            android:contentDescription="@string/dislike"
+            android:src="@drawable/ic_thumb_down_white_24dp"
+            app:backgroundTint="#F44336" />
+
+        <ImageView
+            android:id="@+id/photoImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/thumbs_up_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/fab_radius"
+            android:contentDescription="@string/like"
+            android:src="@drawable/ic_thumb_up_white_24dp"
+            app:backgroundTint="#4CAF50" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#80000000"
+            android:layout_above="@+id/card_bottom_layout"
+            android:contentDescription="@string/rating_bar"
+            app:srb_borderColor="#FFF"
+            app:srb_fillColor="@color/colorPrimary"
+            app:srb_isIndicator="true"
+            app:srb_numberOfStars="5"
+            app:srb_rating="0"
+            app:srb_starSize="36dp"
+            app:srb_stepSize="0.1" />
+
+        <LinearLayout
+            android:id="@+id/card_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp">
+
+            <agency.tango.android.avatarview.views.AvatarView
+                android:id="@+id/avatarImage"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:gravity="start"
+                android:scaleType="centerCrop"
+                app:av_border_color="@color/white"
+                app:av_border_width="1dp"
+                app:av_text_size_percentage="75" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="2"
+                android:gravity="center|start"
+                android:orientation="vertical"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp">
+
+                <TextView
+                    android:id="@+id/uploadederNameTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="Name" />
+
+                <TextView
+                    android:id="@+id/occasion_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13sp"
+                    android:textStyle="normal"
+                    tools:text="Occasion" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/photo_card_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:background="@color/white"
+                android:contentDescription="@string/picture_options"
+                android:src="@drawable/more_options" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

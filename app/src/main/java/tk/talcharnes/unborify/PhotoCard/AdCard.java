@@ -37,10 +37,10 @@ public class AdCard {
     private final String LOG_TAG = AdCard.class.getSimpleName();
 
     @View(R.id.adCard)
-    private CardView adCard;
+    CardView adCard;
 
     @View(R.id.indeterminateBar)
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
 
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
@@ -56,7 +56,7 @@ public class AdCard {
      * This function sets up the Card View with an image, name, and the ratings.
      */
     @Resolve
-    private void onResolved() {
+    public void onResolved() {
         ViewTreeObserver vto = adCard.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -101,7 +101,7 @@ public class AdCard {
      * This function handles when the Card View is swiped right.
      */
     @SwipeIn
-    private void onSwipeIn() {
+    public void onSwipeIn() {
         //Log.d("EVENT", "onSwipedIn");
     }
 
@@ -109,7 +109,7 @@ public class AdCard {
      * This function handles when the Card View is swiped left.
      */
     @SwipeOut
-    private void onSwipedOut() {
+    public void onSwipedOut() {
         //Log.d("EVENT", "onSwipeOut");
     }
 
@@ -117,7 +117,7 @@ public class AdCard {
      * This function handles when the Card View is moving right.
      */
     @SwipeInState
-    private void onSwipeInState() {
+    public void onSwipeInState() {
         //Log.d("EVENT", "onSwipeInState");
     }
 
@@ -125,7 +125,7 @@ public class AdCard {
      * This function handles when the Card View is moving left.
      */
     @SwipeOutState
-    private void onSwipeOutState() {
+    public void onSwipeOutState() {
         //Log.d("EVENT", "onSwipeOutState");
     }
 
@@ -133,7 +133,7 @@ public class AdCard {
      * Don't know what this does.
      */
     @SwipeCancelState
-    private void onSwipeCancelState() {
+    public void onSwipeCancelState() {
         Log.d("EVENT", "onSwipeCancelState");
     }
 
@@ -141,7 +141,7 @@ public class AdCard {
      * This function records the direction of user touches.
      */
     @SwipingDirection
-    private void onSwipingDirection(SwipeDirection direction) {
+    public void onSwipingDirection(SwipeDirection direction) {
         Log.d(LOG_TAG, "SwipingDirection " + direction.name());
     }
 

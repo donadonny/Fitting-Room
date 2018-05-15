@@ -14,13 +14,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.HashMap;
 import tk.talcharnes.unborify.OtherFragmentActivities.About.AboutActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.ContactUs.ContactUsActivity;
-import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.Favorites.FavoritesActivity;
-import tk.talcharnes.unborify.OtherFragmentActivities.FavoritesAndLikes.LIkes.LikesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.Favorites.FavoritesActivity;
+import tk.talcharnes.unborify.OtherFragmentActivities.LIkes.LikesActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Help.HelpActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.MyPhotos.MyPhotosActivity;
 import tk.talcharnes.unborify.OtherFragmentActivities.Notifications.NotificationsActivity;
-import tk.talcharnes.unborify.Profile.ProfileActivity;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.UserProfile.UserProfileActivity;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 
 /**
@@ -35,7 +35,7 @@ public class OtherFragment extends Fragment {
     HashMap<Integer, Class> options = new HashMap<>();
     {
         options.put(R.id.nav_photos, MyPhotosActivity.class);
-        options.put(R.id.my_profile_button, ProfileActivity.class);
+        options.put(R.id.my_profile_button, UserProfileActivity.class);
         options.put(R.id.nav_notifications, NotificationsActivity.class);
         options.put(R.id.nav_help, HelpActivity.class);
         options.put(R.id.nav_contact_us, ContactUsActivity.class);
@@ -77,7 +77,8 @@ public class OtherFragment extends Fragment {
                             String uid = DatabaseContants.getCurrentUser().getUid();
                             intent.putExtra("uid", uid);
                         }
-                        startActivity(intent);
+                        intent.putExtra("fragmentNumber", 4);
+                        startActivityForResult(intent, 0);
                     }
                 }
             });
