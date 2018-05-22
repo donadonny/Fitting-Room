@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.NativeExpressAdView;
 import com.mindorks.placeholderview.SwipeDirection;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
@@ -44,8 +45,7 @@ public class AdCard {
 
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
-    private int width;
-    private int height;
+    private AdView mAdView;
 
     public AdCard(Context context, SwipePlaceHolderView swipeView) {
         mContext = context;
@@ -57,97 +57,56 @@ public class AdCard {
      */
     @Resolve
     public void onResolved() {
-        ViewTreeObserver vto = adCard.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                adCard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                width = pxToDp(adCard.getMeasuredWidth());
-                height = pxToDp(adCard.getMeasuredHeight());
-
-                Log.d(LOG_TAG, "Initial Width = " + width +
-                        " ----------------------------------- Initial Height = " + height);
-
-                width = (width < 80) ? 80 : (width > 1200) ? 1200 : (int) (width * .9);
-                height = (height < 80) ? 80 : (height > 1200) ? 1200 : (int) (height * .9);
-
-                Log.d(LOG_TAG, "Final Width = " + width +
-                        " ----------------------------------- Final Height = " + height);
-
-                CardView.LayoutParams params = new CardView.LayoutParams(
-                        CardView.LayoutParams.MATCH_PARENT,
-                        CardView.LayoutParams.MATCH_PARENT - 75, Gravity.TOP);
-
-                NativeExpressAdView mAdView = new NativeExpressAdView(mContext);
-                mAdView.setAdSize(new AdSize(width, height));
-                mAdView.setAdUnitId("ca-app-pub-6667404740993831/9531692095");
-                adCard.addView(mAdView, params);
-
-                AdRequest request = new AdRequest.Builder().build();
-                mAdView.loadAd(request);
-
-                if (mAdView.isLoading()) {
-                    progressBar.setVisibility(android.view.View.VISIBLE);
-                } else {
-                    progressBar.setVisibility(android.view.View.INVISIBLE);
-                }
-
+        mAdView = adCard.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
             }
-        });
-    }
 
-    /**
-     * This function handles when the Card View is swiped right.
-     */
+//    /**
+//     * This function handles when the Card View is swiped right.
+//     */
     @SwipeIn
     public void onSwipeIn() {
         //Log.d("EVENT", "onSwipedIn");
     }
 
-    /**
-     * This function handles when the Card View is swiped left.
-     */
+//    /**
+//     * This function handles when the Card View is swiped left.
+//     */
     @SwipeOut
     public void onSwipedOut() {
         //Log.d("EVENT", "onSwipeOut");
     }
 
-    /**
-     * This function handles when the Card View is moving right.
-     */
+//    /**
+//     * This function handles when the Card View is moving right.
+//     */
     @SwipeInState
     public void onSwipeInState() {
         //Log.d("EVENT", "onSwipeInState");
     }
 
-    /**
-     * This function handles when the Card View is moving left.
-     */
+//    /**
+//     * This function handles when the Card View is moving left.
+//     */
     @SwipeOutState
     public void onSwipeOutState() {
         //Log.d("EVENT", "onSwipeOutState");
     }
 
-    /**
-     * Don't know what this does.
-     */
+//    /**
+//     * Don't know what this does.
+//     */
     @SwipeCancelState
     public void onSwipeCancelState() {
         Log.d("EVENT", "onSwipeCancelState");
     }
 
-    /**
-     * This function records the direction of user touches.
-     */
+//    /**
+//     * This function records the direction of user touches.
+//     */
     @SwipingDirection
     public void onSwipingDirection(SwipeDirection direction) {
         Log.d(LOG_TAG, "SwipingDirection " + direction.name());
     }
-
-    private int pxToDp(int px) {
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
 }
