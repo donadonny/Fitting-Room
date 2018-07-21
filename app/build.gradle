@@ -70,14 +70,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-auth:15.1.0'
     implementation 'com.google.firebase:firebase-ads:15.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.0.0'
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
     implementation 'com.google.firebase:firebase-firestore:16.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     // facebook
-    implementation 'com.facebook.android:facebook-login:4.33.0'
-
+    implementation 'com.facebook.android:facebook-login:4.34.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
     //twitter
     implementation('com.twitter.sdk.android:twitter:3.2.0@aar') {
         transitive = true
