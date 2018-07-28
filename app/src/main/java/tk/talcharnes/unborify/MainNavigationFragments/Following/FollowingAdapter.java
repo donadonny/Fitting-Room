@@ -1,13 +1,18 @@
 package tk.talcharnes.unborify.MainNavigationFragments.Following;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.vision.text.Line;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -17,6 +22,7 @@ import agency.tango.android.avatarview.IImageLoader;
 import agency.tango.android.avatarview.views.AvatarView;
 import tk.talcharnes.unborify.Models.PhotoModel;
 import tk.talcharnes.unborify.R;
+import tk.talcharnes.unborify.UserProfile.UserProfileActivity;
 import tk.talcharnes.unborify.Utilities.DatabaseContants;
 import tk.talcharnes.unborify.Utilities.GlideLoader2;
 
@@ -34,7 +40,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
     private Activity mActivity;
     private ArrayList<String> userUids;
     private IImageLoader imageLoader;
-
 
     /**
      *  This is the default constructor.
@@ -63,7 +68,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
     @Override
     public void onBindViewHolder(@NonNull final ItemRowHolder holder, int i) {
         int position = holder.getAdapterPosition();
-
         // Getting the current uid from the list of uids.
         final String uid = userUids.get(position);
 
@@ -80,9 +84,17 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
                         if (name != null) {
                             imageLoader.loadImage(holder.userPhoto, uid, name);
                             holder.userName.setText(name);
+                            holder.userInfo.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(mActivity, UserProfileActivity.class);
+                                    intent.putExtra("uid", uid);
+                                    mActivity.startActivity(intent);                                    }
+                            });
                         }
                     }
                 }
+
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -119,6 +131,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
 
         private AvatarView userPhoto;
         private TextView userName;
+        private LinearLayout userInfo;
         private InfinitePlaceHolderView mLoadMoreView;
 
         ItemRowHolder(View view) {
@@ -126,6 +139,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Item
             if (!userUids.isEmpty()) {
                 this.userPhoto = (AvatarView) view.findViewById(R.id.avatarImage);
                 this.userName = (TextView) view.findViewById(R.id.textview);
+                this.userInfo = (LinearLayout) view.findViewById(R.id.user_info);
                 this.mLoadMoreView = (InfinitePlaceHolderView) view.findViewById(R.id.loadMoreView);
             }
         }
